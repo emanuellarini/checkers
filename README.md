@@ -1,10 +1,10 @@
 :video_game: Let's play checkers! :video_game: 
 
-# Intro
+## Intro
 
 This is a Checkers game made in React for personal study. 
 
-# Game Basics
+## Game Description
 
 Checkers is played by Two Players. 
 
@@ -16,13 +16,15 @@ The Player who owns the Black Discs moves first.
 
 The moves are alternated and lose who cannot make a move!
 
-# The Board
+## Game Components
+
+### The Board
 
 Consists of 64 (8x8) squares: `32 Dark` and `32 Light` squares. 
 
 It is positioned so that each player has a Light square on the right side corner closest to him or her.
 
-# The Common Discs
+### The Common Discs
 
 As mentioned before there are two types of Common Discs: Red and Black.
 
@@ -36,7 +38,7 @@ They can:
 
 If a Disc gets Captured it is removed from the Board.
 
-# The King Disc
+### The King Disc
 
 A very special Disc which is created after a special condition: a common Disc reach furthest row from the Player who controls it.
 
@@ -48,7 +50,7 @@ They can:
 
 * Capture more than one Disc in a multiple jump movement (if the move is possible)
 
-# Rules
+## Rules
 
 * Must follow the constraints explained in Kings or Common Disc section
 
