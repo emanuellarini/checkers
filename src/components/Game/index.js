@@ -3,7 +3,7 @@ import Board from 'components/Board'
 
 class Game extends React.Component {
   render() {
-    return <Board data-testid="board" />
+    return <Board />
   }
 }
 
