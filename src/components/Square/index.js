@@ -9,14 +9,16 @@ import {getSquareVariant} from './helpers'
  */
 class Square extends React.Component {
   render() {
-    const {x, y, size} = this.props
+    const {x, y, size, children} = this.props
 
     return (
       <StyledPaper
         variant={getSquareVariant(x, y)}
         data-testid={`board-square-${x}-${y}`}
         size={size}
-      />
+      >
+        {children(x, y)}
+      </StyledPaper>
     )
   }
 }
@@ -26,6 +28,11 @@ Square.defaultProps = {
 }
 
 Square.propTypes = {
+  /**
+   * The function who renders the Disc
+   */
+  children: PropTypes.func.isRequired,
+
   /**
    * The X coordinate in Board
    */
