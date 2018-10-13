@@ -5,7 +5,7 @@ class Game extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      playerOneDiscs: {
+      player1: {
         g1: [5, 0],
         g2: [5, 2],
         g3: [5, 4],
@@ -19,7 +19,7 @@ class Game extends React.Component {
         g11: [7, 4],
         g12: [7, 6],
       },
-      playerTwoDiscs: {
+      player2: {
         r1: [0, 1],
         r2: [0, 3],
         r3: [0, 5],
@@ -33,29 +33,49 @@ class Game extends React.Component {
         r11: [2, 5],
         r12: [2, 7],
       },
-      playerOneKings: [],
-      playerTwoKings: [],
+      player1Kings: [],
+      player2Kings: [],
     }
+
+    this.handleDragEnd = this.handleDragEnd.bind(this)
+  }
+
+  handleDragStart() {
+    return false
+  }
+
+  handleDragEnd({destination, draggableId}) {
+    if (!destination || !draggableId) return false
+
+    const [player, piece] = draggableId.replace(/disc-player-*/, '').split('-')
+    const [x, y] = destination.droppableId
+      .replace(/droppable-board-square-*/, '')
+      .split('-')
+
+    this.setState(state => ({
+      [`player${player}`]: {
+        ...state[`player${player}`],
+        [piece]: [x, y],
+      },
+    }))
   }
 
   render() {
-    const {
-      playerOneDiscs,
-      playerTwoDiscs,
-      playerOneKings,
-      playerTwoKings,
-    } = this.state
+    const {player1, player2, player1Kings, player2Kings} = this.state
 
     return (
       <Board
         playerOne={{
-          discs: playerOneDiscs,
-          kings: playerOneKings,
+          discs: player1,
+          kings: player1Kings,
         }}
         playerTwo={{
-          discs: playerTwoDiscs,
-          kings: playerTwoKings,
+          discs: player2,
+          kings: player2Kings,
         }}
+        onDragStart={this.handleDragStart}
+        onDragUpdate={this.handleDragStart}
+        onDragEnd={this.handleDragEnd}
       />
     )
   }

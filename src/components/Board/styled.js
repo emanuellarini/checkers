@@ -9,6 +9,6 @@ export default styled(({maxWidth, ...other}) => (
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  max-width: ${props => props.maxWidth || 640}px;
+  width: ${props => props.maxWidth || 640}px;
   border: 1px solid #ccc;
 `

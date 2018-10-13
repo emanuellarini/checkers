@@ -4,7 +4,7 @@ export default styled('div')`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${props => props.size}px;
-  height: ${props => props.size}px;
+  width: ${props => props.size}px !important;
+  height: ${props => props.size}px !important;
   background: ${props => (props.variant === 'dark' ? 'black' : 'white')};
 `
