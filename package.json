@@ -5,6 +5,8 @@
   "dependencies": {
     "@material-ui/core": "^3.2.0",
     "@material-ui/icons": "^3.0.1",
+    "lodash": "^4.17.11",
+    "prop-types": "^15.6.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-scripts": "2.0.4",
@@ -14,8 +16,8 @@
     "docz": "^0.12.5",
     "husky": "^1.1.2",
     "prettier": "^1.14.3",
-    "react-testing-library": "^5.2.0",
-    "pretty-quick": "^1.7.0"
+    "pretty-quick": "^1.7.0",
+    "react-testing-library": "^5.2.0"
   },
   "scripts": {
     "start": "NODE_PATH=src/ react-scripts start",
