@@ -24,7 +24,8 @@
     "start": "NODE_PATH=src/ react-scripts start",
     "build": "NODE_PATH=src/ react-scripts build",
     "test": "NODE_PATH=src/ react-scripts test",
-    "pretty-quick": "pretty-quick"
+    "pretty-quick": "pretty-quick",
+    "build:docz": "NODE_PATH=src/ yarn docz dev"
   },
   "eslintConfig": {
     "extends": "react-app"

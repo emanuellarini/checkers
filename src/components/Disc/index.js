@@ -1,15 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import StyledDisc from './styled'
-import KingIcon from '@material-ui/icons/StarOutlined'
+import Disc from './Disc'
 import {Draggable} from 'react-beautiful-dnd'
 
-class Disc extends React.Component {
+class ConnectedDisc extends React.Component {
   render() {
     const {player, king, playerDiscKey} = this.props
-    const index = player * 100 + Number(playerDiscKey.replace(/^\D+/g, ''))
-
     const dragKeyName = `disc-player-${player}-${playerDiscKey}`
+
+    const index = player * 100 + Number(playerDiscKey.replace(/^\D+/g, ''))
 
     return (
       <Draggable draggableId={dragKeyName} index={index}>
@@ -19,11 +18,7 @@ class Disc extends React.Component {
             {...provided.draggableProps}
             {...provided.dragHandleProps}
           >
-            <StyledDisc player={player} data-testid={dragKeyName}>
-              {king && (
-                <KingIcon color="inherit" data-testid={`king-${dragKeyName}`} />
-              )}
-            </StyledDisc>
+            <Disc player={player} dragKeyName={dragKeyName} king={king} />
           </div>
         )}
       </Draggable>
@@ -31,7 +26,7 @@ class Disc extends React.Component {
   }
 }
 
-Disc.propTypes = {
+ConnectedDisc.propTypes = {
   /**
    * Determine which Player owns the Disc
    * 0 = no player
@@ -49,4 +44,4 @@ Disc.propTypes = {
   playerDiscKey: PropTypes.string,
 }
 
-export default Disc
+export default ConnectedDisc

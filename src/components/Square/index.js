@@ -1,48 +1,41 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import StyledDiv from './styled'
-import {getSquareVariant} from './helpers'
+import Square from './Square'
 import {Droppable} from 'react-beautiful-dnd'
 
 /**
  * Visual representation of Board Squares
  * Dark and Light square variants are represented by coordinates x,y
  */
-class Square extends React.Component {
+class ConnectedSquare extends React.Component {
   render() {
-    const {coords, size, children, disabledDrop} = this.props
+    const {coords, renderDisc, disabledDrop} = this.props
     const key = `board-square-${coords[0]}-${coords[1]}`
 
     return (
       <Droppable droppableId={'droppable-' + key} isDropDisabled={disabledDrop}>
-        {(provided, snapshot) => (
-          <StyledDiv
-            variant={getSquareVariant(coords[0], coords[1])}
-            data-testid={key}
-            dragging={snapshot.isDraggingOver}
-            size={size}
-          >
+        {provided => (
+          <Square {...this.props}>
             <div ref={provided.innerRef} {...provided.droppableProps}>
-              {children(coords)}
+              {renderDisc(coords)}
+              {provided.placeholder}
             </div>
-            {provided.placeholder}
-          </StyledDiv>
+          </Square>
         )}
       </Droppable>
     )
   }
 }
 
-Square.defaultProps = {
-  size: 80,
-  disabledDrop: false,
+ConnectedSquare.defaultProps = {
+  disabledDrop: true,
 }
 
-Square.propTypes = {
+ConnectedSquare.propTypes = {
   /**
    * The function who renders the Disc
    */
-  children: PropTypes.func.isRequired,
+  renderDisc: PropTypes.func.isRequired,
 
   /**
    * The coordinates represented by X and Y coordinates in Board
@@ -50,14 +43,9 @@ Square.propTypes = {
   coords: PropTypes.arrayOf(PropTypes.number).isRequired,
 
   /**
-   * The size of Square sides
-   */
-  size: PropTypes.number.isRequired,
-
-  /**
-   * Determine if the Square can receive a Disc
+   * Determine if the Square has drop disabled
    */
   disabledDrop: PropTypes.bool.isRequired,
 }
 
-export default Square
+export default ConnectedSquare

@@ -1,5 +1,5 @@
 import React from 'react'
-import {render, cleanup, fireEvent} from 'react-testing-library'
+import {render, cleanup} from 'react-testing-library'
 import Board from './index'
 
 afterEach(cleanup)
@@ -7,11 +7,10 @@ afterEach(cleanup)
 describe('The Board component', () => {
   const playerOne = {g1: [0, 0], g2: [0, 2]}
   const playerTwo = {r1: [7, 0], r2: [7, 2]}
-  const handleDragEnd = jest.fn()
   let props = {
     playerOne: {discs: playerOne, kings: []},
     playerTwo: {discs: playerTwo, kings: []},
-    onDragEnd: handleDragEnd,
+    onDragEnd: jest.fn(),
   }
 
   test('renders 64 Squares by default', async () => {

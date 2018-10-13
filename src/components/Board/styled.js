@@ -1,10 +1,6 @@
-import React from 'react'
 import styled from 'styled-components'
-import Paper from '@material-ui/core/Paper'
 
-export default styled(({maxWidth, ...other}) => (
-  <Paper elevation={0} {...other} />
-))`
+export default styled('div')`
   display: flex;
   align-items: center;
   justify-content: center;

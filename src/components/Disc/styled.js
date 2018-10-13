@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export default styled('div')`
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
@@ -13,4 +13,6 @@ export default styled('div')`
     if (player === 2) return 'red'
     return 'transparent'
   }};
+  border: 1px dashed ${({player}) => (player ? '#ccc' : 'transparent')};
+  box-sizing: border-box;
 `
