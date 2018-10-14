@@ -9,7 +9,7 @@ import _findKey from 'lodash/findKey'
  * @param orientation
  * @returns {*[]}
  */
-function calculateDiagonal(player, coords, discs, orientation) {
+function calculateUpperDiagonal(player, coords, discs, orientation) {
   const arrayOfDiscs = [...Object.values(discs[0]), ...Object.values(discs[1])]
   const [x, y] = coords
 
@@ -51,6 +51,41 @@ function calculateDiagonal(player, coords, discs, orientation) {
 }
 
 /**
+ * Calculate satisfiable condition to make a backwards jump
+ *
+ * @param player
+ * @param coords
+ * @param discs
+ * @param orientation
+ * @returns {Array}
+ */
+function calculateLowerDiagonalCapture(player, coords, discs, orientation) {
+  const arrayOfDiscs = [...Object.values(discs[0]), ...Object.values(discs[1])]
+  const [x, y] = coords
+  const middleCoords = [
+    player === 1 ? x - 1 : x + 1,
+    orientation === 'left' ? y + 1 : y - 1,
+  ]
+
+  // outside of board
+  if (x > 7 || x < 0 || y > 7 || y < 0) return []
+
+  // has enemy disc in the middle and empty space after it
+  if (
+    Object.values(discs[player === 1 ? 1 : 0]).some(
+      item => item.toString() === middleCoords.toString(),
+    ) &&
+    !Object.values(arrayOfDiscs).some(
+      item => item.toString() === coords.toString(),
+    )
+  ) {
+    return coords
+  }
+
+  return []
+}
+
+/**
  * Retrieve all possible coordinates of a Disc from the Player
  *
  * @param player
@@ -60,18 +95,59 @@ function calculateDiagonal(player, coords, discs, orientation) {
  */
 export function calculateMovableSquares(player, disckKey, discs) {
   const [x, y] = discs[player - 1][disckKey]
-  let leftDiagonal = []
-  let rightDiagonal = []
+  let upperLeftDiagonal = []
+  let upperRightDiagonal = []
+  let lowerLeftDiagonal = []
+  let lowerRightDiagonal = []
 
   if (player === 1) {
-    leftDiagonal = calculateDiagonal(1, [x - 1, y - 1], discs, 'left')
-    rightDiagonal = calculateDiagonal(1, [x - 1, y + 1], discs, 'right')
+    upperLeftDiagonal = calculateUpperDiagonal(1, [x - 1, y - 1], discs, 'left')
+    upperRightDiagonal = calculateUpperDiagonal(
+      1,
+      [x - 1, y + 1],
+      discs,
+      'right',
+    )
+    lowerLeftDiagonal = calculateLowerDiagonalCapture(
+      1,
+      [x + 2, y - 2],
+      discs,
+      'left',
+    )
+    lowerRightDiagonal = calculateLowerDiagonalCapture(
+      1,
+      [x + 2, y + 2],
+      discs,
+      'right',
+    )
   } else if (player === 2) {
-    leftDiagonal = calculateDiagonal(2, [x + 1, y - 1], discs, 'left')
-    rightDiagonal = calculateDiagonal(2, [x + 1, y + 1], discs, 'right')
+    upperLeftDiagonal = calculateUpperDiagonal(2, [x + 1, y - 1], discs, 'left')
+    upperRightDiagonal = calculateUpperDiagonal(
+      2,
+      [x + 1, y + 1],
+      discs,
+      'right',
+    )
+    lowerLeftDiagonal = calculateLowerDiagonalCapture(
+      2,
+      [x - 2, y - 2],
+      discs,
+      'left',
+    )
+    lowerRightDiagonal = calculateLowerDiagonalCapture(
+      2,
+      [x - 2, y + 2],
+      discs,
+      'right',
+    )
   }
 
-  return [leftDiagonal, rightDiagonal].filter(item => item.length)
+  return [
+    upperLeftDiagonal,
+    upperRightDiagonal,
+    lowerLeftDiagonal,
+    lowerRightDiagonal,
+  ].filter(item => item.length)
 }
 
 /**

@@ -88,7 +88,7 @@ describe('The Game Helpers fn:calculateMovableSquares', () => {
    * x _ _          _ _ _
    *                valid
    */
-  it('can make a jump', () => {
+  it('can make a jump towards', () => {
     const xCoords = [2, 0]
     const discs = [{g1: xCoords}, {r1: [1, 1]}]
     expect(calculateMovableSquares(player1, 'g1', discs)).toEqual([[0, 2]])
@@ -102,7 +102,7 @@ describe('The Game Helpers fn:calculateMovableSquares', () => {
    * x _ _          _ _ _
    *               invalid
    */
-  it('can not make a jump if there is an enemy disc on land square', () => {
+  it('can not make a jump towards if there is an enemy disc on land square', () => {
     const xCoords = [2, 0]
     const discs = [{g1: xCoords}, {r1: [1, 1], r2: [0, 2]}]
     expect(calculateMovableSquares(player1, 'g1', discs)).toEqual([])
@@ -116,9 +116,38 @@ describe('The Game Helpers fn:calculateMovableSquares', () => {
    * x _ _          _ _ _
    *               invalid
    */
-  it('can not make a jump if there is a friendly disc on land square', () => {
+  it('can not make a jump towards if there is a friendly disc on land square', () => {
     const xCoords = [2, 0]
     const discs = [{g1: xCoords, g2: [0, 2]}, {r1: [1, 1]}]
+    expect(calculateMovableSquares(player1, 'g1', discs)).toEqual([])
+  })
+  /////////////
+
+  /**
+   * Considering only 0,0 to 2,2 of the board
+   *
+   * _ _ x          _ _ _
+   * _ o _   ===>   _ o _
+   * _ _ _          x _ _
+   *                valid
+   */
+  it('can make a jump backwards', () => {
+    const xCoords = [0, 2]
+    const discs = [{g1: xCoords}, {r1: [1, 1]}]
+    expect(calculateMovableSquares(player1, 'g1', discs)).toEqual([[2, 0]])
+  })
+
+  /**
+   * Considering only 0,0 to 2,2 of the board
+   *
+   * _ _ x          _ _ _
+   * _ o _   ===>   _ o _
+   * x _ _          ! _ _
+   *               invalid
+   */
+  it('can not make a jump bakwards if there is a disc on land square', () => {
+    const xCoords = [0, 2]
+    const discs = [{g1: xCoords, g2: [2, 0]}, {r1: [1, 1]}]
     expect(calculateMovableSquares(player1, 'g1', discs)).toEqual([])
   })
 })
