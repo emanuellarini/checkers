@@ -1,4 +1,4 @@
-import {calculateLowerDiagonalCapture} from 'rules/capture'
+import {calculateLowerDiagonalCapture} from './capture'
 
 /**
  * Retrieve coordinates to next iteration of movement

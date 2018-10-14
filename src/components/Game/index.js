@@ -1,6 +1,6 @@
 import React from 'react'
 import Board from 'components/Board'
-import {getCapturedDiscKey} from 'rules/capture'
+import {getCapturedDiscKey} from 'rules/disc/capture'
 import {calculateMovableSquares} from 'rules/disc/movement'
 import {canCreateKing} from 'rules/king-disc/create'
 

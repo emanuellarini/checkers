@@ -1,4 +1,4 @@
-import {getCapturedDiscKey} from './index'
+import {getCapturedDiscKey} from './capture'
 
 describe('fn:getCapturedDiscKey', () => {
   /**
