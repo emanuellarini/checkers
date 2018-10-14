@@ -1,6 +1,6 @@
 import React from 'react'
 import Board from 'components/Board'
-import {calculateMovableSquares} from './helpers'
+import {calculateMovableSquares, getCapturedDiscKey} from './helpers'
 
 class Game extends React.Component {
   constructor(props) {
@@ -44,7 +44,7 @@ class Game extends React.Component {
   }
 
   handleDragStart({source, draggableId}) {
-    const [player, disckKey, king] = draggableId
+    const [player, disckKey] = draggableId
       .replace('disc-player-', '')
       .split('-')
     const discs = [this.state.player1, this.state.player2]
@@ -62,20 +62,42 @@ class Game extends React.Component {
 
   handleDragEnd({destination, draggableId}) {
     if (!destination || !draggableId) return false
-
-    const [player, disckKey, king] = draggableId
+    const discs = [this.state.player1, this.state.player2]
+    const [player, disckKey] = draggableId
       .replace('disc-player-', '')
       .split('-')
     const [x, y] = destination.droppableId
       .replace(/droppable-board-square-*/, '')
       .split('-')
 
-    this.setState(state => ({
-      [`player${player}`]: {
-        ...state[`player${player}`],
-        [disckKey]: [Number(x), Number(y)],
-      },
-    }))
+    const nextCoords = [Number(x), Number(y)]
+    const capturedDisc = getCapturedDiscKey(
+      nextCoords,
+      Number(player),
+      disckKey,
+      discs,
+    )
+
+    if (!capturedDisc) {
+      return this.setState(state => ({
+        [`player${player}`]: {
+          ...state[`player${player}`],
+          [disckKey]: nextCoords,
+        },
+      }))
+    }
+
+    this.setState(state => {
+      const capturedPlayer = Number(player) === 1 ? 2 : 1
+      const {[capturedDisc]: value, ...other} = state[`player${capturedPlayer}`]
+      return {
+        [`player${player}`]: {
+          ...state[`player${player}`],
+          [disckKey]: nextCoords,
+        },
+        [`player${capturedPlayer}`]: other,
+      }
+    })
   }
 
   render() {

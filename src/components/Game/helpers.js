@@ -1,3 +1,5 @@
+import _findKey from 'lodash/findKey'
+
 /**
  * Retrieve coordinates to next iteration of movement
  *
@@ -57,7 +59,7 @@ function calculateDiagonal(player, coords, discs, orientation) {
  * @returns {*[]}
  */
 export function calculateMovableSquares(player, disckKey, discs) {
-  const [x, y] = discs[Number(player) - 1][disckKey]
+  const [x, y] = discs[player - 1][disckKey]
   let leftDiagonal = []
   let rightDiagonal = []
 
@@ -70,4 +72,31 @@ export function calculateMovableSquares(player, disckKey, discs) {
   }
 
   return [leftDiagonal, rightDiagonal].filter(item => item.length)
+}
+
+/**
+ * Retrieve the captured disc key
+ *
+ * @param nextCoords
+ * @param player
+ * @param disckKey
+ * @param discs
+ * @returns {string|null}
+ */
+export function getCapturedDiscKey(nextCoords, player, disckKey, discs) {
+  const [x, y] = discs[player - 1][disckKey]
+  const [nextX, nextY] = nextCoords
+
+  // if a player disc didnt leap through an enemy disc
+  // it hasnt made a capture, right?
+  if (Math.abs(nextX - x) !== 2) return null
+
+  const enemyDiscs = discs[player === 1 ? 1 : 0]
+
+  const capturedCoords = [(nextX + x) / 2, (nextY + y) / 2]
+
+  return _findKey(
+    enemyDiscs,
+    item => item.toString() === capturedCoords.toString(),
+  )
 }
