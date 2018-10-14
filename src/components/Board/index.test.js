@@ -1,6 +1,7 @@
 import React from 'react'
 import {render, cleanup} from 'react-testing-library'
 import Board from './index'
+import ReactDOM from 'react-dom'
 
 afterEach(cleanup)
 
@@ -13,20 +14,25 @@ describe('The Board component', () => {
     onDragEnd: jest.fn(),
   }
 
-  test('renders 64 Squares by default', async () => {
+  it('renders without crashing', () => {
+    const div = document.createElement('div')
+    ReactDOM.render(<Board {...props} />, div)
+  })
+
+  it('renders 64 Squares by default', async () => {
     const {getByTestId} = render(<Board {...props} />)
 
     expect(getByTestId('board').children.length).toEqual(64)
   })
 
-  test('renders Players Discs', async () => {
+  it('renders Players Discs', async () => {
     const {getAllByTestId} = render(<Board {...props} />)
 
     expect(getAllByTestId(/disc-player-1-*/).length).toEqual(2)
     expect(getAllByTestId(/disc-player-2-*/).length).toEqual(2)
   })
 
-  test('renders Players King Discs', async () => {
+  it('renders Players King Discs', async () => {
     props = {
       ...props,
       playerOne: {discs: playerOne, kings: ['g1']},

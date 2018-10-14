@@ -1,14 +1,10 @@
-import {
-  calculateMovableSquares,
-  getCapturedDiscKey,
-  canCreateKing,
-} from './helpers'
+import {calculateMovableSquares} from './movement'
 
 /**
  * x = player1 discs
  * o = player2 discs
  */
-describe('The Game Helpers fn:calculateMovableSquares', () => {
+describe('The fn:calculateMovableSquares', () => {
   const player1 = 1
 
   /**
@@ -153,47 +149,5 @@ describe('The Game Helpers fn:calculateMovableSquares', () => {
     const xCoords = [0, 2]
     const discs = [{g1: xCoords, g2: [2, 0]}, {r1: [1, 1]}]
     expect(calculateMovableSquares(player1, 'g1', discs)).toEqual([])
-  })
-})
-
-describe('The Game Helpers fn:getCapturedDiscKey', () => {
-  /**
-   * Considering only 0,0 to 2,2 of the board
-   *
-   * _ _ _          _ _ x
-   * _ o _   ===>   _ _ _
-   * x _ _          _ _ _
-   *               captured!
-   */
-  it('retrieve the disc key name when a capture is achieved', () => {
-    const xCoords = [2, 0]
-    const landedCoords = [0, 2]
-    const discs = [{g1: xCoords}, {r1: [1, 1]}]
-    expect(getCapturedDiscKey(landedCoords, 1, 'g1', discs)).toEqual('r1')
-  })
-
-  /**
-   * Considering only 0,0 to 2,2 of the board
-   *
-   * _ _ o          _ _ o
-   * _ _ _   ===>   _ x _
-   * x _ _          _ _ _
-   *               not captured!
-   */
-  it('does not retrieve the disc key name when a capture is achieved', () => {
-    const xCoords = [2, 0]
-    const landedCoords = [1, 1]
-    const discs = [{g1: xCoords}, {r1: [0, 2]}]
-    expect(getCapturedDiscKey(landedCoords, 1, 'g1', discs)).toEqual(null)
-  })
-})
-
-describe('The Game heleprs fn:canCreateKing', () => {
-  it('determine if player 1 created a King Disc', () => {
-    expect(canCreateKing([0, 2], 1)).toEqual(true)
-  })
-
-  it('determine if player 2 created a King Disc', () => {
-    expect(canCreateKing([7, 2], 2)).toEqual(true)
   })
 })

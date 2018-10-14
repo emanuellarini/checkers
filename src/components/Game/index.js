@@ -1,10 +1,8 @@
 import React from 'react'
 import Board from 'components/Board'
-import {
-  calculateMovableSquares,
-  getCapturedDiscKey,
-  canCreateKing,
-} from './helpers'
+import {getCapturedDiscKey} from 'rules/capture'
+import {calculateMovableSquares} from 'rules/disc/movement'
+import {canCreateKing} from 'rules/king-disc/create'
 
 class Game extends React.Component {
   constructor(props) {
