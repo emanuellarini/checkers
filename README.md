@@ -43,7 +43,7 @@ They can:
 - Capture one enemy Disc by leaping through it (only if there is an empty square
   to land)
 
-- Can capture towards and backwards the enemy
+- Capture towards and backwards the enemy
 
 - Capture multiple enemy Disc by leaping through them
 
@@ -57,6 +57,8 @@ reach furthest row from the Player who controls it.
 They can do same movements as Common Discs, but also:
 
 - Move through many empty squares (diagonally) towards and backwards the enemy
+
+- Can not jump over friendly Discs
 
 ## Lose Conditions
 
