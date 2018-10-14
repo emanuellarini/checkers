@@ -1,6 +1,10 @@
 import React from 'react'
 import Board from 'components/Board'
-import {calculateMovableSquares, getCapturedDiscKey} from './helpers'
+import {
+  calculateMovableSquares,
+  getCapturedDiscKey,
+  canCreateKing,
+} from './helpers'
 
 class Game extends React.Component {
   constructor(props) {
@@ -77,6 +81,14 @@ class Game extends React.Component {
       disckKey,
       discs,
     )
+
+    if (canCreateKing(nextCoords, Number(player))) {
+      this.setState(state => ({
+        [`player${player}Kings`]: state[`player${player}Kings`].concat(
+          disckKey,
+        ),
+      }))
+    }
 
     if (!capturedDisc) {
       return this.setState(state => ({

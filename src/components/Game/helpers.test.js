@@ -1,4 +1,8 @@
-import {calculateMovableSquares, getCapturedDiscKey} from './helpers'
+import {
+  calculateMovableSquares,
+  getCapturedDiscKey,
+  canCreateKing,
+} from './helpers'
 
 /**
  * x = player1 discs
@@ -181,5 +185,15 @@ describe('The Game Helpers fn:getCapturedDiscKey', () => {
     const landedCoords = [1, 1]
     const discs = [{g1: xCoords}, {r1: [0, 2]}]
     expect(getCapturedDiscKey(landedCoords, 1, 'g1', discs)).toEqual(null)
+  })
+})
+
+describe('The Game heleprs fn:canCreateKing', () => {
+  it('determine if player 1 created a King Disc', () => {
+    expect(canCreateKing([0, 2], 1)).toEqual(true)
+  })
+
+  it('determine if player 2 created a King Disc', () => {
+    expect(canCreateKing([7, 2], 2)).toEqual(true)
   })
 })
