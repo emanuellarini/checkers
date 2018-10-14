@@ -53,7 +53,6 @@ class Game extends React.Component {
       Number(player),
       disckKey,
       discs,
-      king,
     )
 
     return this.setState({
