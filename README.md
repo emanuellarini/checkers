@@ -4,6 +4,11 @@
 
 This is a Checkers game made in React for personal study.
 
+You can follow the process on
+[Trello](https://trello.com/b/mjk3IU7g/checkers-board)
+
+Ops: Rules can change based on my mood :stuck_out_tongue_winking_eye:
+
 ## Game Description
 
 Checkers is played by Two Players.
