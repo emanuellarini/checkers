@@ -6,7 +6,6 @@ import _range from 'lodash/range'
 import _findKey from 'lodash/findKey'
 import Disc from 'components/Disc'
 import DiscStyleOnly from 'components/Disc/styled'
-import {determineDisableStatus} from 'components/Square/helpers'
 
 /**
  * Visual Representation of the Board
@@ -55,7 +54,7 @@ class Board extends React.Component {
   }
 
   renderSquares() {
-    const {width, height, squareSize, playerOne, playerTwo} = this.props
+    const {width, height, squareSize, movableSquares} = this.props
 
     return _range(0, width).map(x =>
       _range(0, height).map(y => (
@@ -63,12 +62,7 @@ class Board extends React.Component {
           key={`board-square-${x}-${y}`}
           size={squareSize}
           coords={[x, y]}
-          disabledDrop={determineDisableStatus(
-            x,
-            y,
-            playerOne.discs,
-            playerTwo.discs,
-          )}
+          movableSquares={movableSquares}
           renderDisc={this.renderDisc}
         />
       )),
@@ -92,6 +86,7 @@ Board.defaultProps = {
   width: 8,
   height: 8,
   squareSize: 80,
+  movableSquares: [],
   playerOne: {
     discs: {},
     kings: [],
@@ -133,6 +128,11 @@ Board.propTypes = {
     discs: PropTypes.object.isRequired,
     kings: PropTypes.array,
   }).isRequired,
+
+  /**
+   * The movable squares
+   */
+  movableSquares: PropTypes.array,
 }
 
 export default Board

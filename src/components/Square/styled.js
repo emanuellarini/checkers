@@ -11,7 +11,7 @@ export default styled('div')`
   box-sizing: border-box;
   background: ${props => (props.variant === 'dark' ? 'black' : 'white')};
   animation: ${props => {
-      if (props.dragging) {
+      if (props.isDropping) {
         return 'pulse 1s infinite'
       }
     }}

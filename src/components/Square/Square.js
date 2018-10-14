@@ -9,7 +9,7 @@ import {getSquareVariant} from './helpers'
  */
 class Square extends React.Component {
   render() {
-    const {coords, size, children} = this.props
+    const {coords, size, isDropping, children} = this.props
     const key = `board-square-${coords[0]}-${coords[1]}`
 
     return (
@@ -17,6 +17,7 @@ class Square extends React.Component {
         variant={getSquareVariant(coords[0], coords[1])}
         data-testid={key}
         size={size}
+        isDropping={isDropping}
       >
         {children}
       </StyledDiv>
@@ -27,6 +28,7 @@ class Square extends React.Component {
 Square.defaultProps = {
   size: 80,
   disabledDrop: true,
+  dragging: false,
 }
 
 Square.propTypes = {
@@ -44,6 +46,11 @@ Square.propTypes = {
    * The size of Square sides
    */
   size: PropTypes.number.isRequired,
+
+  /**
+   * Determine if the Square is receiving a drop
+   */
+  isDropping: PropTypes.bool.isRequired,
 }
 
 export default Square

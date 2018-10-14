@@ -9,13 +9,17 @@ import {Droppable} from 'react-beautiful-dnd'
  */
 class ConnectedSquare extends React.Component {
   render() {
-    const {coords, renderDisc, disabledDrop} = this.props
+    const {coords, renderDisc, movableSquares} = this.props
     const key = `board-square-${coords[0]}-${coords[1]}`
 
+    const disabled = !movableSquares.some(
+      item => item.toString() === coords.toString(),
+    )
+
     return (
-      <Droppable droppableId={'droppable-' + key} isDropDisabled={disabledDrop}>
-        {provided => (
-          <Square {...this.props}>
+      <Droppable droppableId={'droppable-' + key} isDropDisabled={disabled}>
+        {(provided, snapshot) => (
+          <Square {...this.props} isDropping={snapshot.isDraggingOver}>
             <div ref={provided.innerRef} {...provided.droppableProps}>
               {renderDisc(coords)}
               {provided.placeholder}
@@ -25,10 +29,6 @@ class ConnectedSquare extends React.Component {
       </Droppable>
     )
   }
-}
-
-ConnectedSquare.defaultProps = {
-  disabledDrop: true,
 }
 
 ConnectedSquare.propTypes = {
@@ -41,11 +41,6 @@ ConnectedSquare.propTypes = {
    * The coordinates represented by X and Y coordinates in Board
    */
   coords: PropTypes.arrayOf(PropTypes.number).isRequired,
-
-  /**
-   * Determine if the Square has drop disabled
-   */
-  disabledDrop: PropTypes.bool.isRequired,
 }
 
 export default ConnectedSquare

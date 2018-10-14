@@ -6,7 +6,9 @@ import {Draggable} from 'react-beautiful-dnd'
 class ConnectedDisc extends React.Component {
   render() {
     const {player, king, playerDiscKey} = this.props
-    const dragKeyName = `disc-player-${player}-${playerDiscKey}`
+    const dragKeyName = `disc-player-${player}-${playerDiscKey}${
+      king ? '-king' : ''
+    }`
 
     const index = player * 100 + Number(playerDiscKey.replace(/^\D+/g, ''))
 

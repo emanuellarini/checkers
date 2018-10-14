@@ -1,5 +1,6 @@
 import React from 'react'
 import Board from 'components/Board'
+import {calculateMovableSquares} from './helpers'
 
 class Game extends React.Component {
   constructor(props) {
@@ -35,19 +36,37 @@ class Game extends React.Component {
       },
       player1Kings: [],
       player2Kings: [],
+      movableSquares: [],
     }
 
     this.handleDragEnd = this.handleDragEnd.bind(this)
+    this.handleDragStart = this.handleDragStart.bind(this)
   }
 
-  handleDragStart() {
-    return false
+  handleDragStart({source, draggableId}) {
+    const [player, disckKey, king] = draggableId
+      .replace('disc-player-', '')
+      .split('-')
+    const discs = [this.state.player1, this.state.player2]
+
+    const movableSquares = calculateMovableSquares(
+      Number(player),
+      disckKey,
+      discs,
+      king,
+    )
+
+    return this.setState({
+      movableSquares,
+    })
   }
 
   handleDragEnd({destination, draggableId}) {
     if (!destination || !draggableId) return false
 
-    const [player, piece] = draggableId.replace(/disc-player-*/, '').split('-')
+    const [player, disckKey, king] = draggableId
+      .replace('disc-player-', '')
+      .split('-')
     const [x, y] = destination.droppableId
       .replace(/droppable-board-square-*/, '')
       .split('-')
@@ -55,13 +74,19 @@ class Game extends React.Component {
     this.setState(state => ({
       [`player${player}`]: {
         ...state[`player${player}`],
-        [piece]: [x, y],
+        [disckKey]: [Number(x), Number(y)],
       },
     }))
   }
 
   render() {
-    const {player1, player2, player1Kings, player2Kings} = this.state
+    const {
+      player1,
+      player2,
+      player1Kings,
+      player2Kings,
+      movableSquares,
+    } = this.state
 
     return (
       <Board
@@ -73,8 +98,8 @@ class Game extends React.Component {
           discs: player2,
           kings: player2Kings,
         }}
+        movableSquares={movableSquares}
         onDragStart={this.handleDragStart}
-        onDragUpdate={this.handleDragStart}
         onDragEnd={this.handleDragEnd}
       />
     )
