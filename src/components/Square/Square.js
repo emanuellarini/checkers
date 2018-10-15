@@ -38,7 +38,6 @@ class Square extends React.PureComponent {
 
 Square.defaultProps = {
   size: 80,
-  disabledDrop: true,
   isDropping: false,
 }
 

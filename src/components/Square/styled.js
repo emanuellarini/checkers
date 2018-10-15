@@ -12,15 +12,15 @@ export default styled('div')`
   background: ${props => (props.variant === 'dark' ? 'black' : 'white')};
   animation: ${props => {
       if (props.isDropping) {
-        return 'pulse 1s infinite'
+        return 'opacity .6s infinite'
       }
     }}
-    @keyframes pulse {
+    @keyframes opacity {
     0% {
-      background-color: inherit;
+      opacity: 1;
     }
     100% {
-      background-color: #666;
+      opacity: 0.5;
     }
   }
 `

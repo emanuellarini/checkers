@@ -4,25 +4,41 @@ import Disc from './Disc'
 import {Draggable} from 'react-beautiful-dnd'
 
 class ConnectedDisc extends React.PureComponent {
-  render() {
-    const {player, king, playerDiscKey} = this.props
-    const dragKeyName = `disc-player-${player}-${playerDiscKey}${
-      king ? '-king' : ''
-    }`
+  constructor(props) {
+    super(props)
 
+    this.renderDraggableDisc = this.renderDraggableDisc.bind(this)
+    this.getDragKeyName = this.getDragKeyName.bind(this)
+  }
+
+  getDragKeyName() {
+    const {player, king, playerDiscKey} = this.props
+
+    return `disc-player-${player}-${playerDiscKey}${king ? '-king' : ''}`
+  }
+
+  renderDraggableDisc(provided) {
+    const {player, king} = this.props
+
+    return (
+      <div
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+        {...provided.dragHandleProps}
+      >
+        <Disc player={player} dragKeyName={this.getDragKeyName()} king={king} />
+      </div>
+    )
+  }
+
+  render() {
+    const {player, playerDiscKey} = this.props
+    const dragKeyName = this.getDragKeyName()
     const index = player * 100 + Number(playerDiscKey.replace(/^\D+/g, ''))
 
     return (
       <Draggable draggableId={dragKeyName} index={index}>
-        {provided => (
-          <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-          >
-            <Disc player={player} dragKeyName={dragKeyName} king={king} />
-          </div>
-        )}
+        {this.renderDraggableDisc}
       </Draggable>
     )
   }

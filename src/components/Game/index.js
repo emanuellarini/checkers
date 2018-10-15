@@ -49,6 +49,7 @@ class Game extends React.Component {
   }
 
   handleDragStart({source, draggableId}) {
+    if (!source || !draggableId) return false
     const [player, disckKey, king] = draggableId
       .replace('disc-player-', '')
       .split('-')
@@ -75,36 +76,26 @@ class Game extends React.Component {
 
     const nextCoords = [Number(x), Number(y)]
 
-    if (canCreateKing(nextCoords, Number(player))) {
-      this.setState(state => ({
-        [`player${player}Kings`]: state[`player${player}Kings`].concat(
-          disckKey,
-        ),
-      }))
-    }
-
-    this.setState(state => {
-      return {
-        [`player${player}`]: {
-          ...state[`player${player}`],
-          [disckKey]: nextCoords,
-        },
-      }
-    })
-
     const capturedDiscs = king
       ? getKingCapturedDiscsKeys(nextCoords, Number(player), disckKey, discs)
       : [getCapturedDiscKey(nextCoords, Number(player), disckKey, discs)]
 
-    if (capturedDiscs.length) {
-      const capturedPlayer = Number(player) === 1 ? 2 : 1
-      this.setState(state => ({
-        [`player${capturedPlayer}`]: _omit(
-          state[`player${capturedPlayer}`],
-          capturedDiscs,
-        ),
-      }))
-    }
+    const playerKingsKey = `player${player}Kings`
+    const playerKey = `player${player}`
+    const opponentPlayerKey = `player${Number(player) === 1 ? 2 : 1}`
+
+    const createKing = canCreateKing(nextCoords, Number(player))
+
+    this.setState(state => ({
+      [opponentPlayerKey]: _omit(state[opponentPlayerKey], capturedDiscs),
+      [playerKey]: {
+        ...state[playerKey],
+        [disckKey]: nextCoords,
+      },
+      [playerKingsKey]: createKing
+        ? state[playerKingsKey].concat(disckKey)
+        : state[playerKingsKey],
+    }))
   }
 
   render() {

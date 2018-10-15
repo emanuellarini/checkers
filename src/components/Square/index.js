@@ -8,18 +8,35 @@ import {Droppable} from 'react-beautiful-dnd'
  * Dark and Light square variants are represented by coordinates x,y
  */
 class ConnectedSquare extends React.PureComponent {
+  constructor(props) {
+    super(props)
+
+    this.getKey = this.getKey.bind(this)
+  }
+
+  getKey() {
+    const {coords} = this.props
+    return `board-square-${coords[0]}-${coords[1]}`
+  }
+
   render() {
     const {coords, renderDisc, movableSquares} = this.props
-    const key = `board-square-${coords[0]}-${coords[1]}`
 
     const disabled = !movableSquares.some(
       item => item.toString() === coords.toString(),
     )
 
     return (
-      <Droppable droppableId={'droppable-' + key} isDropDisabled={disabled}>
+      <Droppable
+        droppableId={'droppable-' + this.getKey()}
+        isDropDisabled={disabled}
+      >
         {(provided, snapshot) => (
-          <Square {...this.props} isDropping={snapshot.isDraggingOver}>
+          <Square
+            key={this.getKey()}
+            {...this.props}
+            isDropping={snapshot.isDraggingOver && !disabled}
+          >
             <div ref={provided.innerRef} {...provided.droppableProps}>
               {renderDisc(coords)}
               {provided.placeholder}
