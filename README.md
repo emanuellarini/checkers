@@ -40,12 +40,12 @@ Ops: Rules can change based on my mood :stuck_out_tongue_winking_eye:
 Checkers is played by Two Players.
 
 They begin the game with `12 Colored Discs` divided in two colors: `Red` and
-`Black`.
+`Grey`.
 
 Each player places his or her pieces on the 12 dark squares closest to him or
 her.
 
-The Player who owns the Black Discs moves first.
+The Player who owns the Grey Discs moves first.
 
 The moves are alternated and lose who cannot make a move!
 
@@ -60,7 +60,7 @@ closest to him or her.
 
 ### The Common Discs
 
-As mentioned before there are two types of Common Discs: Red and Black.
+As mentioned before there are two types of Common Discs: Red and Grey.
 
 They can:
 
