@@ -23,10 +23,9 @@ function isImpossibleToKeepMoving(coords, playerDiscs, axis) {
  * @param nextCoords
  * @param enemyDiscs
  * @param axis
- * @param i
  */
-function hasTwoAdjacentEnemyDiscs(nextCoords, enemyDiscs, axis, i) {
-  const nextAfterNextCoords = getNextCoords(axis, nextCoords, i + 1)
+function hasTwoAdjacentEnemyDiscs(nextCoords, enemyDiscs, axis) {
+  const nextAfterNextCoords = getNextCoords(axis, nextCoords, 1)
 
   return (
     enemyDiscs.some(item => item.toString() === nextCoords.toString()) &&
@@ -79,7 +78,7 @@ function calculateDiagonals(playerDiscs, enemyDiscs, coords, axis) {
 
     if (
       isImpossibleToKeepMoving([x, y], playerDiscs, axis) ||
-      hasTwoAdjacentEnemyDiscs([x, y], enemyDiscs, axis, i)
+      hasTwoAdjacentEnemyDiscs([x, y], enemyDiscs, axis)
     ) {
       return true
     }
