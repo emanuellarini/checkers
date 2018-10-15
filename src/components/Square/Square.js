@@ -6,7 +6,7 @@ import StyledDiv from './styled'
  * Visual representation of Board Squares
  * Dark and Light square variants are represented by coordinates x,y
  */
-class Square extends React.Component {
+class Square extends React.PureComponent {
   getSquareVariant() {
     const [x, y] = this.props.coords
 
@@ -39,7 +39,7 @@ class Square extends React.Component {
 Square.defaultProps = {
   size: 80,
   disabledDrop: true,
-  dragging: false,
+  isDropping: false,
 }
 
 Square.propTypes = {

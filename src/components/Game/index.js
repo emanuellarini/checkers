@@ -3,6 +3,9 @@ import Board from 'components/Board'
 import {getCapturedDiscKey} from 'rules/disc/capture'
 import {calculateMovableSquares} from 'rules/disc/movement'
 import {canCreateKing} from 'rules/king-disc/create'
+import {calculateKingMovableSquares} from 'rules/king-disc/movement'
+import {getKingCapturedDiscsKeys} from 'rules/king-disc/capture'
+import _omit from 'lodash/omit'
 
 class Game extends React.Component {
   constructor(props) {
@@ -46,18 +49,16 @@ class Game extends React.Component {
   }
 
   handleDragStart({source, draggableId}) {
-    const [player, disckKey] = draggableId
+    const [player, disckKey, king] = draggableId
       .replace('disc-player-', '')
       .split('-')
     const discs = [this.state.player1, this.state.player2]
 
-    const movableSquares = calculateMovableSquares(
-      Number(player),
-      disckKey,
-      discs,
-    )
+    const movableSquares = king
+      ? calculateKingMovableSquares(Number(player), disckKey, discs)
+      : calculateMovableSquares(Number(player), disckKey, discs)
 
-    return this.setState({
+    this.setState({
       movableSquares,
     })
   }
@@ -65,7 +66,7 @@ class Game extends React.Component {
   handleDragEnd({destination, draggableId}) {
     if (!destination || !draggableId) return false
     const discs = [this.state.player1, this.state.player2]
-    const [player, disckKey] = draggableId
+    const [player, disckKey, king] = draggableId
       .replace('disc-player-', '')
       .split('-')
     const [x, y] = destination.droppableId
@@ -73,12 +74,6 @@ class Game extends React.Component {
       .split('-')
 
     const nextCoords = [Number(x), Number(y)]
-    const capturedDisc = getCapturedDiscKey(
-      nextCoords,
-      Number(player),
-      disckKey,
-      discs,
-    )
 
     if (canCreateKing(nextCoords, Number(player))) {
       this.setState(state => ({
@@ -88,26 +83,28 @@ class Game extends React.Component {
       }))
     }
 
-    if (!capturedDisc) {
-      return this.setState(state => ({
-        [`player${player}`]: {
-          ...state[`player${player}`],
-          [disckKey]: nextCoords,
-        },
-      }))
-    }
-
     this.setState(state => {
-      const capturedPlayer = Number(player) === 1 ? 2 : 1
-      const {[capturedDisc]: value, ...other} = state[`player${capturedPlayer}`]
       return {
         [`player${player}`]: {
           ...state[`player${player}`],
           [disckKey]: nextCoords,
         },
-        [`player${capturedPlayer}`]: other,
       }
     })
+
+    const capturedDiscs = king
+      ? getKingCapturedDiscsKeys(nextCoords, Number(player), disckKey, discs)
+      : [getCapturedDiscKey(nextCoords, Number(player), disckKey, discs)]
+
+    if (capturedDiscs.length) {
+      const capturedPlayer = Number(player) === 1 ? 2 : 1
+      this.setState(state => ({
+        [`player${capturedPlayer}`]: _omit(
+          state[`player${capturedPlayer}`],
+          capturedDiscs,
+        ),
+      }))
+    }
   }
 
   render() {

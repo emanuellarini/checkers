@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import StyledDisc from './styled'
 import KingIcon from '@material-ui/icons/StarOutlined'
 
-class Disc extends React.Component {
+class Disc extends React.PureComponent {
   render() {
     const {player, king, dragKeyName} = this.props
     return (

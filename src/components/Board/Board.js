@@ -11,7 +11,7 @@ import DiscStyleOnly from 'components/Disc/styled'
  * Visual Representation of the Board
  * Has width * height squares
  */
-class Board extends React.Component {
+class Board extends React.PureComponent {
   constructor(props) {
     super(props)
     this.renderDisc = this.renderDisc.bind(this)
@@ -28,6 +28,7 @@ class Board extends React.Component {
     if (playerOneDisc) {
       return (
         <Disc
+          key={'disc-key-' + playerOneDisc}
           player={1}
           playerDiscKey={playerOneDisc}
           king={playerOne.kings.includes(playerOneDisc)}
@@ -44,13 +45,14 @@ class Board extends React.Component {
       return (
         <Disc
           player={2}
+          key={'disc-key-' + playerTwoDisc}
           king={playerTwo.kings.includes(playerTwoDisc)}
           playerDiscKey={playerTwoDisc}
         />
       )
     }
 
-    return <DiscStyleOnly />
+    return <DiscStyleOnly key={'no-payer-' + stringCoords} />
   }
 
   renderSquares() {

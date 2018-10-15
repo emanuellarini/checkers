@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Board from './Board'
 import {DragDropContext} from 'react-beautiful-dnd'
 
-class ConnectedBoard extends React.Component {
+class ConnectedBoard extends React.PureComponent {
   render() {
     const {onDragStart, onDragEnd} = this.props
 

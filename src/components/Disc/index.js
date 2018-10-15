@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Disc from './Disc'
 import {Draggable} from 'react-beautiful-dnd'
 
-class ConnectedDisc extends React.Component {
+class ConnectedDisc extends React.PureComponent {
   render() {
     const {player, king, playerDiscKey} = this.props
     const dragKeyName = `disc-player-${player}-${playerDiscKey}${

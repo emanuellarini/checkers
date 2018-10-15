@@ -7,7 +7,7 @@ import {Droppable} from 'react-beautiful-dnd'
  * Visual representation of Board Squares
  * Dark and Light square variants are represented by coordinates x,y
  */
-class ConnectedSquare extends React.Component {
+class ConnectedSquare extends React.PureComponent {
   render() {
     const {coords, renderDisc, movableSquares} = this.props
     const key = `board-square-${coords[0]}-${coords[1]}`
