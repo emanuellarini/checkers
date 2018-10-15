@@ -1,5 +1,31 @@
 :video_game: Let's play checkers! :video_game:
 
+## Up & Running
+
+1. **Clone the repo**
+
+   ```sh
+   $ git clone git@github.com:emanuellarini/checkers.git
+   ```
+
+2. **Install dependencies**
+
+   ```sh
+   $ yarn
+   ```
+
+3. **Run**:
+
+   ```sh
+   $ yarn start
+   ```
+
+4. **Run Tests**
+
+   ```sh
+   $ yarn test
+   ```
+
 ## Intro
 
 This is a Checkers game made in React for personal study.
