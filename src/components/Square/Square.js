@@ -7,38 +7,17 @@ import StyledDiv from './styled'
  * Dark and Light square variants are represented by coordinates x,y
  */
 class Square extends React.PureComponent {
-  getSquareVariant() {
-    const [x, y] = this.props.coords
-
-    const evenX = Number(x) % 2 === 0
-
-    if (Number(y) % 2 === 0) {
-      return evenX ? 'light' : 'dark'
-    }
-
-    return evenX ? 'dark' : 'light'
-  }
-
   render() {
-    const {coords, size, isDropping, children} = this.props
-    const key = `board-square-${coords[0]}-${coords[1]}`
+    const {children} = this.props
 
-    return (
-      <StyledDiv
-        variant={this.getSquareVariant()}
-        data-testid={key}
-        size={size}
-        isDropping={isDropping}
-      >
-        {children}
-      </StyledDiv>
-    )
+    return <StyledDiv {...this.props}>{children}</StyledDiv>
   }
 }
 
 Square.defaultProps = {
   size: 80,
   isDropping: false,
+  variant: 'light',
 }
 
 Square.propTypes = {
@@ -46,11 +25,6 @@ Square.propTypes = {
    * The function who renders the Disc
    */
   children: PropTypes.object,
-
-  /**
-   * The coordinates represented by X and Y coordinates in Board
-   */
-  coords: PropTypes.arrayOf(PropTypes.number).isRequired,
 
   /**
    * The size of Square sides
@@ -61,6 +35,11 @@ Square.propTypes = {
    * Determine if the Square is receiving a drop
    */
   isDropping: PropTypes.bool.isRequired,
+
+  /**
+   * The variant type of Square
+   */
+  variant: PropTypes.oneOf(['light', 'dark']).isRequired,
 }
 
 export default Square

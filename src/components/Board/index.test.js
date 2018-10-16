@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom'
 afterEach(cleanup)
 
 describe('The Board component', () => {
-  const playerOne = {g1: [0, 0], g2: [0, 2]}
+  const playerOne = {g1: [0, 1], g2: [0, 3]}
   const playerTwo = {r1: [7, 0], r2: [7, 2]}
   let props = {
     playerOne: {discs: playerOne, kings: []},

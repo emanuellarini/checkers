@@ -4,37 +4,51 @@ import Square from './Square'
 import {Droppable} from 'react-beautiful-dnd'
 
 /**
- * Visual representation of Board Squares
- * Dark and Light square variants are represented by coordinates x,y
+ * The Connected Board Squares
+ * Represents a droppable square if its variant is dark
  */
 class ConnectedSquare extends React.PureComponent {
-  constructor(props) {
-    super(props)
-
-    this.getKey = this.getKey.bind(this)
-  }
-
   getKey() {
     const {coords} = this.props
     return `board-square-${coords[0]}-${coords[1]}`
   }
 
-  render() {
-    const {coords, renderDisc, movableSquares} = this.props
+  getSquareVariant() {
+    const [x, y] = this.props.coords
 
-    const disabled = !movableSquares.some(
-      item => item.toString() === coords.toString(),
-    )
+    const evenX = Number(x) % 2 === 0
+
+    if (Number(y) % 2 === 0) {
+      return evenX ? 'light' : 'dark'
+    }
+
+    return evenX ? 'dark' : 'light'
+  }
+
+  determineDisabledStatus() {
+    const {coords, movableSquares} = this.props
+
+    return !movableSquares.some(item => item.toString() === coords.toString())
+  }
+
+  render() {
+    const {coords, renderDisc} = this.props
+
+    const variant = this.getSquareVariant()
+    const key = this.getKey()
+    const disabled = this.determineDisabledStatus()
+
+    if (variant === 'light') {
+      return <Square key={key} variant={'light'} />
+    }
 
     return (
-      <Droppable
-        droppableId={'droppable-' + this.getKey()}
-        isDropDisabled={disabled}
-      >
+      <Droppable droppableId={'droppable-' + key} isDropDisabled={disabled}>
         {(provided, snapshot) => (
           <Square
-            key={this.getKey()}
-            {...this.props}
+            key={key}
+            data-testid={key}
+            variant={'dark'}
             isDropping={snapshot.isDraggingOver && !disabled}
           >
             <div ref={provided.innerRef} {...provided.droppableProps}>
