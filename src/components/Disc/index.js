@@ -18,13 +18,15 @@ class ConnectedDisc extends React.PureComponent {
   }
 
   renderDraggableDisc(provided) {
+    const {player, king} = this.props
+
     return (
       <div
         ref={provided.innerRef}
         {...provided.draggableProps}
         {...provided.dragHandleProps}
       >
-        <Disc dragKeyName={this.getDragKeyName()} {...this.props} />
+        <Disc player={player} dragKeyName={this.getDragKeyName()} king={king} />
       </div>
     )
   }
