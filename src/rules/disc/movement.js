@@ -54,58 +54,52 @@ function calculateUpperDiagonal(player, coords, discs, orientation) {
  * Retrieve all possible coordinates of a Disc from the Player
  *
  * @param player
- * @param disckKey
+ * @param discKey
  * @param discs
  * @returns {*[]}
  */
-export function calculateMovableSquares(player, disckKey, discs) {
-  const [x, y] = discs[player - 1][disckKey]
-  let upperLeftDiagonal = []
-  let upperRightDiagonal = []
-  let lowerLeftDiagonal = []
-  let lowerRightDiagonal = []
-
-  if (player === 1) {
-    upperLeftDiagonal = calculateUpperDiagonal(1, [x - 1, y - 1], discs, 'left')
-    upperRightDiagonal = calculateUpperDiagonal(
-      1,
-      [x - 1, y + 1],
-      discs,
-      'right',
-    )
-    lowerLeftDiagonal = calculateLowerDiagonalCapture(
-      1,
-      [x + 2, y - 2],
-      discs,
-      'left',
-    )
-    lowerRightDiagonal = calculateLowerDiagonalCapture(
-      1,
-      [x + 2, y + 2],
-      discs,
-      'right',
-    )
-  } else if (player === 2) {
-    upperLeftDiagonal = calculateUpperDiagonal(2, [x + 1, y - 1], discs, 'left')
-    upperRightDiagonal = calculateUpperDiagonal(
-      2,
-      [x + 1, y + 1],
-      discs,
-      'right',
-    )
-    lowerLeftDiagonal = calculateLowerDiagonalCapture(
-      2,
-      [x - 2, y - 2],
-      discs,
-      'left',
-    )
-    lowerRightDiagonal = calculateLowerDiagonalCapture(
-      2,
-      [x - 2, y + 2],
-      discs,
-      'right',
-    )
+export function calculateMovableSquares(player, discKey, discs) {
+  const [x, y] = discs[player - 1][discKey]
+  const playerMoves = {
+    1: {
+      upperLeft: [x - 1, y - 1],
+      upperRight: [x - 1, y + 1],
+      lowerLeft: [x + 2, y - 2],
+      lowerRight: [x + 2, y + 2],
+    },
+    2: {
+      upperLeft: [x + 1, y - 1],
+      upperRight: [x + 1, y + 1],
+      lowerLeft: [x - 2, y - 2],
+      lowerRight: [x - 2, y + 2],
+    },
   }
+
+  const currentPlayerMoves = playerMoves[player]
+  const upperLeftDiagonal = calculateUpperDiagonal(
+    player,
+    currentPlayerMoves.upperLeft,
+    discs,
+    'left',
+  )
+  const upperRightDiagonal = calculateUpperDiagonal(
+    player,
+    currentPlayerMoves.upperRight,
+    discs,
+    'right',
+  )
+  const lowerLeftDiagonal = calculateLowerDiagonalCapture(
+    player,
+    currentPlayerMoves.lowerLeft,
+    discs,
+    'left',
+  )
+  const lowerRightDiagonal = calculateLowerDiagonalCapture(
+    player,
+    currentPlayerMoves.lowerRight,
+    discs,
+    'right',
+  )
 
   return [
     upperLeftDiagonal,
