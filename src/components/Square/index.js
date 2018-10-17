@@ -72,6 +72,11 @@ ConnectedSquare.propTypes = {
    * The coordinates represented by X and Y coordinates in Board
    */
   coords: PropTypes.arrayOf(PropTypes.number).isRequired,
+
+  /**
+   * The movable Squares coordinates
+   */
+  movableSquares: PropTypes.arrayOf(PropTypes.array),
 }
 
 export default ConnectedSquare
