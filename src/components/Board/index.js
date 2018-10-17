@@ -5,10 +5,13 @@ import {DragDropContext} from 'react-beautiful-dnd'
 
 class ConnectedBoard extends React.PureComponent {
   render() {
-    const {onDragStart, onDragEnd} = this.props
+    const {onBeforeDragStart, onDragEnd} = this.props
 
     return (
-      <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+      <DragDropContext
+        onBeforeDragStart={onBeforeDragStart}
+        onDragEnd={onDragEnd}
+      >
         <Board {...this.props} />
       </DragDropContext>
     )
@@ -16,7 +19,7 @@ class ConnectedBoard extends React.PureComponent {
 }
 
 ConnectedBoard.propTypes = {
-  onDragStart: PropTypes.func,
+  onBeforeDragStart: PropTypes.func,
   onDragEnd: PropTypes.func.isRequired,
 }
 

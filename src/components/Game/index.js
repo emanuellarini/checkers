@@ -47,10 +47,10 @@ class Game extends React.Component {
     }
 
     this.handleDragEnd = this.handleDragEnd.bind(this)
-    this.handleDragStart = this.handleDragStart.bind(this)
+    this.onBeforeDragStart = this.onBeforeDragStart.bind(this)
   }
 
-  handleDragStart({source, draggableId}) {
+  onBeforeDragStart({source, draggableId}) {
     if (!source || !draggableId) return false
     const [player, disckKey, king] = draggableId
       .replace('disc-player-', '')
@@ -123,7 +123,7 @@ class Game extends React.Component {
             kings: player2Kings,
           }}
           movableSquares={movableSquares}
-          onDragStart={this.handleDragStart}
+          onDragStart={this.onBeforeDragStart}
           onDragEnd={this.handleDragEnd}
           currentPlayer={currentPlayer}
         />
