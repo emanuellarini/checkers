@@ -32,12 +32,16 @@ class ConnectedDisc extends React.PureComponent {
   }
 
   render() {
-    const {player, playerDiscKey} = this.props
+    const {player, playerDiscKey, disableDrag} = this.props
     const dragKeyName = this.getDragKeyName()
     const index = player * 100 + Number(playerDiscKey.replace(/^\D+/g, ''))
 
     return (
-      <Draggable draggableId={dragKeyName} index={index}>
+      <Draggable
+        draggableId={dragKeyName}
+        index={index}
+        isDragDisabled={disableDrag}
+      >
         {this.renderDraggableDisc}
       </Draggable>
     )
@@ -60,6 +64,11 @@ ConnectedDisc.propTypes = {
    * The key name of Player Disc in Board
    */
   playerDiscKey: PropTypes.string,
+
+  /**
+   * Enable or disable dragging the Disc
+   */
+  disableDrag: PropTypes.bool.isRequired,
 }
 
 export default ConnectedDisc

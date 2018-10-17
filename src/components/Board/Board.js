@@ -18,7 +18,7 @@ class Board extends React.PureComponent {
   }
 
   renderDisc(coords) {
-    const {playerOne, playerTwo} = this.props
+    const {playerOne, playerTwo, currentPlayer} = this.props
     const stringCoords = coords.toString()
     const playerOneDisc = _findKey(
       playerOne.discs,
@@ -30,8 +30,10 @@ class Board extends React.PureComponent {
         <Disc
           key={'disc-key-' + playerOneDisc}
           player={1}
+          disableDrag={currentPlayer !== 1}
           playerDiscKey={playerOneDisc}
           king={playerOne.kings.includes(playerOneDisc)}
+          currentPlayer={currentPlayer}
         />
       )
     }
@@ -45,9 +47,11 @@ class Board extends React.PureComponent {
       return (
         <Disc
           player={2}
+          disableDrag={currentPlayer !== 2}
           key={'disc-key-' + playerTwoDisc}
           king={playerTwo.kings.includes(playerTwoDisc)}
           playerDiscKey={playerTwoDisc}
+          currentPlayer={currentPlayer}
         />
       )
     }
@@ -135,6 +139,11 @@ Board.propTypes = {
    * The movable squares
    */
   movableSquares: PropTypes.array,
+
+  /**
+   * The user who is playing the turn
+   */
+  currentPlayer: PropTypes.oneOf([1, 2]).isRequired,
 }
 
 export default Board

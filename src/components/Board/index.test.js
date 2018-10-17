@@ -12,6 +12,7 @@ describe('The Board component', () => {
     playerOne: {discs: playerOne, kings: []},
     playerTwo: {discs: playerTwo, kings: []},
     onDragEnd: jest.fn(),
+    currentPlayer: 1,
   }
 
   it('renders without crashing', () => {

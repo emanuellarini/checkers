@@ -1,5 +1,6 @@
 import React from 'react'
 import Board from 'components/Board'
+import Turn from 'components/Turn'
 import {getCapturedDiscKey} from 'rules/disc/capture'
 import {calculateMovableSquares} from 'rules/disc/movement'
 import {canCreateKing} from 'rules/king-disc/create'
@@ -11,6 +12,7 @@ class Game extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      currentPlayer: 1,
       player1: {
         g1: [5, 0],
         g2: [5, 2],
@@ -95,6 +97,7 @@ class Game extends React.Component {
       [playerKingsKey]: createKing
         ? state[playerKingsKey].concat(disckKey)
         : state[playerKingsKey],
+      currentPlayer: state.currentPlayer === 1 ? 2 : 1,
     }))
   }
 
@@ -105,22 +108,30 @@ class Game extends React.Component {
       player1Kings,
       player2Kings,
       movableSquares,
+      currentPlayer,
     } = this.state
 
     return (
-      <Board
-        playerOne={{
-          discs: player1,
-          kings: player1Kings,
-        }}
-        playerTwo={{
-          discs: player2,
-          kings: player2Kings,
-        }}
-        movableSquares={movableSquares}
-        onDragStart={this.handleDragStart}
-        onDragEnd={this.handleDragEnd}
-      />
+      <div style={{display: 'flex', alignItems: 'center'}}>
+        <Board
+          playerOne={{
+            discs: player1,
+            kings: player1Kings,
+          }}
+          playerTwo={{
+            discs: player2,
+            kings: player2Kings,
+          }}
+          movableSquares={movableSquares}
+          onDragStart={this.handleDragStart}
+          onDragEnd={this.handleDragEnd}
+          currentPlayer={currentPlayer}
+        />
+        <div style={{marginLeft: 50}}>
+          <Turn currentPlayer={currentPlayer} player={1} />
+          <Turn currentPlayer={currentPlayer} player={2} />
+        </div>
+      </div>
     )
   }
 }
