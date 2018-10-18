@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import StyledBoard from './styled'
-import Square from 'components/Square'
+import ConnectedSquare from 'components/Square'
+import Square from 'components/Square/Square'
+import ConnectedDisc from 'components/Disc'
+import Empty from 'components/Disc/styled'
 import _range from 'lodash/range'
 import _findKey from 'lodash/findKey'
-import Disc from 'components/Disc'
-import DiscStyleOnly from 'components/Disc/styled'
+import {getSquareVariant} from 'rules/square/variant'
 
 /**
  * Visual Representation of the Board
@@ -27,7 +29,7 @@ class Board extends React.PureComponent {
 
     if (playerOneDisc) {
       return (
-        <Disc
+        <ConnectedDisc
           key={'disc-key-' + playerOneDisc}
           player={1}
           disableDrag={currentPlayer !== 1}
@@ -45,7 +47,7 @@ class Board extends React.PureComponent {
 
     if (playerTwoDisc) {
       return (
-        <Disc
+        <ConnectedDisc
           player={2}
           disableDrag={currentPlayer !== 2}
           key={'disc-key-' + playerTwoDisc}
@@ -56,22 +58,28 @@ class Board extends React.PureComponent {
       )
     }
 
-    return <DiscStyleOnly key={'no-payer-' + stringCoords} />
+    return <Empty key={'no-payer-' + stringCoords} />
   }
 
   renderSquares() {
     const {width, height, squareSize, movableSquares} = this.props
 
     return _range(0, width).map(x =>
-      _range(0, height).map(y => (
-        <Square
-          key={`board-square-${x}-${y}`}
-          size={squareSize}
-          coords={[x, y]}
-          movableSquares={movableSquares}
-          renderDisc={this.renderDisc}
-        />
-      )),
+      _range(0, height).map(y => {
+        if (getSquareVariant(x, y) === 'light') {
+          return <Square variant="light" key={`board-square-${x}-${y}`} />
+        }
+
+        return (
+          <ConnectedSquare
+            key={`board-square-${x}-${y}`}
+            size={squareSize}
+            coords={[x, y]}
+            movableSquares={movableSquares}
+            renderDisc={this.renderDisc}
+          />
+        )
+      }),
     )
   }
 
@@ -93,6 +101,7 @@ Board.defaultProps = {
   height: 8,
   squareSize: 80,
   movableSquares: [],
+  currentPlayer: 1,
   playerOne: {
     discs: {},
     kings: [],

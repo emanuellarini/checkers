@@ -13,34 +13,17 @@ class ConnectedSquare extends React.PureComponent {
     return `board-square-${coords[0]}-${coords[1]}`
   }
 
-  getSquareVariant() {
-    const [x, y] = this.props.coords
-
-    const evenX = Number(x) % 2 === 0
-
-    if (Number(y) % 2 === 0) {
-      return evenX ? 'light' : 'dark'
-    }
-
-    return evenX ? 'dark' : 'light'
-  }
-
   determineDisabledStatus() {
     const {coords, movableSquares} = this.props
+    const stringMovableSquares = JSON.stringify(movableSquares)
 
-    return !movableSquares.some(item => item.toString() === coords.toString())
+    return !stringMovableSquares.includes(JSON.stringify(coords))
   }
 
   render() {
     const {coords, renderDisc} = this.props
-
-    const variant = this.getSquareVariant()
     const key = this.getKey()
     const disabled = this.determineDisabledStatus()
-
-    if (variant === 'light') {
-      return <Square key={key} variant={'light'} />
-    }
 
     return (
       <Droppable droppableId={'droppable-' + key} isDropDisabled={disabled}>
