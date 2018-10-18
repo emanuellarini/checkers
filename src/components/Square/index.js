@@ -13,29 +13,21 @@ class ConnectedSquare extends React.PureComponent {
     return `board-square-${coords[0]}-${coords[1]}`
   }
 
-  determineDisabledStatus() {
-    const {coords, movableSquares} = this.props
-    const stringMovableSquares = JSON.stringify(movableSquares)
-
-    return !stringMovableSquares.includes(JSON.stringify(coords))
-  }
-
   render() {
-    const {coords, renderDisc} = this.props
+    const {children, disabled} = this.props
     const key = this.getKey()
-    const disabled = this.determineDisabledStatus()
 
     return (
       <Droppable droppableId={'droppable-' + key} isDropDisabled={disabled}>
         {(provided, snapshot) => (
           <Square
-            key={key}
+            key={'droppable-' + key}
             data-testid={key}
             variant={'dark'}
             isDropping={snapshot.isDraggingOver && !disabled}
           >
             <div ref={provided.innerRef} {...provided.droppableProps}>
-              {renderDisc(coords)}
+              {children}
               {provided.placeholder}
             </div>
           </Square>
@@ -49,7 +41,7 @@ ConnectedSquare.propTypes = {
   /**
    * The function who renders the Disc
    */
-  renderDisc: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
 
   /**
    * The coordinates represented by X and Y coordinates in Board
