@@ -42,24 +42,23 @@ export function calculateLowerDiagonalCapture(
   discs,
   orientation,
 ) {
-  const arrayOfDiscs = [...Object.values(discs[0]), ...Object.values(discs[1])]
   const [x, y] = coords
-  const middleCoords = [
-    player === 1 ? x - 1 : x + 1,
-    orientation === 'left' ? y + 1 : y - 1,
-  ]
-
   // outside of board
   if (x > 7 || x < 0 || y > 7 || y < 0) return []
 
+  const stringMiddleCoords = JSON.stringify([
+    player === 1 ? x - 1 : x + 1,
+    orientation === 'left' ? y + 1 : y - 1,
+  ])
+
+  const stringCoords = JSON.stringify(coords)
+  const stringDiscsCoords = JSON.stringify(discs)
+  const stringEnemyDiscsCoords = JSON.stringify(discs[player === 1 ? 1 : 0])
+
   // has enemy disc in the middle and empty space after it
   if (
-    Object.values(discs[player === 1 ? 1 : 0]).some(
-      item => item.toString() === middleCoords.toString(),
-    ) &&
-    !Object.values(arrayOfDiscs).some(
-      item => item.toString() === coords.toString(),
-    )
+    stringEnemyDiscsCoords.includes(stringMiddleCoords) &&
+    !stringDiscsCoords.includes(stringCoords)
   ) {
     return coords
   }

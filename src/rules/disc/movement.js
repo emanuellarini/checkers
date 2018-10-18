@@ -10,40 +10,32 @@ import {calculateLowerDiagonalCapture} from './capture'
  * @returns {*[]}
  */
 function calculateUpperDiagonal(player, coords, discs, orientation) {
-  const arrayOfDiscs = [...Object.values(discs[0]), ...Object.values(discs[1])]
   const [x, y] = coords
 
   // outside of board
   if (x > 7 || x < 0 || y > 7 || y < 0) return []
 
+  let stringCoords = JSON.stringify(coords)
+  const stringDiscsCoords = JSON.stringify(discs)
+  const stringEnemyDiscsCoords = JSON.stringify(discs[player === 1 ? 1 : 0])
+
   // has no disc after it
-  if (
-    !Object.values(arrayOfDiscs).some(
-      item => item.toString() === coords.toString(),
-    )
-  ) {
+  if (!stringDiscsCoords.includes(stringCoords)) {
     return coords
   }
 
-  // has an enemy disc after it
-  if (
-    Object.values(discs[player === 1 ? 1 : 0]).some(
-      item => item.toString() === coords.toString(),
-    )
-  ) {
-    coords = [
-      player === 1 ? x - 1 : x + 1,
-      orientation === 'left' ? y - 1 : y + 1,
-    ]
-  }
+  // has an enemy disc after it and free space 2 moves ahead
+  const twoAheadCoords = [
+    player === 1 ? x - 1 : x + 1,
+    orientation === 'left' ? y - 1 : y + 1,
+  ]
+  const stringTwoAheadCoords = JSON.stringify(twoAheadCoords)
 
-  // has enemy disc but not another disc after it (jumpable)
   if (
-    !Object.values(arrayOfDiscs).some(
-      item => item.toString() === coords.toString(),
-    )
+    stringEnemyDiscsCoords.includes(stringCoords) &&
+    !stringDiscsCoords.includes(stringTwoAheadCoords)
   ) {
-    return coords
+    return twoAheadCoords
   }
 
   // has enemy disc but another disc after it
@@ -60,6 +52,7 @@ function calculateUpperDiagonal(player, coords, discs, orientation) {
  */
 export function calculateMovableSquares(player, discKey, discs) {
   const [x, y] = discs[player - 1][discKey]
+
   const playerMoves = {
     1: {
       upperLeft: [x - 1, y - 1],

@@ -6,14 +6,13 @@
  * @param playerDiscs
  * @returns {boolean}
  */
-function isImpossibleToKeepMoving(coords, playerDiscs, axis) {
-  const [x, y] = coords
+function isImpossibleToKeepMoving(coords, playerDiscs) {
   return (
-    x > 7 ||
-    x < 0 ||
-    y > 7 ||
-    y < 0 ||
-    playerDiscs.some(item => item.toString() === [x, y].toString())
+    coords[0] > 7 ||
+    coords[0] < 0 ||
+    coords[1] > 7 ||
+    coords[1] < 0 ||
+    JSON.stringify(playerDiscs).includes(JSON.stringify(coords))
   )
 }
 
@@ -25,13 +24,15 @@ function isImpossibleToKeepMoving(coords, playerDiscs, axis) {
  * @param axis
  */
 function hasTwoAdjacentEnemyDiscs(nextCoords, enemyDiscs, axis) {
-  const nextAfterNextCoords = getNextCoords(axis, nextCoords, 1)
+  const stringNextCoords = JSON.stringify(nextCoords)
+  const stringTwoAheadCoords = JSON.stringify(
+    getNextCoords(axis, nextCoords, 1),
+  )
+  const stringEnemyDiscs = JSON.stringify(enemyDiscs)
 
   return (
-    enemyDiscs.some(item => item.toString() === nextCoords.toString()) &&
-    enemyDiscs.some(
-      enemy => enemy.toString() === nextAfterNextCoords.toString(),
-    )
+    stringEnemyDiscs.includes(stringNextCoords) &&
+    stringEnemyDiscs.includes(stringTwoAheadCoords)
   )
 }
 
@@ -77,14 +78,14 @@ function calculateDiagonals(playerDiscs, enemyDiscs, coords, axis) {
     const [x, y] = getNextCoords(axis, coords, i + 1)
 
     if (
-      isImpossibleToKeepMoving([x, y], playerDiscs, axis) ||
+      isImpossibleToKeepMoving([x, y], playerDiscs) ||
       hasTwoAdjacentEnemyDiscs([x, y], enemyDiscs, axis)
     ) {
       return true
     }
 
-    // did not found an enemy disc
-    if (!enemyDiscs.some(item => item.toString() === [x, y].toString())) {
+    // has empty square
+    if (!JSON.stringify(enemyDiscs).includes(JSON.stringify([x, y]))) {
       diagonals.push([x, y])
     }
 
