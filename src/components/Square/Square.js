@@ -15,7 +15,6 @@ class Square extends React.PureComponent {
 }
 
 Square.defaultProps = {
-  size: 80,
   isDropping: false,
   variant: 'light',
 }
@@ -25,11 +24,6 @@ Square.propTypes = {
    * The function who renders the Disc
    */
   children: PropTypes.object,
-
-  /**
-   * The size of Square sides
-   */
-  size: PropTypes.number.isRequired,
 
   /**
    * Determine if the Square is receiving a drop

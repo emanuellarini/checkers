@@ -7,7 +7,7 @@ import {Droppable} from 'react-beautiful-dnd'
  * The Connected Board Squares
  * Represents a droppable square if its variant is dark
  */
-class ConnectedSquare extends React.PureComponent {
+class ConnectedSquare extends React.Component {
   getKey() {
     const {coords} = this.props
     return `board-square-${coords[0]}-${coords[1]}`

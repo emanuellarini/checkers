@@ -3,14 +3,19 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import Game from './components/Game'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
+import {Provider} from 'react-redux'
 import createTheme from 'utils/theme'
+import configureStore from './utils/create-store'
 // import * as serviceWorker from './serviceWorker';
 
 const theme = createTheme()
+const store = configureStore()
 
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
-    <Game />
+    <Provider store={store}>
+      <Game />
+    </Provider>
   </MuiThemeProvider>,
   document.getElementById('root'),
 )

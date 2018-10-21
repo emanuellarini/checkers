@@ -1,4 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import {connect} from 'react-redux'
 import Board from 'components/Board'
 import Turn from 'components/Turn'
 import {getCapturedDiscKey} from 'rules/disc/capture'
@@ -7,12 +9,12 @@ import {canCreateKing} from 'rules/king-disc/create'
 import {calculateKingMovableSquares} from 'rules/king-disc/movement'
 import {getKingCapturedDiscsKeys} from 'rules/king-disc/capture'
 import _omit from 'lodash/omit'
+import {didFinishTurn} from 'store/game'
 
 class Game extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentPlayer: 1,
       player1: {
         g1: [5, 0],
         g2: [5, 2],
@@ -88,17 +90,19 @@ class Game extends React.Component {
 
     const createKing = canCreateKing(nextCoords, Number(player))
 
-    this.setState(state => ({
-      [opponentPlayerKey]: _omit(state[opponentPlayerKey], capturedDiscs),
-      [playerKey]: {
-        ...state[playerKey],
-        [disckKey]: nextCoords,
-      },
-      [playerKingsKey]: createKing
-        ? state[playerKingsKey].concat(disckKey)
-        : state[playerKingsKey],
-      currentPlayer: state.currentPlayer === 1 ? 2 : 1,
-    }))
+    this.setState(
+      state => ({
+        [opponentPlayerKey]: _omit(state[opponentPlayerKey], capturedDiscs),
+        [playerKey]: {
+          ...state[playerKey],
+          [disckKey]: nextCoords,
+        },
+        [playerKingsKey]: createKing
+          ? state[playerKingsKey].concat(disckKey)
+          : state[playerKingsKey],
+      }),
+      this.props.didFinishTurn,
+    )
   }
 
   render() {
@@ -108,7 +112,6 @@ class Game extends React.Component {
       player1Kings,
       player2Kings,
       movableSquares,
-      currentPlayer,
     } = this.state
 
     return (
@@ -125,15 +128,24 @@ class Game extends React.Component {
           movableSquares={movableSquares}
           onDragStart={this.handleDragStart}
           onDragEnd={this.handleDragEnd}
-          currentPlayer={currentPlayer}
         />
         <div style={{marginLeft: 50}}>
-          <Turn currentPlayer={currentPlayer} player={1} />
-          <Turn currentPlayer={currentPlayer} player={2} />
+          <Turn player={1} />
+          <Turn player={2} />
         </div>
       </div>
     )
   }
 }
 
-export default Game
+Game.propTypes = {
+  /**
+   * Dispatch a finished move action
+   */
+  didFinishTurn: PropTypes.func.isRequired,
+}
+
+export default connect(
+  null,
+  {didFinishTurn},
+)(Game)

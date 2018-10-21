@@ -1,4 +1,5 @@
 import React from 'react'
+import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import Board from './Board'
 import {DragDropContext} from 'react-beautiful-dnd'
@@ -29,6 +30,13 @@ ConnectedBoard.propTypes = {
    * A callback when Drag movement is finished aka drop
    */
   onDragEnd: PropTypes.func.isRequired,
+
+  /**
+   * The player acting this turn
+   */
+  currentPlayer: PropTypes.oneOf([1, 2]).isRequired,
 }
 
-export default ConnectedBoard
+export default connect(state => ({currentPlayer: state.game.currentPlayer}))(
+  ConnectedBoard,
+)

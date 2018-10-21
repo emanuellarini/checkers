@@ -11,7 +11,7 @@ import {getSquareVariant} from 'rules/square/variant'
 
 /**
  * Visual Representation of the Board
- * Has width * height squares
+ * Has 8 * 8 squares
  */
 class Board extends React.PureComponent {
   constructor(props) {
@@ -61,18 +61,16 @@ class Board extends React.PureComponent {
     return <Empty key={'no-payer-' + stringCoords} />
   }
 
-  determineDisabledStatus() {
-    const {coords, movableSquares} = this.props
+  determineDisabledStatus(x, y) {
+    const {movableSquares} = this.props
     const stringMovableSquares = JSON.stringify(movableSquares)
 
-    return !stringMovableSquares.includes(JSON.stringify(coords))
+    return !stringMovableSquares.includes(JSON.stringify([x, y]))
   }
 
   renderSquares() {
-    const {width, height, squareSize} = this.props
-
-    return _range(0, width).map(x =>
-      _range(0, height).map(y => {
+    return _range(0, 8).map(x =>
+      _range(0, 8).map(y => {
         if (getSquareVariant(x, y) === 'light') {
           return <Square variant="light" key={`board-square-${x}-${y}`} />
         }
@@ -80,8 +78,7 @@ class Board extends React.PureComponent {
         return (
           <ConnectedSquare
             key={`connected-board-square-${x}-${y}`}
-            size={squareSize}
-            disabled={this.determineDisabledStatus()}
+            disabled={this.determineDisabledStatus(x, y)}
             coords={[x, y]}
           >
             {this.renderDisc([x, y])}
@@ -92,22 +89,13 @@ class Board extends React.PureComponent {
   }
 
   render() {
-    const {width, squareSize} = this.props
-
     const renderedSquares = this.renderSquares()
 
-    return (
-      <StyledBoard maxWidth={width * squareSize} data-testid="board">
-        {renderedSquares}
-      </StyledBoard>
-    )
+    return <StyledBoard data-testid="board">{renderedSquares}</StyledBoard>
   }
 }
 
 Board.defaultProps = {
-  width: 8,
-  height: 8,
-  squareSize: 80,
   movableSquares: [],
   currentPlayer: 1,
   playerOne: {
@@ -121,21 +109,6 @@ Board.defaultProps = {
 }
 
 Board.propTypes = {
-  /**
-   * Represets the quantity of squares the Board has in width
-   */
-  width: PropTypes.number.isRequired,
-
-  /**
-   * Represets the quantity of squares the Board has in height
-   */
-  height: PropTypes.number.isRequired,
-
-  /**
-   * Represets the size of Squares
-   */
-  squareSize: PropTypes.number.isRequired,
-
   /**
    * The Player One Information
    */

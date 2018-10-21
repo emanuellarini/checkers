@@ -5,7 +5,7 @@ export default styled('div')`
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  min-width: ${props => props.maxWidth || 640}px;
-  width: ${props => props.maxWidth || 640}px;
+  min-width: 640px;
+  width: 640px;
   border: 1px solid #ccc;
 `

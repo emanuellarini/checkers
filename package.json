@@ -10,7 +10,11 @@
     "react": "^16.5.2",
     "react-beautiful-dnd": "^9.0.2",
     "react-dom": "^16.5.2",
+    "react-redux": "^5.0.7",
     "react-scripts": "2.0.4",
+    "redux": "^4.0.1",
+    "redux-actions": "^2.6.1",
+    "redux-thunk": "^2.3.0",
     "styled-components": "^3.4.10"
   },
   "devDependencies": {

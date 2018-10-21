@@ -1,4 +1,5 @@
 import React from 'react'
+import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import StyledTurn from './styled'
 
@@ -26,4 +27,6 @@ Turn.propTypes = {
   currentPlayer: PropTypes.oneOf([1, 2]).isRequired,
 }
 
-export default Turn
+export default connect(state => ({currentPlayer: state.game.currentPlayer}))(
+  Turn,
+)
