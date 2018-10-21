@@ -61,11 +61,11 @@ class Board extends React.PureComponent {
     return <Empty key={'no-payer-' + stringCoords} />
   }
 
-  determineDisabledStatus() {
-    const {coords, movableSquares} = this.props
+  determineDisabledStatus(x, y) {
+    const {movableSquares} = this.props
     const stringMovableSquares = JSON.stringify(movableSquares)
 
-    return !stringMovableSquares.includes(JSON.stringify(coords))
+    return !stringMovableSquares.includes(JSON.stringify([x, y]))
   }
 
   renderSquares() {
@@ -81,7 +81,7 @@ class Board extends React.PureComponent {
           <ConnectedSquare
             key={`connected-board-square-${x}-${y}`}
             size={squareSize}
-            disabled={this.determineDisabledStatus()}
+            disabled={this.determineDisabledStatus(x, y)}
             coords={[x, y]}
           >
             {this.renderDisc([x, y])}
