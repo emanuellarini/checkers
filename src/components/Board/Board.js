@@ -13,7 +13,7 @@ import {getSquareVariant} from 'rules/square/variant'
  * Visual Representation of the Board
  * Has 8 * 8 squares
  */
-class Board extends React.Component {
+class Board extends React.PureComponent {
   constructor(props) {
     super(props)
     this.renderDisc = this.renderDisc.bind(this)

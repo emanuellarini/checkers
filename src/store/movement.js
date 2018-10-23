@@ -5,7 +5,8 @@ import {calculateKingMovableSquares} from 'rules/king-disc/movement'
 import {canCreateKing} from 'rules/king-disc/create'
 import {getKingCapturedDiscsKeys} from 'rules/king-disc/capture'
 import {passTurn} from './turns'
-import {updatePlayerDiscCoords, removePlayerDiscs} from './discs'
+import {updatePlayerDiscs, removePlayerDiscs} from './player-discs'
+import {createKing} from './player-kings'
 
 const UPDATE = 'checkers/movement/UPDATE'
 export const update = createAction(UPDATE)
@@ -31,7 +32,7 @@ export const startMovement = (player, disc, king = false) => (
   dispatch,
   getState,
 ) => {
-  const discs = [getState().discs.player1, getState().discs.player2]
+  const discs = [getState().player1.discs, getState().player2.discs]
 
   const movableSquares = king
     ? calculateKingMovableSquares(player, disc, discs)
@@ -44,18 +45,18 @@ export const endMovement = (player, destinationCoords, disc, king = false) => (
   dispatch,
   getState,
 ) => {
-  const player1Discs = getState().discs.player1
-  const player2Discs = getState().discs.player2
+  const player1Discs = getState().player1.discs
+  const player2Discs = getState().player2.discs
   const discs = [player1Discs, player2Discs]
 
   const capturedDiscs = king
     ? getKingCapturedDiscsKeys(destinationCoords, player, disc, discs)
-    : [getCapturedDiscKey(destinationCoords, player, disc, discs)]
+    : [getCapturedDiscKey(destinationCoords, player, disc, discs)].filter(
+        item => Boolean(item),
+      )
 
-  const createKing = canCreateKing(destinationCoords, player)
-
-  if (createKing) {
-    dispatch(createKing({disc, player}))
+  if (canCreateKing(destinationCoords, player)) {
+    dispatch(createKing({player, disc}))
   }
 
   if (capturedDiscs.length) {
@@ -64,6 +65,6 @@ export const endMovement = (player, destinationCoords, disc, king = false) => (
     )
   }
 
-  dispatch(updatePlayerDiscCoords({player, disc, coords: destinationCoords}))
+  dispatch(updatePlayerDiscs({player, disc, coords: destinationCoords}))
   dispatch(passTurn())
 }

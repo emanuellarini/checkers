@@ -9,7 +9,7 @@ import {startMovement, endMovement} from 'store/movement'
  * A Connected Board within Drag and Drop Context
  *
  */
-class ConnectedBoard extends React.Component {
+class ConnectedBoard extends React.PureComponent {
   constructor(props) {
     super(props)
 
@@ -41,12 +41,28 @@ class ConnectedBoard extends React.Component {
   }
 
   render() {
+    const {
+      player1Discs,
+      player1Kings,
+      player2Discs,
+      player2Kings,
+      movableSquares,
+      currentPlayer,
+    } = this.props
+
     return (
       <DragDropContext
         onDragStart={this.handleDragStart}
         onDragEnd={this.handleDragEnd}
       >
-        <Board {...this.props} />
+        <Board
+          player1Discs={player1Discs}
+          player1Kings={player1Kings}
+          player2Discs={player2Discs}
+          player2Kings={player2Kings}
+          movableSquares={movableSquares}
+          currentPlayer={currentPlayer}
+        />
       </DragDropContext>
     )
   }
@@ -97,10 +113,10 @@ ConnectedBoard.propTypes = {
 function mapStateToProps(state) {
   return {
     currentPlayer: state.turns.currentPlayer,
-    player1Discs: state.discs.player1,
-    player2Discs: state.discs.player2,
-    player1Kings: state.kings.player1,
-    player2Kings: state.kings.player2,
+    player1Discs: state.player1.discs,
+    player2Discs: state.player2.discs,
+    player1Kings: state.player1.kings,
+    player2Kings: state.player2.kings,
   }
 }
 
