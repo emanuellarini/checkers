@@ -13,17 +13,24 @@ import {getSquareVariant} from 'rules/square/variant'
  * Visual Representation of the Board
  * Has 8 * 8 squares
  */
-class Board extends React.PureComponent {
+class Board extends React.Component {
   constructor(props) {
     super(props)
     this.renderDisc = this.renderDisc.bind(this)
   }
 
   renderDisc(coords) {
-    const {playerOne, playerTwo, currentPlayer} = this.props
+    const {
+      player1Discs,
+      player2Discs,
+      player1Kings,
+      player2Kings,
+      currentPlayer,
+    } = this.props
+
     const stringCoords = coords.toString()
     const playerOneDisc = _findKey(
-      playerOne.discs,
+      player1Discs,
       item => item.toString() === stringCoords,
     )
 
@@ -34,14 +41,14 @@ class Board extends React.PureComponent {
           player={1}
           disableDrag={currentPlayer !== 1}
           playerDiscKey={playerOneDisc}
-          king={playerOne.kings.includes(playerOneDisc)}
+          king={player1Kings.includes(playerOneDisc)}
           currentPlayer={currentPlayer}
         />
       )
     }
 
     const playerTwoDisc = _findKey(
-      playerTwo.discs,
+      player2Discs,
       item => item.toString() === stringCoords,
     )
 
@@ -51,7 +58,7 @@ class Board extends React.PureComponent {
           player={2}
           disableDrag={currentPlayer !== 2}
           key={'disc-key-' + playerTwoDisc}
-          king={playerTwo.kings.includes(playerTwoDisc)}
+          king={player2Kings.includes(playerTwoDisc)}
           playerDiscKey={playerTwoDisc}
           currentPlayer={currentPlayer}
         />
@@ -59,13 +66,6 @@ class Board extends React.PureComponent {
     }
 
     return <Empty key={'no-payer-' + stringCoords} />
-  }
-
-  determineDisabledStatus(x, y) {
-    const {movableSquares} = this.props
-    const stringMovableSquares = JSON.stringify(movableSquares)
-
-    return !stringMovableSquares.includes(JSON.stringify([x, y]))
   }
 
   renderSquares() {
@@ -78,7 +78,6 @@ class Board extends React.PureComponent {
         return (
           <ConnectedSquare
             key={`connected-board-square-${x}-${y}`}
-            disabled={this.determineDisabledStatus(x, y)}
             coords={[x, y]}
           >
             {this.renderDisc([x, y])}
@@ -98,32 +97,32 @@ class Board extends React.PureComponent {
 Board.defaultProps = {
   movableSquares: [],
   currentPlayer: 1,
-  playerOne: {
-    discs: {},
-    kings: [],
-  },
-  playerTwo: {
-    discs: {},
-    kings: [],
-  },
+  player1Discs: {},
+  player2Discs: {},
+  player1Kings: [],
+  player2Kings: [],
 }
 
 Board.propTypes = {
   /**
-   * The Player One Information
+   * The player One Discs coordinates
    */
-  playerOne: PropTypes.shape({
-    discs: PropTypes.object.isRequired,
-    kings: PropTypes.array,
-  }).isRequired,
+  player1Discs: PropTypes.object.isRequired,
 
   /**
-   * The Player Two Information
+   * The player One King Discs coordinates
    */
-  playerTwo: PropTypes.shape({
-    discs: PropTypes.object.isRequired,
-    kings: PropTypes.array,
-  }).isRequired,
+  player1Kings: PropTypes.array,
+
+  /**
+   * The player One Discs coordinates
+   */
+  player2Discs: PropTypes.object.isRequired,
+
+  /**
+   * The player One King Discs coordinates
+   */
+  player2Kings: PropTypes.array,
 
   /**
    * The movable squares

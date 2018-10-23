@@ -27,6 +27,6 @@ Turn.propTypes = {
   currentPlayer: PropTypes.oneOf([1, 2]).isRequired,
 }
 
-export default connect(state => ({currentPlayer: state.game.currentPlayer}))(
+export default connect(state => ({currentPlayer: state.turns.currentPlayer}))(
   Turn,
 )

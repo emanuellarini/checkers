@@ -1,6 +1,12 @@
 import {combineReducers} from 'redux'
-import game from './game'
+import turns from './turns'
+import discs from './discs'
+import kings from './kings'
+import movement from './movement'
 
 export default combineReducers({
-  game,
+  turns,
+  discs,
+  kings,
+  movement,
 })

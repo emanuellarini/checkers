@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import {connect} from 'react-redux'
 import Square from './Square'
 import {Droppable} from 'react-beautiful-dnd'
 
@@ -8,14 +9,22 @@ import {Droppable} from 'react-beautiful-dnd'
  * Represents a droppable square if its variant is dark
  */
 class ConnectedSquare extends React.Component {
+  determineDisabledStatus(coords) {
+    const {movableSquares} = this.props
+    const stringMovableSquares = JSON.stringify(movableSquares)
+
+    return !stringMovableSquares.includes(JSON.stringify(coords))
+  }
+
   getKey() {
     const {coords} = this.props
     return `board-square-${coords[0]}-${coords[1]}`
   }
 
   render() {
-    const {children, disabled} = this.props
+    const {children, coords} = this.props
     const key = this.getKey()
+    const disabled = this.determineDisabledStatus(coords)
 
     return (
       <Droppable droppableId={'droppable-' + key} isDropDisabled={disabled}>
@@ -54,4 +63,6 @@ ConnectedSquare.propTypes = {
   movableSquares: PropTypes.arrayOf(PropTypes.array),
 }
 
-export default ConnectedSquare
+export default connect(state => ({
+  movableSquares: state.movement.currentPlayerMovableSquares,
+}))(ConnectedSquare)

@@ -11,14 +11,11 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case PASS_TURN: {
       return {
+        ...state,
         currentPlayer: state.currentPlayer === 1 ? 2 : 1,
       }
     }
     default:
       return state
   }
-}
-
-export const didFinishTurn = () => dispatch => {
-  dispatch(passTurn())
 }
