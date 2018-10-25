@@ -5,7 +5,7 @@ import Square from './styled'
 import {Droppable} from 'react-beautiful-dnd'
 import {determineDisabledStatus} from 'selectors/movement'
 
-class ConnectedSquare extends React.PureComponent {
+class ConnectedSquare extends React.Component {
   constructor(props) {
     super(props)
     this.renderSquare = this.renderSquare.bind(this)
@@ -19,13 +19,13 @@ class ConnectedSquare extends React.PureComponent {
   renderSquare(provided, snapshot) {
     const {children, isDropDisabled} = this.props
     const key = this.getKey()
-
+    console.log(snapshot, !isDropDisabled, snapshot.isDraggingOver)
     return (
       <Square
         key={'droppable-' + key}
         data-testid={key}
         variant={'dark'}
-        isDropping={!isDropDisabled && snapshot.isDraggingOver}
+        isDraggingOver={!isDropDisabled && snapshot.isDraggingOver}
       >
         <div ref={provided.innerRef} {...provided.droppableProps}>
           {children}

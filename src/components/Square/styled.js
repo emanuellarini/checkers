@@ -4,7 +4,7 @@ export default styled('div')`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 80px;
+  width: 80psx;
   height: 80px;
   min-width: 80px;
   min-height: 80px;
@@ -12,16 +12,17 @@ export default styled('div')`
   border: 1px solid #ccc;
   box-sizing: border-box;
   background: ${props => (props.variant === 'dark' ? 'black' : 'white')};
-  ${props => {
-    if (props.isDropping) {
-      return 'animation: opacity .6s infinite'
-    }
-  }} @keyframes opacity {
+  ${props =>
+    props.isDraggingOver &&
+    'animation: opacity .7s infinite;'} @keyframes opacity {
     0% {
-      opacity: 1;
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 0.7;
     }
     100% {
-      opacity: 0.5;
+      opacity: 1;
     }
   }
 `
