@@ -1,19 +1,14 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import Square from './Square'
+import PropTypes from 'prop-types'
+import Square from './styled'
 import {Droppable} from 'react-beautiful-dnd'
+import {determineDisabledStatus} from 'selectors/movement'
 
-/**
- * The Connected Board Squares
- * Represents a droppable square if its variant is dark
- */
-class ConnectedSquare extends React.Component {
-  determineDisabledStatus(coords) {
-    const {movableSquares} = this.props
-    const stringMovableSquares = JSON.stringify(movableSquares)
-
-    return !stringMovableSquares.includes(JSON.stringify(coords))
+class ConnectedSquare extends React.PureComponent {
+  constructor(props) {
+    super(props)
+    this.renderSquare = this.renderSquare.bind(this)
   }
 
   getKey() {
@@ -21,26 +16,35 @@ class ConnectedSquare extends React.Component {
     return `board-square-${coords[0]}-${coords[1]}`
   }
 
-  render() {
-    const {children, coords} = this.props
+  renderSquare(provided, snapshot) {
+    const {children, isDropDisabled} = this.props
     const key = this.getKey()
-    const disabled = this.determineDisabledStatus(coords)
 
     return (
-      <Droppable droppableId={'droppable-' + key} isDropDisabled={disabled}>
-        {(provided, snapshot) => (
-          <Square
-            key={'droppable-' + key}
-            data-testid={key}
-            variant={'dark'}
-            isDropping={snapshot.isDraggingOver && !disabled}
-          >
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              {children}
-              {provided.placeholder}
-            </div>
-          </Square>
-        )}
+      <Square
+        key={'droppable-' + key}
+        data-testid={key}
+        variant={'dark'}
+        isDropping={!isDropDisabled && snapshot.isDraggingOver}
+      >
+        <div ref={provided.innerRef} {...provided.droppableProps}>
+          {children}
+          {provided.placeholder}
+        </div>
+      </Square>
+    )
+  }
+
+  render() {
+    const {isDropDisabled} = this.props
+    const key = this.getKey()
+
+    return (
+      <Droppable
+        droppableId={'droppable-' + key}
+        isDropDisabled={isDropDisabled}
+      >
+        {this.renderSquare}
       </Droppable>
     )
   }
@@ -58,11 +62,15 @@ ConnectedSquare.propTypes = {
   coords: PropTypes.arrayOf(PropTypes.number).isRequired,
 
   /**
-   * The movable Squares coordinates
+   * Determine if drop is disable
    */
-  movableSquares: PropTypes.arrayOf(PropTypes.array),
+  isDropDisabled: PropTypes.bool.isRequired,
 }
 
-export default connect(state => ({
-  movableSquares: state.movement.currentPlayerMovableSquares,
-}))(ConnectedSquare)
+function mapStateToProps(state, ownProps) {
+  return {
+    isDropDisabled: determineDisabledStatus(state, ownProps),
+  }
+}
+
+export default connect(mapStateToProps)(ConnectedSquare)

@@ -1,14 +1,15 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
-import Board from './Board'
 import {DragDropContext} from 'react-beautiful-dnd'
 import {startMovement, endMovement} from 'store/movement'
+import _range from 'lodash/range'
+import {getSquareVariant} from 'rules/square/variant'
+import ConnectedSquare from 'components/Square'
+import Board from './styled'
+import Square from 'components/Square/styled'
+import ConnectedDisc from 'components/Disc'
 
-/**
- * A Connected Board within Drag and Drop Context
- *
- */
 class ConnectedBoard extends React.PureComponent {
   constructor(props) {
     super(props)
@@ -28,6 +29,7 @@ class ConnectedBoard extends React.PureComponent {
 
   handleDragEnd({destination, draggableId}) {
     if (!destination || !draggableId) return false
+
     const [player, discKey, king] = draggableId
       .replace('disc-player-', '')
       .split('-')
@@ -40,65 +42,40 @@ class ConnectedBoard extends React.PureComponent {
     this.props.endMovement(Number(player), destinationCoords, discKey, king)
   }
 
+  renderSquares() {
+    return _range(0, 8).map(x =>
+      _range(0, 8).map(y => {
+        if (getSquareVariant(x, y) === 'light') {
+          return <Square variant="light" key={`light-square-${x}-${y}`} />
+        }
+
+        return (
+          <ConnectedSquare
+            key={`connected-board-square-${x}-${y}`}
+            coords={[x, y]}
+          >
+            <ConnectedDisc coords={[x, y]} />
+          </ConnectedSquare>
+        )
+      }),
+    )
+  }
+
   render() {
-    const {
-      player1Discs,
-      player1Kings,
-      player2Discs,
-      player2Kings,
-      movableSquares,
-      currentPlayer,
-    } = this.props
+    const renderedSquares = this.renderSquares()
 
     return (
       <DragDropContext
         onDragStart={this.handleDragStart}
         onDragEnd={this.handleDragEnd}
       >
-        <Board
-          player1Discs={player1Discs}
-          player1Kings={player1Kings}
-          player2Discs={player2Discs}
-          player2Kings={player2Kings}
-          movableSquares={movableSquares}
-          currentPlayer={currentPlayer}
-        />
+        <Board data-testid="board">{renderedSquares}</Board>
       </DragDropContext>
     )
   }
 }
 
 ConnectedBoard.propTypes = {
-  /**
-   * The player One Discs coordinates
-   */
-  player1Discs: PropTypes.object.isRequired,
-
-  /**
-   * The player One King Discs coordinates
-   */
-  player1Kings: PropTypes.array,
-
-  /**
-   * The player One Discs coordinates
-   */
-  player2Discs: PropTypes.object.isRequired,
-
-  /**
-   * The player One King Discs coordinates
-   */
-  player2Kings: PropTypes.array,
-
-  /**
-   * The movable squares
-   */
-  movableSquares: PropTypes.array,
-
-  /**
-   * The user who is playing the turn
-   */
-  currentPlayer: PropTypes.oneOf([1, 2]).isRequired,
-
   /**
    * Update movable squares action
    */
@@ -110,17 +87,7 @@ ConnectedBoard.propTypes = {
   endMovement: PropTypes.func.isRequired,
 }
 
-function mapStateToProps(state) {
-  return {
-    currentPlayer: state.turns.currentPlayer,
-    player1Discs: state.player1.discs,
-    player2Discs: state.player2.discs,
-    player1Kings: state.player1.kings,
-    player2Kings: state.player2.kings,
-  }
-}
-
 export default connect(
-  mapStateToProps,
+  null,
   {startMovement, endMovement},
 )(ConnectedBoard)

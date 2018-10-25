@@ -12,12 +12,11 @@ export default styled('div')`
   border: 1px solid #ccc;
   box-sizing: border-box;
   background: ${props => (props.variant === 'dark' ? 'black' : 'white')};
-  animation: ${props => {
-      if (props.isDropping) {
-        return 'opacity .6s infinite'
-      }
-    }}
-    @keyframes opacity {
+  ${props => {
+    if (props.isDropping) {
+      return 'animation: opacity .6s infinite'
+    }
+  }} @keyframes opacity {
     0% {
       opacity: 1;
     }

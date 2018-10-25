@@ -1,7 +1,10 @@
 import React from 'react'
+import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import Disc from './Disc'
 import {Draggable} from 'react-beautiful-dnd'
+import {getPlayerDiscInformation} from 'selectors/disc'
+import Empty from './styled'
 
 class ConnectedDisc extends React.PureComponent {
   constructor(props) {
@@ -33,6 +36,11 @@ class ConnectedDisc extends React.PureComponent {
 
   render() {
     const {player, playerDiscKey, disableDrag} = this.props
+
+    if (!player) {
+      return <Empty />
+    }
+
     const dragKeyName = this.getDragKeyName()
     const index = player * 100 + Number(playerDiscKey.replace(/^\D+/g, ''))
 
@@ -51,9 +59,13 @@ class ConnectedDisc extends React.PureComponent {
 ConnectedDisc.propTypes = {
   /**
    * Determine which Player owns the Disc
-   * 0 = no player
    */
   player: PropTypes.oneOf([0, 1, 2]).isRequired,
+
+  /**
+   * The coordinates represented by X and Y coordinates in Board
+   */
+  coords: PropTypes.arrayOf(PropTypes.number).isRequired,
 
   /**
    * Determine if the Disc is a King Disc
@@ -71,4 +83,8 @@ ConnectedDisc.propTypes = {
   disableDrag: PropTypes.bool.isRequired,
 }
 
-export default ConnectedDisc
+function mapStateToProps(state, ownProps) {
+  return getPlayerDiscInformation(state, ownProps)
+}
+
+export default connect(mapStateToProps)(ConnectedDisc)
