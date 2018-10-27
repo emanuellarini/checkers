@@ -19,7 +19,7 @@ class ConnectedSquare extends React.Component {
   renderSquare(provided, snapshot) {
     const {children, isDropDisabled} = this.props
     const key = this.getKey()
-    console.log(snapshot, !isDropDisabled, snapshot.isDraggingOver)
+
     return (
       <Square
         key={'droppable-' + key}
