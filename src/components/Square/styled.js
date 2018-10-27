@@ -12,17 +12,5 @@ export default styled('div')`
   border: 1px solid #ccc;
   box-sizing: border-box;
   background: ${props => (props.variant === 'dark' ? 'black' : 'white')};
-  ${props =>
-    props.isDraggingOver &&
-    'animation: opacity .7s infinite;'} @keyframes opacity {
-    0% {
-      opacity: 0.5;
-    }
-    50% {
-      opacity: 0.7;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
+  ${props => props.isDraggingOver && 'opacity: .62;'};
 `
