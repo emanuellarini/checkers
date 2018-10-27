@@ -1,6 +1,4 @@
-import {createAction} from 'redux-actions'
-
-const playerTypes = {
+const playersTypes = {
   1: {
     CREATE: 'checkers/player-1-kings/CREATE',
   },
@@ -9,8 +7,13 @@ const playerTypes = {
   },
 }
 
-export const createKing = props =>
-  createAction(playerTypes[props.player].CREATE, () => props)
+export const createKing = ({player, disc}) => {
+  return {
+    player,
+    type: playersTypes[player].CREATE,
+    payload: {disc},
+  }
+}
 
 const initialState = []
 
@@ -22,8 +25,8 @@ export default function(player) {
     }
 
     switch (action.type) {
-      case playerTypes[player].CREATE: {
-        return state.concat(action.payload.disc)
+      case playersTypes[action.player].CREATE: {
+        return [...state, action.payload.disc]
       }
       default:
         return state
