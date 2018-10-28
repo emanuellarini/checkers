@@ -4,53 +4,25 @@ import PropTypes from 'prop-types'
 import Square from './styled'
 import {Droppable} from 'react-beautiful-dnd'
 import {determineDisabledStatus} from 'selectors/movement'
+import {compose, pure, withHandlers, withProps, setPropTypes} from 'recompose'
 
-class ConnectedSquare extends React.Component {
-  constructor(props) {
-    super(props)
-    this.renderSquare = this.renderSquare.bind(this)
-  }
-
-  getKey() {
-    const {coords} = this.props
-    return `board-square-${coords[0]}-${coords[1]}`
-  }
-
-  renderSquare(provided, snapshot) {
-    const {children, isDropDisabled} = this.props
-    const key = this.getKey()
-
-    return (
-      <Square
-        key={'droppable-' + key}
-        data-testid={key}
-        variant={'dark'}
-        isDraggingOver={!isDropDisabled && snapshot.isDraggingOver}
-      >
-        <div ref={provided.innerRef} {...provided.droppableProps}>
-          {children}
-          {provided.placeholder}
-        </div>
-      </Square>
-    )
-  }
-
-  render() {
-    const {isDropDisabled} = this.props
-    const key = this.getKey()
-
-    return (
-      <Droppable
-        droppableId={'droppable-' + key}
-        isDropDisabled={isDropDisabled}
-      >
-        {this.renderSquare}
-      </Droppable>
-    )
-  }
+function connectedSquare({
+  renderDroppableSquare,
+  children,
+  isDropDisabled,
+  dropKeyName,
+}) {
+  return (
+    <Droppable
+      droppableId={'droppable-' + dropKeyName}
+      isDropDisabled={isDropDisabled}
+    >
+      {renderDroppableSquare}
+    </Droppable>
+  )
 }
 
-ConnectedSquare.propTypes = {
+const propTypes = {
   /**
    * The function who renders the Disc
    */
@@ -65,6 +37,16 @@ ConnectedSquare.propTypes = {
    * Determine if drop is disable
    */
   isDropDisabled: PropTypes.bool.isRequired,
+
+  /**
+   * Callback to render a Droppable Square
+   */
+  renderDroppableSquare: PropTypes.func.isRequired,
+
+  /**
+   * A unique key name based on coords
+   */
+  dropKeyName: PropTypes.string.isRequired,
 }
 
 function mapStateToProps(state, ownProps) {
@@ -73,4 +55,29 @@ function mapStateToProps(state, ownProps) {
   }
 }
 
-export default connect(mapStateToProps)(ConnectedSquare)
+export default compose(
+  connect(mapStateToProps),
+  withProps(({coords}) => ({
+    dropKeyName: `board-square-${coords[0]}-${coords[1]}`,
+  })),
+  withHandlers({
+    renderDroppableSquare: ({children, isDropDisabled, dropKeyName}) => (
+      provided,
+      snapshot,
+    ) => (
+      <Square
+        key={'droppable-' + dropKeyName}
+        data-testid={dropKeyName}
+        variant={'dark'}
+        isDraggingOver={!isDropDisabled && snapshot.isDraggingOver}
+      >
+        <div ref={provided.innerRef} {...provided.droppableProps}>
+          {children}
+          {provided.placeholder}
+        </div>
+      </Square>
+    ),
+  }),
+  pure,
+  setPropTypes(propTypes),
+)(connectedSquare)

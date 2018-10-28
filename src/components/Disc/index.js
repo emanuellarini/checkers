@@ -1,62 +1,26 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import {
+  pure,
+  compose,
+  withHandlers,
+  withProps,
+  setPropTypes,
+  branch,
+  renderComponent,
+} from 'recompose'
 import PropTypes from 'prop-types'
 import Disc from './Disc'
 import {Draggable} from 'react-beautiful-dnd'
-import {getPlayerDiscInformation} from 'selectors/disc'
 import Empty from './styled'
+import {
+  getPlayerFromDiscCoordsSelector,
+  getDiscKeyFromPlayerDiscsSelector,
+  determineIfIsAKingDiscSelector,
+  determineIfDragIsDisabledSelector,
+} from 'selectors/disc'
 
-class ConnectedDisc extends React.PureComponent {
-  constructor(props) {
-    super(props)
-
-    this.renderDraggableDisc = this.renderDraggableDisc.bind(this)
-    this.getDragKeyName = this.getDragKeyName.bind(this)
-  }
-
-  getDragKeyName() {
-    const {player, king, playerDiscKey} = this.props
-
-    return `disc-player-${player}-${playerDiscKey}${king ? '-king' : ''}`
-  }
-
-  renderDraggableDisc(provided) {
-    const {player, king} = this.props
-
-    return (
-      <div
-        ref={provided.innerRef}
-        {...provided.draggableProps}
-        {...provided.dragHandleProps}
-      >
-        <Disc player={player} dragKeyName={this.getDragKeyName()} king={king} />
-      </div>
-    )
-  }
-
-  render() {
-    const {player, playerDiscKey, disableDrag} = this.props
-
-    if (!player) {
-      return <Empty />
-    }
-
-    const dragKeyName = this.getDragKeyName()
-    const index = player * 100 + Number(playerDiscKey.replace(/^\D+/g, ''))
-
-    return (
-      <Draggable
-        draggableId={dragKeyName}
-        index={index}
-        isDragDisabled={disableDrag}
-      >
-        {this.renderDraggableDisc}
-      </Draggable>
-    )
-  }
-}
-
-ConnectedDisc.propTypes = {
+const propTypes = {
   /**
    * Determine which Player owns the Disc
    */
@@ -70,7 +34,7 @@ ConnectedDisc.propTypes = {
   /**
    * Determine if the Disc is a King Disc
    */
-  king: PropTypes.bool,
+  isKing: PropTypes.bool,
 
   /**
    * The key name of Player Disc in Board
@@ -80,11 +44,77 @@ ConnectedDisc.propTypes = {
   /**
    * Enable or disable dragging the Disc
    */
-  disableDrag: PropTypes.bool.isRequired,
+  isDragDisabled: PropTypes.bool.isRequired,
+
+  /**
+   * Renders a Draggable Disc
+   */
+  renderDraggableDisc: PropTypes.func.isRequired,
+}
+
+function connectedDisc({
+  renderDraggableDisc,
+  dragKeyName,
+  player,
+  playerDiscKey,
+  isKing,
+  isDragDisabled,
+}) {
+  const index = player * 100 + Number(playerDiscKey.replace(/^\D+/g, ''))
+
+  return (
+    <Draggable
+      draggableId={dragKeyName}
+      index={index}
+      isDragDisabled={isDragDisabled}
+    >
+      {renderDraggableDisc}
+    </Draggable>
+  )
 }
 
 function mapStateToProps(state, ownProps) {
-  return getPlayerDiscInformation(state, ownProps)
+  const player = getPlayerFromDiscCoordsSelector(state, ownProps)
+  const playerDiscKey = getDiscKeyFromPlayerDiscsSelector(state, ownProps)(
+    player,
+  )
+  const isDragDisabled = determineIfDragIsDisabledSelector(state, ownProps)(
+    player,
+  )
+  const isKing = determineIfIsAKingDiscSelector(state, ownProps)(playerDiscKey)
+
+  return {
+    player,
+    playerDiscKey,
+    isDragDisabled,
+    isKing,
+  }
 }
 
-export default connect(mapStateToProps)(ConnectedDisc)
+const composedConnectedDisc = compose(
+  withProps(({player, playerDiscKey, isKing}) => ({
+    dragKeyName: `disc-player-${player}-${playerDiscKey}${
+      isKing ? '-king' : ''
+    }`,
+  })),
+  withHandlers({
+    renderDraggableDisc: ({player, dragKeyName, isKing}) => provided => (
+      <div
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+        {...provided.dragHandleProps}
+      >
+        <Disc player={player} dragKeyName={dragKeyName} king={isKing} />
+      </div>
+    ),
+  }),
+  setPropTypes(propTypes),
+)
+
+const enhance = compose(
+  connect(mapStateToProps),
+  branch(props => !props.player, renderComponent(Empty), composedConnectedDisc),
+  pure,
+)
+
+export default enhance(connectedDisc)
