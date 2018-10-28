@@ -1,20 +1,18 @@
 import React from 'react'
+import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import StyledTurn from './styled'
+import {compose, pure, setPropTypes} from 'recompose'
 
-class Turn extends React.PureComponent {
-  render() {
-    const {currentPlayer, player} = this.props
-
-    return (
-      <StyledTurn player={player} currentPlayer={currentPlayer}>
-        Turno do Jogador {player}
-      </StyledTurn>
-    )
-  }
+function turn({currentPlayer, player}) {
+  return (
+    <StyledTurn player={player} currentPlayer={currentPlayer}>
+      Turno do Jogador {player}
+    </StyledTurn>
+  )
 }
 
-Turn.propTypes = {
+const propTypes = {
   /**
    * A player
    */
@@ -26,4 +24,16 @@ Turn.propTypes = {
   currentPlayer: PropTypes.oneOf([1, 2]).isRequired,
 }
 
-export default Turn
+function mapStateToProps(state) {
+  return {
+    currentPlayer: state.turns.currentPlayer,
+  }
+}
+
+const enhance = compose(
+  connect(mapStateToProps),
+  setPropTypes(propTypes),
+  pure,
+)
+
+export default enhance(turn)
