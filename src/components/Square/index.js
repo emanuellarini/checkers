@@ -4,14 +4,25 @@ import PropTypes from 'prop-types'
 import Square from './styled'
 import {Droppable} from 'react-beautiful-dnd'
 import {determineDisabledStatus} from 'selectors/movement'
-import {compose, pure, withHandlers, withProps, setPropTypes} from 'recompose'
+import {compose, pure, withProps, setPropTypes} from 'recompose'
 
-function connectedSquare({
-  renderDroppableSquare,
-  children,
-  isDropDisabled,
-  dropKeyName,
-}) {
+function ConnectedSquare({children, isDropDisabled, dropKeyName}) {
+  function renderDroppableSquare(provided, snapshot) {
+    return (
+      <Square
+        key={'droppable-' + dropKeyName}
+        data-testid={dropKeyName}
+        variant={'dark'}
+        isDraggingOver={!isDropDisabled && snapshot.isDraggingOver}
+      >
+        <div ref={provided.innerRef} {...provided.droppableProps}>
+          {children}
+          {provided.placeholder}
+        </div>
+      </Square>
+    )
+  }
+
   return (
     <Droppable
       droppableId={'droppable-' + dropKeyName}
@@ -39,11 +50,6 @@ const propTypes = {
   isDropDisabled: PropTypes.bool.isRequired,
 
   /**
-   * Callback to render a Droppable Square
-   */
-  renderDroppableSquare: PropTypes.func.isRequired,
-
-  /**
    * A unique key name based on coords
    */
   dropKeyName: PropTypes.string.isRequired,
@@ -55,29 +61,13 @@ function mapStateToProps(state, ownProps) {
   }
 }
 
-export default compose(
+const enhance = compose(
   connect(mapStateToProps),
   withProps(({coords}) => ({
     dropKeyName: `board-square-${coords[0]}-${coords[1]}`,
   })),
-  withHandlers({
-    renderDroppableSquare: ({children, isDropDisabled, dropKeyName}) => (
-      provided,
-      snapshot,
-    ) => (
-      <Square
-        key={'droppable-' + dropKeyName}
-        data-testid={dropKeyName}
-        variant={'dark'}
-        isDraggingOver={!isDropDisabled && snapshot.isDraggingOver}
-      >
-        <div ref={provided.innerRef} {...provided.droppableProps}>
-          {children}
-          {provided.placeholder}
-        </div>
-      </Square>
-    ),
-  }),
   pure,
   setPropTypes(propTypes),
-)(connectedSquare)
+)
+
+export default enhance(ConnectedSquare)

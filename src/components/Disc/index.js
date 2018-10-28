@@ -104,7 +104,7 @@ const composedConnectedDisc = compose(
         {...provided.draggableProps}
         {...provided.dragHandleProps}
       >
-        <Disc player={player} dragKeyName={dragKeyName} king={isKing} />
+        <Disc player={player} dragKeyName={dragKeyName} isKing={isKing} />
       </div>
     ),
   }),
