@@ -4,10 +4,10 @@ export default styled('div')`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 80psx;
-  height: 80px;
-  min-width: 80px;
-  min-height: 80px;
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
   margin: 0 !important;
   border: 1px solid #ccc;
   box-sizing: border-box;

@@ -4,9 +4,9 @@ export default styled('div')`
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  min-width: 640px;
-  width: 640px;
-  height: 640px;
-  min-height: 640px;
+  min-width: 400px;
+  width: 400px;
+  height: 400px;
+  min-height: 400px;
   border: 1px solid #ccc;
 `

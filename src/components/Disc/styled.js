@@ -5,8 +5,8 @@ export default styled('div')`
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
   color: #efefef;
   background: ${({player}) => {
     if (player === 1) return 'grey'
