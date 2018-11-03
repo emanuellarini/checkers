@@ -9,4 +9,5 @@ export default styled('div')`
   height: 400px;
   min-height: 400px;
   border: 1px solid #ccc;
+  box-sizing: initial;
 `

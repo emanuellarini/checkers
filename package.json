@@ -20,7 +20,9 @@
     "styled-components": "^3.4.10"
   },
   "devDependencies": {
-    "docz": "^0.12.5",
+    "babel-plugin-module-resolver": "^3.1.1",
+    "docz": "^0.12.9",
+    "docz-theme-default": "^0.12.9",
     "husky": "^1.1.2",
     "prettier": "^1.14.3",
     "pretty-quick": "^1.7.0",
@@ -31,7 +33,7 @@
     "build": "NODE_PATH=src/ react-scripts build",
     "test": "NODE_PATH=src/ react-scripts test",
     "pretty-quick": "pretty-quick",
-    "build:docz": "yarn docz dev"
+    "build:docz": "NODE_PATH=src/ yarn docz dev"
   },
   "eslintConfig": {
     "extends": "react-app"
