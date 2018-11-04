@@ -91,5 +91,4 @@ They can do same movements as Common Discs, but also:
 Lose the game who matches one of these statements:
 
 - Get all Discs captured by the opponent
-- Is not able to make a movement
 - Have a Common Disc versus a King Disc from opponent
