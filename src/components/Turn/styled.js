@@ -1,17 +1,16 @@
 import styled from 'styled-components'
 
 export default styled('div')`
-  margin-bottom: 20px;
-  padding: 10px 20px;
-  background-color: ${({player, currentPlayer}) => {
-    if (currentPlayer === 1) {
-      return player === currentPlayer ? 'grey' : 'transparent'
+  > div {
+    > span {
+      margin-right: 15px;
     }
-
-    return player === currentPlayer ? 'crimson' : 'transparent'
-  }};
-  color: ${({player, currentPlayer}) =>
-    player === currentPlayer ? 'white' : 'black'};
-  font-weight: ${({player, currentPlayer}) =>
-    player === currentPlayer ? 'bold' : '300'};
+    width: 220px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  margin-left: 50px;
+  height: '100%';
 `

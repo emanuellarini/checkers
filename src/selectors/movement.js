@@ -1,9 +1,7 @@
 import {createSelector} from 'reselect'
 
 function isDisabled(state, ownProps) {
-  const stringMovableSquares = JSON.stringify(
-    state.movement.currentPlayerMovableSquares,
-  )
+  const stringMovableSquares = JSON.stringify(state.movement.movableSquares)
 
   return !stringMovableSquares.includes(JSON.stringify(ownProps.coords))
 }

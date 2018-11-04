@@ -11,5 +11,8 @@ export default (color = '#8516FE') => {
         default: '#fff',
       },
     },
+    typography: {
+      useNextVariants: true,
+    },
   })
 }

@@ -1,4 +1,7 @@
-import {calculateLowerDiagonalCapture} from './capture'
+import {
+  calculateLowerDiagonalCapture,
+  calculateUpperDiagonalCapture,
+} from './capture'
 
 /**
  * Retrieve coordinates to next iteration of movement
@@ -9,7 +12,7 @@ import {calculateLowerDiagonalCapture} from './capture'
  * @param orientation
  * @returns {*[]}
  */
-function calculateUpperDiagonal(player, coords, discs, orientation) {
+function calculateUpperDiagonalMovement(player, coords, discs, orientation) {
   const [x, y] = coords
 
   // outside of board
@@ -17,29 +20,15 @@ function calculateUpperDiagonal(player, coords, discs, orientation) {
 
   let stringCoords = JSON.stringify(coords)
   const stringDiscsCoords = JSON.stringify(discs)
-  const stringEnemyDiscsCoords = JSON.stringify(discs[player === 1 ? 1 : 0])
 
   // has no disc after it
   if (!stringDiscsCoords.includes(stringCoords)) {
     return coords
   }
 
-  // has an enemy disc after it and free space 2 moves ahead
-  const twoAheadCoords = [
-    player === 1 ? x - 1 : x + 1,
-    orientation === 'left' ? y - 1 : y + 1,
-  ]
-  const stringTwoAheadCoords = JSON.stringify(twoAheadCoords)
-
-  if (
-    stringEnemyDiscsCoords.includes(stringCoords) &&
-    !stringDiscsCoords.includes(stringTwoAheadCoords)
-  ) {
-    return twoAheadCoords
-  }
-
-  // has enemy disc but another disc after it
-  return []
+  // calculate upper diagonal capture and return it or
+  // has enemy disc but another disc after it and we return []
+  return calculateUpperDiagonalCapture(player, coords, discs, orientation)
 }
 
 /**
@@ -69,13 +58,13 @@ export function calculateMovableSquares(player, discKey, discs) {
   }
 
   const currentPlayerMoves = playerMoves[player]
-  const upperLeftDiagonal = calculateUpperDiagonal(
+  const upperLeftDiagonal = calculateUpperDiagonalMovement(
     player,
     currentPlayerMoves.upperLeft,
     discs,
     'left',
   )
-  const upperRightDiagonal = calculateUpperDiagonal(
+  const upperRightDiagonal = calculateUpperDiagonalMovement(
     player,
     currentPlayerMoves.upperRight,
     discs,
@@ -100,4 +89,43 @@ export function calculateMovableSquares(player, discKey, discs) {
     lowerLeftDiagonal,
     lowerRightDiagonal,
   ].filter(item => item.length)
+}
+
+/**
+ * Retrieve coords if it is possible to do a multi capture movement
+ *
+ * @param player
+ * @param discKey
+ * @param discs
+ * @returns {*[]}
+ */
+export function calculateMultiCaptureCoords(player, discKey, discs) {
+  const [x, y] = discs[player - 1][discKey]
+
+  const playerMoves = {
+    1: {
+      upperLeft: [x - 1, y - 1],
+      upperRight: [x - 1, y + 1],
+    },
+    2: {
+      upperLeft: [x + 1, y - 1],
+      upperRight: [x + 1, y + 1],
+    },
+  }
+
+  const currentPlayerMoves = playerMoves[player]
+  const upperLeftDiagonal = calculateUpperDiagonalCapture(
+    player,
+    currentPlayerMoves.upperLeft,
+    discs,
+    'left',
+  )
+  const upperRightDiagonal = calculateUpperDiagonalCapture(
+    player,
+    currentPlayerMoves.upperRight,
+    discs,
+    'right',
+  )
+
+  return [upperLeftDiagonal, upperRightDiagonal].filter(item => item.length)
 }

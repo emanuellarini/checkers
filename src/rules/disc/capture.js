@@ -28,7 +28,7 @@ export function getCapturedDiscKey(nextCoords, player, disckKey, discs) {
 }
 
 /**
- * Calculate satisfiable condition to make a backwards jump
+ * Retrieve coords when a disc from player can make a backwards jump
  *
  * @param player
  * @param coords
@@ -61,6 +61,41 @@ export function calculateLowerDiagonalCapture(
     !stringDiscsCoords.includes(stringCoords)
   ) {
     return coords
+  }
+
+  return []
+}
+
+/**
+ * Retrieve coords when a disc from player can make a towards jump
+ *
+ * @param player
+ * @param coords
+ * @param discs
+ * @param orientation
+ * @returns {*}
+ */
+export function calculateUpperDiagonalCapture(
+  player,
+  coords,
+  discs,
+  orientation,
+) {
+  const [x, y] = coords
+  const stringCoords = JSON.stringify(coords)
+  const stringDiscsCoords = JSON.stringify(discs)
+  const stringEnemyDiscsCoords = JSON.stringify(discs[player === 1 ? 1 : 0])
+  const twoAheadCoords = [
+    player === 1 ? x - 1 : x + 1,
+    orientation === 'left' ? y - 1 : y + 1,
+  ]
+  const stringTwoAheadCoords = JSON.stringify(twoAheadCoords)
+
+  if (
+    stringEnemyDiscsCoords.includes(stringCoords) &&
+    !stringDiscsCoords.includes(stringTwoAheadCoords)
+  ) {
+    return twoAheadCoords
   }
 
   return []
