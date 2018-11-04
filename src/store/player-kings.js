@@ -1,3 +1,5 @@
+import _uniq from 'lodash/uniq'
+
 const playersTypes = {
   1: {
     CREATE: 'checkers/player-1-kings/CREATE',
@@ -7,11 +9,11 @@ const playersTypes = {
   },
 }
 
-export const createKing = ({player, disc}) => {
+export const createKings = ({player, discs}) => {
   return {
     player,
     type: playersTypes[player].CREATE,
-    payload: {disc},
+    payload: {discs},
   }
 }
 
@@ -26,7 +28,7 @@ export default function(player) {
 
     switch (action.type) {
       case playersTypes[action.player].CREATE: {
-        return [...state, action.payload.disc]
+        return _uniq([...state, ...action.payload.discs])
       }
       default:
         return state

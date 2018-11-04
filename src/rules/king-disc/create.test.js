@@ -1,11 +1,20 @@
-import {canCreateKing} from './create'
+import {canCreateKings} from './create'
 
-describe('The fn:canCreateKing', () => {
-  it('determine if player 1 created a King Disc', () => {
-    expect(canCreateKing([0, 2], 1)).toEqual(true)
-  })
+describe('The fn:canCreateKings', () => {
+  const player1Discs = {
+    grey1: [0, 1],
+    grey2: [1, 0],
+  }
 
-  it('determine if player 2 created a King Disc', () => {
-    expect(canCreateKing([7, 2], 2)).toEqual(true)
+  const player2Discs = {
+    red1: [7, 0],
+    red2: [6, 1],
+  }
+
+  it('returns King Discs Coords', () => {
+    expect(canCreateKings(player1Discs, player2Discs)).toEqual({
+      1: ['grey1'],
+      2: ['red1'],
+    })
   })
 })

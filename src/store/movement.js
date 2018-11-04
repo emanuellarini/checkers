@@ -5,11 +5,11 @@ import {
 } from 'rules/disc/movement'
 import {getCapturedDiscKey} from 'rules/disc/capture'
 import {calculateKingMovableSquares} from 'rules/king-disc/movement'
-import {canCreateKing} from 'rules/king-disc/create'
+import {canCreateKings} from 'rules/king-disc/create'
 import {getKingCapturedDiscsKeys} from 'rules/king-disc/capture'
 import {passTurn} from './turns'
 import {updatePlayerDiscs, removePlayerDiscs} from './player-discs'
-import {createKing} from './player-kings'
+import {createKings} from './player-kings'
 
 const SET_MOVABLE = 'checkers/movement/SET_MOVABLE'
 const MAKE_MOVEMENT = 'checkers/movement/MAKE_MOVEMENT'
@@ -100,10 +100,6 @@ export const endMovement = (player, destinationCoords, disc, king = false) => (
 
   dispatch(updatePlayerDiscs({player, disc, coords: destinationCoords}))
 
-  if (canCreateKing(destinationCoords, player)) {
-    dispatch(createKing({player, disc}))
-  }
-
   if (capturedDiscs.length) {
     dispatch(
       removePlayerDiscs({player: player === 1 ? 2 : 1, discs: capturedDiscs}),
@@ -115,6 +111,16 @@ export const endMovement = (player, destinationCoords, disc, king = false) => (
 
 export const endTurn = () => (dispatch, getState) => {
   if (getState().movement.movementCount === 0) return false
+
+  const newKings = canCreateKings(
+    getState().player1.discs,
+    getState().player2.discs,
+  )
+
+  if (newKings) {
+    dispatch(createKings({player: 1, discs: newKings[1]}))
+    dispatch(createKings({player: 2, discs: newKings[2]}))
+  }
 
   dispatch(passTurn())
   dispatch(resetMovement())
