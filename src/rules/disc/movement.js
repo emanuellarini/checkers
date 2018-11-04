@@ -106,10 +106,14 @@ export function calculateMultiCaptureCoords(player, discKey, discs) {
     1: {
       upperLeft: [x - 1, y - 1],
       upperRight: [x - 1, y + 1],
+      lowerLeft: [x + 2, y - 2],
+      lowerRight: [x + 2, y + 2],
     },
     2: {
       upperLeft: [x + 1, y - 1],
       upperRight: [x + 1, y + 1],
+      lowerLeft: [x - 2, y - 2],
+      lowerRight: [x - 2, y + 2],
     },
   }
 
@@ -126,6 +130,23 @@ export function calculateMultiCaptureCoords(player, discKey, discs) {
     discs,
     'right',
   )
+  const lowerLeftDiagonal = calculateLowerDiagonalCapture(
+    player,
+    currentPlayerMoves.lowerLeft,
+    discs,
+    'left',
+  )
+  const lowerRightDiagonal = calculateLowerDiagonalCapture(
+    player,
+    currentPlayerMoves.lowerRight,
+    discs,
+    'right',
+  )
 
-  return [upperLeftDiagonal, upperRightDiagonal].filter(item => item.length)
+  return [
+    upperLeftDiagonal,
+    upperRightDiagonal,
+    lowerLeftDiagonal,
+    lowerRightDiagonal,
+  ].filter(item => item.length)
 }
