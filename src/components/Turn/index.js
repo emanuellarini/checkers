@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
+import Paper from '@material-ui/core/Paper'
 import StyledTurn from './styled'
 import {compose, pure, setPropTypes, withHandlers, lifecycle} from 'recompose'
 import {endTurn} from 'store/movement'
@@ -10,14 +11,10 @@ import Typography from '@material-ui/core/Typography'
 function turn({currentPlayer, canPassTurn, endTurn}) {
   function getPlayerButton(player) {
     return (
-      <div>
-        {player === currentPlayer ? (
-          <span>
-            <b>Player {player}</b>
-          </span>
-        ) : (
-          <span>Player {player}</span>
-        )}
+      <div className="Button">
+        <span className="Player">
+          <b>Player {player}</b>
+        </span>
         <Button
           variant="contained"
           onClick={endTurn}
@@ -33,10 +30,16 @@ function turn({currentPlayer, canPassTurn, endTurn}) {
 
   return (
     <StyledTurn currentPlayer={currentPlayer}>
-      {getPlayerButton(1)}
-      {getPlayerButton(2)}
+      <div className="Buttons">
+        {getPlayerButton(1)}
+        {getPlayerButton(2)}
+        <Paper
+          className={`Border ${currentPlayer === 1 ? 'Player1' : 'Player2'}`}
+          elevation={2}
+        />
+      </div>
 
-      <Typography variant="caption">
+      <Typography variant="overline" align="center">
         Hint: You can pass turn by pressing <b>Space</b> button
       </Typography>
     </StyledTurn>
