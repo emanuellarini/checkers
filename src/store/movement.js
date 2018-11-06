@@ -7,7 +7,9 @@ import {getCapturedDiscKey} from 'rules/disc/capture'
 import {calculateKingMovableSquares} from 'rules/king-disc/movement'
 import {canCreateKings} from 'rules/king-disc/create'
 import {getKingCapturedDiscsKeys} from 'rules/king-disc/capture'
+import verifyWinner from 'rules/winner'
 import {passTurn} from './turns'
+import {setWinnerPlayer} from './winner'
 import {updatePlayerDiscs, removePlayerDiscs} from './player-discs'
 import {createKings} from './player-kings'
 
@@ -122,6 +124,13 @@ export const endTurn = () => (dispatch, getState) => {
     dispatch(createKings({player: 2, discs: newKings[2]}))
   }
 
-  dispatch(passTurn())
+  const winner = verifyWinner(getState().player1, getState().player2)
+
   dispatch(resetMovement())
+
+  if (winner) {
+    dispatch(setWinnerPlayer({player: winner}))
+  } else {
+    dispatch(passTurn())
+  }
 }
