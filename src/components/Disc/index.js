@@ -1,10 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import {connect} from 'react-redux'
-import PropTypes from 'prop-types'
-import Disc from './Disc'
-import {Draggable} from 'react-beautiful-dnd'
-import Empty from './styled'
 import {
   pure,
   compose,
@@ -14,6 +9,10 @@ import {
   branch,
   renderComponent,
 } from 'recompose'
+import PropTypes from 'prop-types'
+import Disc from './Disc'
+import {Draggable} from 'react-beautiful-dnd'
+import Empty from './styled'
 import {
   getPlayerFromDiscCoordsSelector,
   getDiscKeyFromPlayerDiscsSelector,
@@ -21,8 +20,37 @@ import {
   determineIfDragIsDisabledSelector,
 } from 'selectors/disc'
 
-const portal = document.createElement('div')
-document.body.appendChild(portal)
+const propTypes = {
+  /**
+   * Determine which Player owns the Disc
+   */
+  player: PropTypes.oneOf([0, 1, 2]).isRequired,
+
+  /**
+   * The coordinates represented by X and Y coordinates in Board
+   */
+  coords: PropTypes.arrayOf(PropTypes.number).isRequired,
+
+  /**
+   * Determine if the Disc is a King Disc
+   */
+  isKing: PropTypes.bool,
+
+  /**
+   * The key name of Player Disc in Board
+   */
+  playerDiscKey: PropTypes.string,
+
+  /**
+   * Enable or disable dragging the Disc
+   */
+  isDragDisabled: PropTypes.bool.isRequired,
+
+  /**
+   * Renders a Draggable Disc
+   */
+  renderDraggableDisc: PropTypes.func.isRequired,
+}
 
 function connectedDisc({
   renderDraggableDisc,
@@ -63,38 +91,6 @@ function mapStateToProps(state, ownProps) {
   }
 }
 
-const propTypes = {
-  /**
-   * Determine which Player owns the Disc
-   */
-  player: PropTypes.oneOf([0, 1, 2]).isRequired,
-
-  /**
-   * The coordinates represented by X and Y coordinates in Board
-   */
-  coords: PropTypes.arrayOf(PropTypes.number).isRequired,
-
-  /**
-   * Determine if the Disc is a King Disc
-   */
-  isKing: PropTypes.bool,
-
-  /**
-   * The key name of Player Disc in Board
-   */
-  playerDiscKey: PropTypes.string,
-
-  /**
-   * Enable or disable dragging the Disc
-   */
-  isDragDisabled: PropTypes.bool.isRequired,
-
-  /**
-   * Renders a Draggable Disc
-   */
-  renderDraggableDisc: PropTypes.func.isRequired,
-}
-
 const composedConnectedDisc = compose(
   withProps(({player, playerDiscKey, isKing}) => ({
     dragKeyName: `disc-player-${player}-${playerDiscKey}${
@@ -102,26 +98,15 @@ const composedConnectedDisc = compose(
     }`,
   })),
   withHandlers({
-    renderDraggableDisc: ({player, dragKeyName, isKing, isDragDisabled}) => (
-      provided,
-      snapshot,
-    ) => {
-      const disc = (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-        >
-          <Disc player={player} dragKeyName={dragKeyName} isKing={isKing} />
-        </div>
-      )
-
-      if (snapshot.isDragging && !isDragDisabled) {
-        return ReactDOM.createPortal(disc, portal)
-      }
-
-      return disc
-    },
+    renderDraggableDisc: ({player, dragKeyName, isKing}) => provided => (
+      <div
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+        {...provided.dragHandleProps}
+      >
+        <Disc player={player} dragKeyName={dragKeyName} isKing={isKing} />
+      </div>
+    ),
   }),
   setPropTypes(propTypes),
 )
