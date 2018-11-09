@@ -5,13 +5,14 @@ import {createStore} from 'redux'
 import reducers from 'store'
 import createTheme from './theme'
 
-const store = createStore(reducers)
 const theme = createTheme()
 
-export const createFromStore = data => createStore(reducers, data)
+export const Wrapper = props => {
+  const store = createStore(reducers, props.store || {})
 
-export const Wrapper = props => (
-  <MuiThemeProvider theme={theme}>
-    <Provider store={props.store || store}>{props.children}</Provider>
-  </MuiThemeProvider>
-)
+  return (
+    <MuiThemeProvider theme={theme}>
+      <Provider store={store}>{props.children}</Provider>
+    </MuiThemeProvider>
+  )
+}

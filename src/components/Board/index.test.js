@@ -2,7 +2,7 @@ import React from 'react'
 import {render, cleanup} from 'react-testing-library'
 import Board from './index'
 import ReactDOM from 'react-dom'
-import {Wrapper, createFromStore} from 'utils/tests'
+import {Wrapper} from 'utils/tests'
 
 afterEach(cleanup)
 
@@ -48,10 +48,20 @@ describe('The Board component', () => {
   })
 
   it('renders Players King Discs', async () => {
-    const store = createFromStore({
-      player2: {kings: ['red1']},
-      player1: {kings: ['grey1']},
-    })
+    const store = {
+      player2: {
+        discs: {
+          red1: [0, 1],
+        },
+        kings: ['red1'],
+      },
+      player1: {
+        discs: {
+          grey1: [7, 0],
+        },
+        kings: ['grey1'],
+      },
+    }
 
     const {getAllByTestId} = render(
       <Wrapper store={store}>

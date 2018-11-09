@@ -14,7 +14,7 @@ export function Empty() {
 }
 
 export default withTheme()(styled(({isDragging, ...otherProps}) => (
-  <Paper {...otherProps} elevation={isDragging ? 12 : 4} />
+  <Paper {...otherProps} elevation={isDragging ? 12 : 4} component="div" />
 ))`
   && {
     display: flex !important;
