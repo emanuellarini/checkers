@@ -9,8 +9,96 @@ export default styled('div')`
   min-width: 50px;
   min-height: 50px;
   margin: 0 !important;
-  border: 1px solid #ccc;
+  position: relative;
   box-sizing: border-box;
   background: ${props => (props.variant === 'dark' ? 'black' : 'white')};
-  ${props => props.isDraggingOver && 'opacity: .62;'};
+  ${props =>
+    props.variant === 'dark' &&
+    `
+    outline: solid 2px brown;
+    outline-offset: -2px;
+  `};
+  ${props =>
+    props.isDraggingOver &&
+    `
+    opacity: .8;
+    
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      box-sizing: border-box;
+      border: 2px solid transparent;
+      width: 0;
+      height: 0;
+      animation-timing-function: linear;
+    }
+    
+    &::before {
+      top: 0;
+      left: 0;
+      animation: border-before 1.5s infinite;
+    }
+    
+    &::after {
+      bottom: 0;
+      right: 0;
+      animation: border-after 1.5s infinite;
+    }
+  `} @keyframes border-before {
+    0% {
+      width: 0;
+      height: 0;
+      border-top-color: blue;
+      border-right-color: transparent;
+    }
+    24.99% {
+      border-right-color: transparent;
+    }
+    25% {
+      height: 0;
+      width: 100%;
+      border-top-color: blue;
+      border-right-color: blue;
+    }
+    50%,
+    100% {
+      width: 100%;
+      height: 100%;
+      border-top-color: blue;
+      border-right-color: blue;
+    }
+  }
+
+  @keyframes border-after {
+    0%,
+    49.99% {
+      width: 0;
+      height: 0;
+      border-left-color: transparent;
+      border-bottom-color: transparent;
+    }
+    50% {
+      width: 0;
+      height: 0;
+      border-left-color: transparent;
+      border-bottom-color: blue;
+    }
+    74.99% {
+      border-left-color: transparent;
+      border-bottom-color: blue;
+    }
+    75% {
+      height: 0;
+      width: 100%;
+      border-left-color: blue;
+      border-bottom-color: blue;
+    }
+    100% {
+      width: 100%;
+      height: 100%;
+      border-left-color: blue;
+      border-bottom-color: blue;
+    }
+  }
 `
