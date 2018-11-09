@@ -9,9 +9,6 @@ export default () => {
       secondary: {
         main: '#B20000',
       },
-      background: {
-        default: '#fafafa',
-      },
       square: {
         dark: '#88665D',
         light: '#BCAA99',
@@ -23,6 +20,14 @@ export default () => {
     },
     typography: {
       useNextVariants: true,
+    },
+    overrides: {
+      MuiAppBar: {
+        root: {
+          backgroundColor: '#000 !important',
+          color: '#fff !important',
+        },
+      },
     },
   })
 }
