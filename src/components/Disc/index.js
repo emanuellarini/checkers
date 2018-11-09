@@ -7,12 +7,11 @@ import {
   withProps,
   setPropTypes,
   branch,
-  renderComponent,
 } from 'recompose'
 import PropTypes from 'prop-types'
 import Disc from './Disc'
+import {Empty} from './styled'
 import {Draggable} from 'react-beautiful-dnd'
-import Empty from './styled'
 import {
   getPlayerFromDiscCoordsSelector,
   getDiscKeyFromPlayerDiscsSelector,
@@ -98,13 +97,21 @@ const composedConnectedDisc = compose(
     }`,
   })),
   withHandlers({
-    renderDraggableDisc: ({player, dragKeyName, isKing}) => provided => (
+    renderDraggableDisc: ({player, dragKeyName, isKing, isDragDisabled}) => (
+      provided,
+      snapshot,
+    ) => (
       <div
         ref={provided.innerRef}
         {...provided.draggableProps}
         {...provided.dragHandleProps}
       >
-        <Disc player={player} dragKeyName={dragKeyName} isKing={isKing} />
+        <Disc
+          player={player}
+          dragKeyName={dragKeyName}
+          isKing={isKing}
+          isDragging={snapshot.isDragging && !isDragDisabled}
+        />
       </div>
     ),
   }),
@@ -113,7 +120,7 @@ const composedConnectedDisc = compose(
 
 const enhance = compose(
   connect(mapStateToProps),
-  branch(props => !props.player, renderComponent(Empty), composedConnectedDisc),
+  branch(props => !props.player, Empty, composedConnectedDisc),
   pure,
 )
 

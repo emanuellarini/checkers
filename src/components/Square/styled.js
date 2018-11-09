@@ -1,6 +1,7 @@
 import styled from 'styled-components'
+import withTheme from '@material-ui/core/styles/withTheme'
 
-export default styled('div')`
+export default withTheme()(styled('div')`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8,17 +9,15 @@ export default styled('div')`
   height: 50px;
   min-width: 50px;
   min-height: 50px;
-  margin: 0 !important;
   position: relative;
   box-sizing: border-box;
-  background: ${props => (props.variant === 'dark' ? 'black' : 'white')};
-  ${props =>
-    props.variant === 'dark' &&
+  background: ${({variant, theme}) => theme.palette.square[variant]};
+  ${({theme, variant}) =>
+    variant === 'dark' &&
     `
-    outline: solid 2px brown;
-    outline-offset: -2px;
-  `};
-  ${props =>
+    outline: solid 1px ${theme.palette.square.border};
+    outline-offset: -1px;
+  `} ${props =>
     props.isDraggingOver &&
     `
     opacity: .8;
@@ -28,7 +27,7 @@ export default styled('div')`
       content: '';
       position: absolute;
       box-sizing: border-box;
-      border: 2px solid transparent;
+      border: 1px solid transparent;
       width: 0;
       height: 0;
       animation-timing-function: linear;
@@ -49,7 +48,7 @@ export default styled('div')`
     0% {
       width: 0;
       height: 0;
-      border-top-color: blue;
+      border-top-color: rgba(255, 255, 255, 0.72);
       border-right-color: transparent;
     }
     24.99% {
@@ -58,15 +57,15 @@ export default styled('div')`
     25% {
       height: 0;
       width: 100%;
-      border-top-color: blue;
-      border-right-color: blue;
+      border-top-color: rgba(255, 255, 255, 0.72);
+      border-right-color: rgba(255, 255, 255, 0.72);
     }
     50%,
     100% {
       width: 100%;
       height: 100%;
-      border-top-color: blue;
-      border-right-color: blue;
+      border-top-color: rgba(255, 255, 255, 0.72);
+      border-right-color: rgba(255, 255, 255, 0.72);
     }
   }
 
@@ -82,23 +81,23 @@ export default styled('div')`
       width: 0;
       height: 0;
       border-left-color: transparent;
-      border-bottom-color: blue;
+      border-bottom-color: rgba(255, 255, 255, 0.72);
     }
     74.99% {
       border-left-color: transparent;
-      border-bottom-color: blue;
+      border-bottom-color: rgba(255, 255, 255, 0.72);
     }
     75% {
       height: 0;
       width: 100%;
-      border-left-color: blue;
-      border-bottom-color: blue;
+      border-left-color: rgba(255, 255, 255, 0.72);
+      border-bottom-color: rgba(255, 255, 255, 0.72);
     }
     100% {
       width: 100%;
       height: 100%;
-      border-left-color: blue;
-      border-bottom-color: blue;
+      border-left-color: rgba(255, 255, 255, 0.72);
+      border-bottom-color: rgba(255, 255, 255, 0.72);
     }
   }
-`
+`)

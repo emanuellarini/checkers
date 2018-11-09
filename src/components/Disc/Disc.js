@@ -1,15 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import StyledDisc from './styled'
-import KingIcon from '@material-ui/icons/StarOutlined'
+import KingDiscIcon from 'assets/icons/king-disc'
 import {compose, pure, setPropTypes, defaultProps} from 'recompose'
+import withStyles from '@material-ui/core/styles/withStyles'
 
-function Disc({player, isKing, dragKeyName}) {
+function Disc({theme, player, isKing, dragKeyName, isDragging}) {
   return (
-    <StyledDisc player={player} data-testid={dragKeyName}>
-      {isKing && (
-        <KingIcon color="inherit" data-testid={`king-${dragKeyName}`} />
-      )}
+    <StyledDisc
+      theme={theme}
+      player={player}
+      data-testid={dragKeyName}
+      isDragging={isDragging}
+    >
+      {isKing && <KingDiscIcon />}
     </StyledDisc>
   )
 }
@@ -19,6 +23,11 @@ const defaults = {
 }
 
 const propTypes = {
+  /**
+   * Material UI Theme variables
+   */
+  theme: PropTypes.object.isRequired,
+
   /**
    * Determine which Player owns the Disc
    * 0 = no player
@@ -34,10 +43,16 @@ const propTypes = {
    * The unique key name of Draggable Player Disc in Board
    */
   dragKeyName: PropTypes.string.isRequired,
+
+  /**
+   * Determine if the Disc is being dragged
+   */
+  isDragging: PropTypes.bool.isRequired,
 }
 
 const enhance = compose(
   defaultProps(defaults),
+  withStyles(null, {withTheme: true}),
   setPropTypes(propTypes),
   pure,
 )

@@ -1,14 +1,24 @@
 import {createMuiTheme} from '@material-ui/core/styles'
 
-export default (color = '#8516FE') => {
+export default () => {
   return createMuiTheme({
-    primaryColor: color,
     palette: {
       primary: {
-        main: color,
+        main: '#494949',
+      },
+      secondary: {
+        main: '#B20000',
       },
       background: {
-        default: '#fff',
+        default: '#fafafa',
+      },
+      square: {
+        dark: '#88665D',
+        light: '#BCAA99',
+        border: '#E2B100',
+      },
+      board: {
+        border: '#492510',
       },
     },
     typography: {
