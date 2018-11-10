@@ -25,6 +25,7 @@ const initialState = {
   movableSquares: [],
   disc: null,
   movementCount: 0,
+  captured: false,
 }
 
 export default function reducer(state = initialState, action) {
@@ -40,6 +41,7 @@ export default function reducer(state = initialState, action) {
         ...state,
         disc: action.payload.disc,
         movementCount: state.movementCount + 1,
+        captured: action.payload.captured,
       }
     }
     case RESET: {
@@ -61,8 +63,8 @@ export const startMovement = (player, disc, king = false) => (
 
   // already moved this turn
   if (getState().movement.movementCount > 0) {
-    // selected disc is the previous movement disc (doing a multicapture!)
-    if (disc === getState().movement.disc) {
+    // selected disc is the previous movement disc and already captured this turn (multicapture!)
+    if (disc === getState().movement.disc && getState().movement.captured) {
       return dispatch(
         setMovable({
           movableSquares: calculateMultiCaptureCoords(player, disc, discs),
@@ -111,7 +113,7 @@ export const endMovement = (player, destinationCoords, disc, king = false) => (
 
   dispatch(updateStatistics({player, capturedDiscsKeys: capturedDiscs}))
 
-  dispatch(makeMovement({disc}))
+  dispatch(makeMovement({disc, captured: capturedDiscs.length}))
 }
 
 export const endTurn = ({player}) => (dispatch, getState) => {
