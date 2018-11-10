@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 
 export default styled.div`
+  overflow: hidden;
+
   .Container {
     margin: 24px auto;
     max-width: 560px;
@@ -14,8 +16,6 @@ export default styled.div`
     .Players {
       margin: 24px 0;
       width: 100%;
-      display: flex;
-      justify-content: space-between;
     }
   }
 `

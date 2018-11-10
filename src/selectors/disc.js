@@ -43,8 +43,3 @@ export const determineIfDragIsDisabledSelector = createSelector(
   state => player => state.turns.currentPlayer !== player,
   dragDisabled => dragDisabled,
 )
-
-export const getDiscsCountFromPlayer = createSelector(
-  (state, ownProps) => Object.keys(state[`player${ownProps.player}`].discs),
-  discs => discs.length,
-)

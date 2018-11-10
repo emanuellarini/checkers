@@ -7,11 +7,12 @@ import {getCapturedDiscKey} from 'rules/disc/capture'
 import {calculateKingMovableSquares} from 'rules/king-disc/movement'
 import {canCreateKings} from 'rules/king-disc/create'
 import {getKingCapturedDiscsKeys} from 'rules/king-disc/capture'
-import verifyWinner from 'rules/winner'
+import lookForAWinner from 'rules/winner'
 import {passTurn} from './turns'
 import {setWinnerPlayer} from './winner'
-import {updatePlayerDiscs, removePlayerDiscs} from './player-discs'
-import {createKings} from './player-kings'
+import {updatePlayerDiscs, removePlayerDiscs} from './player/discs'
+import {createKings} from './player/kings'
+import {updateStatistics} from './player/statistics'
 
 const SET_MOVABLE = 'checkers/movement/SET_MOVABLE'
 const MAKE_MOVEMENT = 'checkers/movement/MAKE_MOVEMENT'
@@ -108,23 +109,26 @@ export const endMovement = (player, destinationCoords, disc, king = false) => (
     )
   }
 
+  dispatch(updateStatistics({player, capturedDiscsKeys: capturedDiscs}))
+
   dispatch(makeMovement({disc}))
 }
 
-export const endTurn = () => (dispatch, getState) => {
-  if (getState().movement.movementCount === 0) return false
+export const endTurn = ({player}) => (dispatch, getState) => {
+  const movementCount = getState().movement.movementCount
+  if (movementCount === 0) return false
 
-  const newKings = canCreateKings(
-    getState().player1.discs,
-    getState().player2.discs,
-  )
+  const kings = canCreateKings(player, getState()[`player${player}`].discs)
 
-  if (newKings) {
-    dispatch(createKings({player: 1, discs: newKings[1]}))
-    dispatch(createKings({player: 2, discs: newKings[2]}))
+  if (kings.length) {
+    dispatch(createKings({player, discs: kings}))
   }
 
-  const winner = verifyWinner(getState().player1, getState().player2)
+  const winner = lookForAWinner(getState().player1, getState().player2)
+
+  dispatch(
+    updateStatistics({player, didAMultiCaptureMovement: movementCount > 1}),
+  )
 
   dispatch(resetMovement())
 

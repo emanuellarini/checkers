@@ -11,10 +11,11 @@ describe('The fn:canCreateKings', () => {
     red2: [6, 1],
   }
 
-  it('returns King Discs Coords', () => {
-    expect(canCreateKings(player1Discs, player2Discs)).toEqual({
-      1: ['grey1'],
-      2: ['red1'],
-    })
+  test('player 1 can create a king', () => {
+    expect(canCreateKings(1, player1Discs)).toEqual(['grey1'])
+  })
+
+  test('player 2 can create a king', () => {
+    expect(canCreateKings(2, player2Discs)).toEqual(['red1'])
   })
 })

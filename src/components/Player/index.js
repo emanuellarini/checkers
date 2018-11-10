@@ -3,39 +3,24 @@ import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
-import Grow from '@material-ui/core/Grow'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import StyledPlayer from './styled'
+import MultiCaptureImg from 'assets/icons/multicapture.png'
+import CaptureKingImg from 'assets/icons/capture-king.png'
+import CaptureDiscImg from 'assets/icons/capture-disc.png'
 import {compose, pure, setPropTypes} from 'recompose'
-import {getDiscsCountFromPlayer} from 'selectors/disc'
 
-function Player({player, currentPlayer, capturedDiscsCount}) {
-  function getDiscs() {
-    return Array.from({length: capturedDiscsCount}, (disc, key) => (
-      <Grow key={'captured-disc-' + player + '-' + key} in timeout={700}>
-        <div className={`CapturedDisc Player${player}`} />
-      </Grow>
-    ))
-  }
-
-  const renderedDiscs =
-    capturedDiscsCount > 0 ? (
-      <React.Fragment>
-        <Typography variant="body2" paragraph color="textSecondary">
-          Captured Discs
-        </Typography>
-        {getDiscs()}
-      </React.Fragment>
-    ) : (
-      <Typography variant="body2" color="textSecondary">
-        No Discs captured yet!
-      </Typography>
-    )
-
+function Player({
+  player,
+  currentPlayer,
+  capturedDiscsCount,
+  capturedKingDiscsCount,
+  multiCaptureMovesCount,
+}) {
   return (
-    <StyledPlayer>
+    <StyledPlayer player={player}>
       <div className="Box Header">
-        <div className={`Disc Player${player}`} />
+        <div className="Disc" />
         <div className="Info">
           <Typography color="textSecondary" variant="subtitle2" component="p">
             Player {player}
@@ -54,8 +39,29 @@ function Player({player, currentPlayer, capturedDiscsCount}) {
       ) : (
         <Divider />
       )}
+
       <div className="Box Body">
-        <div className="CapturedDiscs">{renderedDiscs}</div>
+        <div className="Statistic">
+          <img src={MultiCaptureImg} />
+          <Typography variant="h4" component="div" color="textSecondary">
+            {multiCaptureMovesCount}
+          </Typography>
+          <Typography variant="caption">Multicapture Movements</Typography>
+        </div>
+        <div className="Statistic">
+          <img src={CaptureDiscImg} />
+          <Typography variant="h4" component="div" color="textSecondary">
+            {capturedDiscsCount}
+          </Typography>
+          <Typography variant="caption">Captured Discs</Typography>
+        </div>
+        <div className="Statistic">
+          <img src={CaptureKingImg} />
+          <Typography variant="h4" component="div" color="textSecondary">
+            {capturedKingDiscsCount}
+          </Typography>
+          <Typography variant="caption">Captured Kings</Typography>
+        </div>
       </div>
     </StyledPlayer>
   )
@@ -63,19 +69,34 @@ function Player({player, currentPlayer, capturedDiscsCount}) {
 
 const propTypes = {
   /**
-   * The player number
+   * The player
    */
   player: PropTypes.oneOf([1, 2]).isRequired,
 
   /**
-   * The Player Discs captured quantity
+   * The Player quantity of captured discs
    */
-  capturedDiscsCount: PropTypes.number,
+  capturedDiscsCount: PropTypes.number.isRequired,
+
+  /**
+   * The Player quantity of captured kings
+   */
+  capturedKingDiscsCount: PropTypes.number.isRequired,
+
+  /**
+   * The Player quantity of multicapture moves
+   */
+  multiCaptureMovesCount: PropTypes.number.isRequired,
 }
 
 function mapStateToProps(state, props) {
   return {
-    capturedDiscsCount: Number(12 - getDiscsCountFromPlayer(state, props)),
+    capturedDiscsCount:
+      state[`player${props.player}`].statistics.capturedDiscsCount,
+    capturedKingDiscsCount:
+      state[`player${props.player}`].statistics.capturedKingDiscsCount,
+    multiCaptureMovesCount:
+      state[`player${props.player}`].statistics.multiCaptureMovesCount,
     currentPlayer: state.turns.currentPlayer,
   }
 }

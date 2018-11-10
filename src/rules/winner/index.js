@@ -49,7 +49,7 @@ function playerHasADiscVersusAKing(playersDiscs) {
  * @param {Object} player2
  * @returns {number|null}
  */
-export default function determineWinner(player1, player2) {
+export default function lookForAWinner(player1, player2) {
   let player = null
 
   const playersDiscs = {
