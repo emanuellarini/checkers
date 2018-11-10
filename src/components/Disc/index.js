@@ -105,6 +105,11 @@ const composedConnectedDisc = compose(
         ref={provided.innerRef}
         {...provided.draggableProps}
         {...provided.dragHandleProps}
+        className={
+          snapshot.isDragging && !isDragDisabled
+            ? 'FixWidthAndHeight'
+            : undefined
+        }
       >
         <Disc
           player={player}

@@ -6,6 +6,7 @@ import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import {Provider} from 'react-redux'
 import createTheme from 'utils/theme'
 import configureStore from './utils/create-store'
+import CssBaseline from '@material-ui/core/CssBaseline'
 // import * as serviceWorker from './serviceWorker';
 
 const theme = createTheme()
@@ -14,7 +15,10 @@ const store = configureStore()
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <Provider store={store}>
-      <Game />
+      <React.Fragment>
+        <CssBaseline />
+        <Game />
+      </React.Fragment>
     </Provider>
   </MuiThemeProvider>,
   document.getElementById('root'),

@@ -2,47 +2,33 @@ import React from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
-import Paper from '@material-ui/core/Paper'
 import StyledTurn from './styled'
+import Slide from '@material-ui/core/Slide'
+import ArrowRight from '@material-ui/icons/TrendingFlat'
 import {compose, pure, setPropTypes, withHandlers, lifecycle} from 'recompose'
 import {endTurn} from 'store/movement'
-import Typography from '@material-ui/core/Typography'
 
-function turn({currentPlayer, canPassTurn, endTurn}) {
-  function getPlayerButton(player) {
-    return (
-      <div className="Button">
-        <span className="Player">
-          <b>Player {player}</b>
-        </span>
-        <Button
-          variant="contained"
-          onClick={endTurn}
-          size="small"
-          disabled={!canPassTurn(player)}
-          color="primary"
-        >
-          Pass Turn
-        </Button>
-      </div>
-    )
-  }
-
+function Turn({currentPlayer, canPassTurn, endTurn}) {
   return (
-    <StyledTurn currentPlayer={currentPlayer}>
-      <div className="Buttons">
-        {getPlayerButton(1)}
-        {getPlayerButton(2)}
-        <Paper
-          className={`Border ${currentPlayer === 1 ? 'Player1' : 'Player2'}`}
-          elevation={2}
-        />
-      </div>
-
-      <Typography variant="overline" align="center">
-        Hint: You can pass turn by pressing <b>Space</b> button
-      </Typography>
-    </StyledTurn>
+    <Slide
+      key="slide-enabled"
+      direction="left"
+      in={canPassTurn}
+      mountOnEnter
+      unmountOnExit
+    >
+      <Button
+        variant="extendedFab"
+        aria-label="Pass Turn"
+        onClick={endTurn}
+        color="primary"
+        size="large"
+        component={StyledTurn}
+      >
+        Pass My Turn
+        <ArrowRight className="Icon" />
+      </Button>
+    </Slide>
   )
 }
 
@@ -55,7 +41,7 @@ const propTypes = {
   /**
    * Determine if player can pass his turn
    */
-  canPassTurn: PropTypes.func.isRequired,
+  canPassTurn: PropTypes.bool.isRequired,
 
   /**
    * Callback to end current player turn
@@ -66,7 +52,7 @@ const propTypes = {
 function mapStateToProps(state) {
   return {
     currentPlayer: state.turns.currentPlayer,
-    movementCount: state.movement.movementCount,
+    canPassTurn: state.movement.movementCount !== 0,
   }
 }
 
@@ -76,8 +62,6 @@ const enhance = compose(
     {endTurn},
   ),
   withHandlers({
-    canPassTurn: props => player =>
-      props.movementCount !== 0 && props.currentPlayer === player,
     spacebarPressed: props => e =>
       e.code === 'Space' ? props.endTurn() : false,
   }),
@@ -93,4 +77,4 @@ const enhance = compose(
   pure,
 )
 
-export default enhance(turn)
+export default enhance(Turn)

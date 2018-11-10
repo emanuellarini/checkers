@@ -1,11 +1,6 @@
 import styled from 'styled-components'
 
-export default styled('div')`
-  .Hint {
-    width: 100%;
-    margin: 24px 0;
-  }
-
+export default styled.div`
   .Container {
     margin: 24px auto;
     max-width: 560px;
@@ -14,14 +9,13 @@ export default styled('div')`
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
+    box-sizing: content-box;
 
-    > div:nth-child(1) {
-      width: 400px;
-    }
-
-    > div:nth-child(2) {
-      width: 280px;
-      padding: 24px;
+    .Players {
+      margin: 24px 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
     }
   }
 `

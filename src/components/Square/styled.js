@@ -1,14 +1,10 @@
 import styled from 'styled-components'
 import withTheme from '@material-ui/core/styles/withTheme'
 
-export default withTheme()(styled('div')`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 50px;
-  min-width: 50px;
-  min-height: 50px;
+export default withTheme()(styled.div`
+  width: calc(100% / 8);
+  min-width: calc(100% / 8);
+  padding: 0;
   position: relative;
   box-sizing: border-box;
   background: ${({variant, theme}) => theme.palette.square[variant]};
@@ -17,33 +13,6 @@ export default withTheme()(styled('div')`
     `
     outline: solid 1px ${theme.palette.square.border};
     outline-offset: -1px;
-  `} ${props =>
-    props.isDraggingOver &&
-    `
-    opacity: .8;
-    
-    &::before,
-    &::after {
-      content: '';
-      position: absolute;
-      box-sizing: border-box;
-      border: 1px solid transparent;
-      width: 0;
-      height: 0;
-      animation-timing-function: linear;
-    }
-    
-    &::before {
-      top: 0;
-      left: 0;
-      animation: border-before 1.5s infinite;
-    }
-    
-    &::after {
-      bottom: 0;
-      right: 0;
-      animation: border-after 1.5s infinite;
-    }
   `} @keyframes border-before {
     0% {
       width: 0;
@@ -100,4 +69,32 @@ export default withTheme()(styled('div')`
       border-bottom-color: rgba(255, 255, 255, 0.72);
     }
   }
+  ${props =>
+    props.isDraggingOver &&
+    `
+    opacity: .8;
+    
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      box-sizing: border-box;
+      border: 1px solid transparent;
+      width: 0;
+      height: 0;
+      animation-timing-function: linear;
+    }
+    
+    &::before {
+      top: 0;
+      left: 0;
+      animation: border-before 1.5s infinite;
+    }
+    
+    &::after {
+      bottom: 0;
+      right: 0;
+      animation: border-after 1.5s infinite;
+    }
+  `};
 `)

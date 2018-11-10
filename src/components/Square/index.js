@@ -8,6 +8,16 @@ import {compose, pure, withProps, setPropTypes} from 'recompose'
 
 function ConnectedSquare({children, isDropDisabled, dropKeyName}) {
   function renderDroppableSquare(provided, snapshot) {
+    // did this to disable a warning :(
+    const placeholder =
+      provided.placeholder &&
+      React.cloneElement(provided.placeholder, {
+        placeholder: {
+          ...provided.placeholder.props.placeholder,
+          display: 'none',
+        },
+      })
+
     return (
       <Square
         key={'droppable-' + dropKeyName}
@@ -17,7 +27,7 @@ function ConnectedSquare({children, isDropDisabled, dropKeyName}) {
       >
         <div ref={provided.innerRef} {...provided.droppableProps}>
           {children}
-          {provided.placeholder}
+          {placeholder}
         </div>
       </Square>
     )

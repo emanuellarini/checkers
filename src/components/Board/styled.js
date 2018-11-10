@@ -7,10 +7,17 @@ export default withTheme()(styled(props => <Paper {...props} elevation={2} />)`
   && {
     display: flex;
     flex-wrap: wrap;
-    min-width: 400px;
-    width: 400px;
-    height: 400px;
-    min-height: 400px;
-    border: solid 10px ${({theme}) => theme.palette.board.border};
+    width: 100%;
+    height: 100%;
+    border: ridge 20px ${({theme}) => theme.palette.board.border};
+  }
+
+  .FixWidthAndHeight {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 `)
