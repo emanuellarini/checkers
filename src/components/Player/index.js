@@ -42,21 +42,21 @@ function Player({
 
       <div className="Box Body">
         <div className="Statistic">
-          <img src={MultiCaptureImg} />
+          <img src={MultiCaptureImg} alt="Multicapture Movement" />
           <Typography variant="h4" component="div" color="textSecondary">
             {multiCaptureMovesCount}
           </Typography>
           <Typography variant="caption">Multicapture Movements</Typography>
         </div>
         <div className="Statistic">
-          <img src={CaptureDiscImg} />
+          <img src={CaptureDiscImg} alt="Capture Disc Movement" />
           <Typography variant="h4" component="div" color="textSecondary">
             {capturedDiscsCount}
           </Typography>
           <Typography variant="caption">Captured Discs</Typography>
         </div>
         <div className="Statistic">
-          <img src={CaptureKingImg} />
+          <img src={CaptureKingImg} alt="Capture King Movement" />
           <Typography variant="h4" component="div" color="textSecondary">
             {capturedKingDiscsCount}
           </Typography>
