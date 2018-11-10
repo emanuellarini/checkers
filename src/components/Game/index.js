@@ -13,6 +13,7 @@ function Game() {
       <AppBar />
 
       <div className="Container">
+        <Board />
         <Typography
           variant="overline"
           color="primary"
@@ -22,11 +23,9 @@ function Game() {
           hint: you can pass the turn by <b>pressing Spacebar</b> after your
           move
         </Typography>
-        <Board />
-        <div className="Players">
-          <Player player={1} />
-          <Player player={2} />
-        </div>
+
+        <Player player={1} />
+        <Player player={2} />
       </div>
 
       <Winner />

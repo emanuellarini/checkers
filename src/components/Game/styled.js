@@ -4,7 +4,7 @@ export default styled.div`
   overflow: hidden;
 
   .Container {
-    margin: 24px auto;
+    margin: 16px auto;
     max-width: 560px;
     width: 100%;
     display: flex;
@@ -12,10 +12,5 @@ export default styled.div`
     align-items: center;
     justify-content: center;
     box-sizing: content-box;
-
-    .Players {
-      margin: 24px 0;
-      width: 100%;
-    }
   }
 `

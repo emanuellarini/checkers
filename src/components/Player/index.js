@@ -18,7 +18,7 @@ function Player({
   multiCaptureMovesCount,
 }) {
   return (
-    <StyledPlayer player={player}>
+    <StyledPlayer player={player} currentPlayer={currentPlayer}>
       <div className="Box Header">
         <div className="Disc" />
         <div className="Info">

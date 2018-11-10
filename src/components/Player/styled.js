@@ -3,9 +3,15 @@ import Paper from '@material-ui/core/Paper'
 import styled from 'styled-components'
 import withTheme from '@material-ui/core/styles/withTheme'
 
-export default withTheme()(styled(props => <Paper {...props} elevation={2} />)`
+export default withTheme()(styled(({currentPlayer, player, ...props}) => (
+  <Paper {...props} elevation={currentPlayer === player ? 8 : 2} />
+))`
   && {
     margin-bottom: ${props => props.theme.spacing.unit * 2}px;
+    margin-top: ${props => props.theme.spacing.unit * 2}px;
+    width: 100%;
+    transition: box-shadow 350ms ease-in-out;
+    margin-bottom: 16px;
   }
 
   hr {
