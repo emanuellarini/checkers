@@ -92,9 +92,9 @@ function mapStateToProps(state, ownProps) {
 
 const composedConnectedDisc = compose(
   withProps(({player, playerDiscKey, isKing}) => ({
-    dragKeyName: `${
-      isKing ? 'king-' : ''
-    }disc-player-${player}-${playerDiscKey}`,
+    dragKeyName: `disc-player-${player}-${playerDiscKey}${
+      isKing ? '-king' : ''
+    }`,
   })),
   withHandlers({
     renderDraggableDisc: ({player, dragKeyName, isKing, isDragDisabled}) => (

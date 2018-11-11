@@ -17,7 +17,7 @@ describe('The Board component', () => {
     )
   })
 
-  it('renders 64 Squares by default', async () => {
+  it('renders 64 Squares by default', () => {
     const {getByTestId} = render(
       <Wrapper>
         <Board />
@@ -27,7 +27,7 @@ describe('The Board component', () => {
     expect(getByTestId('board').children.length).toEqual(64)
   })
 
-  it('renders 12 Player 1 Discs', async () => {
+  it('renders 12 Player 1 Discs', () => {
     const {getAllByTestId} = render(
       <Wrapper>
         <Board />
@@ -37,7 +37,7 @@ describe('The Board component', () => {
     expect(getAllByTestId(/disc-player-1-*/).length).toEqual(12)
   })
 
-  it('renders 12 Player 2 Discs', async () => {
+  it('renders 12 Player 2 Discs', () => {
     const {getAllByTestId} = render(
       <Wrapper>
         <Board />
@@ -47,7 +47,7 @@ describe('The Board component', () => {
     expect(getAllByTestId(/disc-player-2-*/).length).toEqual(12)
   })
 
-  it('renders Players King Discs', async () => {
+  it('renders Players King Discs', () => {
     const store = {
       player2: {
         discs: {
@@ -69,7 +69,7 @@ describe('The Board component', () => {
       </Wrapper>,
     )
 
-    expect(getAllByTestId(/king-disc-player-1-*/).length).toEqual(1)
-    expect(getAllByTestId(/king-disc-player-2-*/).length).toEqual(1)
+    expect(getAllByTestId('disc-player-1-grey1-king')).toHaveLength(1)
+    expect(getAllByTestId('disc-player-2-red1-king')).toHaveLength(1)
   })
 })

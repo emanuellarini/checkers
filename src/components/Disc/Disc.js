@@ -11,7 +11,7 @@ function Disc({player, isKing, dragKeyName, isDragging}) {
       data-testid={dragKeyName}
       isDragging={isDragging}
     >
-      {isKing && <KingDiscIcon />}
+      {isKing && <KingDiscIcon className="KingDisc" />}
     </StyledDisc>
   )
 }
