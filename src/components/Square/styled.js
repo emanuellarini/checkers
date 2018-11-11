@@ -11,9 +11,30 @@ export default withTheme()(styled.div`
   ${({theme, variant}) =>
     variant === 'dark' &&
     `
-    outline: solid 1px ${theme.palette.square.border};
-    outline-offset: -1px;
-  `} @keyframes border-before {
+    border: solid 1px ${theme.palette.square.border};
+  `} &:nth-child(8n + 1) {
+    border-left: solid 1px ${props => props.theme.palette.square.border};
+  }
+
+  &:nth-child(8n) {
+    border-right: solid 1px ${props => props.theme.palette.square.border};
+  }
+
+  &:nth-child(1),
+  &:nth-child(3),
+  &:nth-child(5),
+  &:nth-child(7) {
+    border-top: solid 1px ${props => props.theme.palette.square.border};
+  }
+
+  &:nth-child(58),
+  &:nth-child(60),
+  &:nth-child(62),
+  &:nth-child(64) {
+    border-bottom: solid 1px ${props => props.theme.palette.square.border};
+  }
+
+  @keyframes border-before {
     0% {
       width: 0;
       height: 0;
