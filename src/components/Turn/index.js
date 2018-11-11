@@ -5,23 +5,36 @@ import Button from '@material-ui/core/Button'
 import StyledTurn from './styled'
 import Slide from '@material-ui/core/Slide'
 import ArrowRight from '@material-ui/icons/TrendingFlat'
-import {compose, pure, setPropTypes, withHandlers, lifecycle} from 'recompose'
+import {
+  compose,
+  setPropTypes,
+  withHandlers,
+  lifecycle,
+  onlyUpdateForKeys,
+} from 'recompose'
 import {endTurn} from 'store/movement'
 
 function Turn({currentPlayer, canPassTurn, endTurn}) {
+  const timeout = {
+    enter: 300,
+    exit: 500,
+  }
+
+  const color = currentPlayer === 1 ? 'primary' : 'secondary'
+
   return (
     <Slide
-      key="slide-enabled"
-      direction="left"
+      direction="up"
       in={canPassTurn}
       mountOnEnter
       unmountOnExit
+      timeout={timeout}
     >
       <Button
         variant="extendedFab"
         aria-label="Pass Turn"
         onClick={endTurn}
-        color="primary"
+        color={color}
         size="large"
         component={StyledTurn}
       >
@@ -79,7 +92,7 @@ const enhance = compose(
     },
   }),
   setPropTypes(propTypes),
-  pure,
+  onlyUpdateForKeys(['canPassTurn']),
 )
 
 export default enhance(Turn)
