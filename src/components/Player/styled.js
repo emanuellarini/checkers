@@ -1,35 +1,32 @@
 import React from 'react'
-import Paper from '@material-ui/core/Paper'
 import styled from 'styled-components'
 import withTheme from '@material-ui/core/styles/withTheme'
 
-export default withTheme()(styled(({currentPlayer, player, ...props}) => (
-  <Paper {...props} elevation={currentPlayer === player ? 8 : 2} />
-))`
+export default withTheme()(styled.div`
   && {
-    margin-bottom: ${props => props.theme.spacing.unit * 2}px;
-    margin-top: ${props => props.theme.spacing.unit * 2}px;
+    color: white;
     width: 100%;
+    max-width: 300px;
     transition: box-shadow 350ms ease-in-out;
-    margin-bottom: 16px;
+    padding: 0 0 ${props => props.theme.spacing.unit * 2}px;
   }
 
-  hr {
-    height: 5px;
+  &:first-of-type {
+    margin-right: ${props => props.theme.spacing.unit}px;
   }
 
   .Box {
     &.Header {
-      padding: ${props => props.theme.spacing.unit * 2}px;
+      padding: 0 ${props => props.theme.spacing.unit}px
+        ${props => props.theme.spacing.unit}px;
       display: flex;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
+      text-align: center;
 
-      .Disc {
-        width: 35px;
-        height: 35px;
-        position: relative;
-        border-radius: 50%;
-        margin-right: ${props => props.theme.spacing.unit * 2}px;
+      .Avatar {
+        margin-bottom: ${props => props.theme.spacing.unit}px;
         background: ${props =>
           props.player === 1
             ? props.theme.palette.primary.main
@@ -38,19 +35,16 @@ export default withTheme()(styled(({currentPlayer, player, ...props}) => (
     }
 
     &.Body {
+      margin-top: ${props => props.theme.spacing.unit}px;
       display: flex;
-      justify-content: space-around;
       align-items: flex-start;
+      justify-content: center;
+      flex-wrap: wrap;
 
       .Statistic {
-        padding: ${props => props.theme.spacing.unit * 3}px
-          ${props => props.theme.spacing.unit}px;
         text-align: center;
-
-        img {
-          max-height: 80px;
-          max-width: 120px;
-        }
+        max-width: 90px;
+        padding: 0 ${props => props.theme.spacing.unit / 2}px;
       }
     }
   }

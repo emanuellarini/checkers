@@ -15,21 +15,10 @@ import {
 import {endTurn} from 'store/movement'
 
 function Turn({currentPlayer, canPassTurn, endTurn}) {
-  const timeout = {
-    enter: 300,
-    exit: 500,
-  }
-
   const color = currentPlayer === 1 ? 'primary' : 'secondary'
 
   return (
-    <Slide
-      direction="up"
-      in={canPassTurn}
-      mountOnEnter
-      unmountOnExit
-      timeout={timeout}
-    >
+    <Slide direction="up" in={canPassTurn} mountOnEnter unmountOnExit>
       <Button
         variant="extendedFab"
         aria-label="Pass Turn"

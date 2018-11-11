@@ -2,12 +2,8 @@ import React from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
-import Divider from '@material-ui/core/Divider'
-import LinearProgress from '@material-ui/core/LinearProgress'
+import Avatar from '@material-ui/core/Avatar'
 import StyledPlayer from './styled'
-import MultiCaptureImg from 'assets/icons/multicapture.png'
-import CaptureKingImg from 'assets/icons/capture-king.png'
-import CaptureDiscImg from 'assets/icons/capture-disc.png'
 import {compose, pure, setPropTypes} from 'recompose'
 
 function Player({
@@ -20,47 +16,40 @@ function Player({
   return (
     <StyledPlayer player={player} currentPlayer={currentPlayer}>
       <div className="Box Header">
-        <div className="Disc" />
+        <Avatar className="Avatar">N</Avatar>
         <div className="Info">
-          <Typography color="textSecondary" variant="subtitle2" component="p">
+          <Typography color="inherit" variant="subtitle2" component="p">
             Player {player}
           </Typography>
-          <Typography color="inherit" variant="subtitle1" component="p">
+          <Typography color="inherit" variant="h5" component="p">
             Nameless
           </Typography>
         </div>
       </div>
-
-      {player === currentPlayer ? (
-        <LinearProgress
-          variant="query"
-          color={player === 1 ? 'primary' : 'secondary'}
-        />
-      ) : (
-        <Divider />
-      )}
-
       <div className="Box Body">
         <div className="Statistic">
-          <img src={MultiCaptureImg} alt="Multicapture Movement" />
-          <Typography variant="h4" component="div" color="textSecondary">
+          <Typography color="inherit" variant="h5" component="p">
             {multiCaptureMovesCount}
           </Typography>
-          <Typography variant="caption">Multicapture Movements</Typography>
+          <Typography variant="caption" color="inherit">
+            Multi Capture Moves
+          </Typography>
         </div>
         <div className="Statistic">
-          <img src={CaptureDiscImg} alt="Capture Disc Movement" />
-          <Typography variant="h4" component="div" color="textSecondary">
+          <Typography color="inherit" variant="h5" component="p">
             {capturedDiscsCount}
           </Typography>
-          <Typography variant="caption">Captured Discs</Typography>
+          <Typography variant="caption" color="inherit">
+            Captured Discs
+          </Typography>
         </div>
         <div className="Statistic">
-          <img src={CaptureKingImg} alt="Capture King Movement" />
-          <Typography variant="h4" component="div" color="textSecondary">
+          <Typography color="inherit" variant="h5" component="p">
             {capturedKingDiscsCount}
           </Typography>
-          <Typography variant="caption">Captured Kings</Typography>
+          <Typography variant="caption" color="inherit">
+            Captured Kings
+          </Typography>
         </div>
       </div>
     </StyledPlayer>
@@ -97,7 +86,6 @@ function mapStateToProps(state, props) {
       state[`player${props.player}`].statistics.capturedKingDiscsCount,
     multiCaptureMovesCount:
       state[`player${props.player}`].statistics.multiCaptureMovesCount,
-    currentPlayer: state.turns.currentPlayer,
   }
 }
 

@@ -3,7 +3,7 @@ import withTheme from '@material-ui/core/styles/withTheme'
 
 export default withTheme()(styled('div')`
   && {
-    position: absolute;
+    position: fixed;
     bottom: ${props => props.theme.spacing.unit * 2}px;
     right: ${props => props.theme.spacing.unit * 2}px;
   }

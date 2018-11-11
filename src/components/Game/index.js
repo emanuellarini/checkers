@@ -15,17 +15,15 @@ function Game() {
       <div className="Container">
         <Board />
         <Typography
-          variant="overline"
-          color="primary"
+          variant="caption"
+          color="textSecondary"
           align="center"
           component="p"
+          className="Hint"
         >
           hint: you can pass the turn by <b>pressing Spacebar</b> after your
           move
         </Typography>
-
-        <Player player={1} />
-        <Player player={2} />
       </div>
 
       <Winner />

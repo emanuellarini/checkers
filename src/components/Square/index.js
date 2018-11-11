@@ -37,6 +37,7 @@ function ConnectedSquare({children, isDropDisabled, dropKeyName}) {
     <Droppable
       droppableId={'droppable-' + dropKeyName}
       isDropDisabled={isDropDisabled}
+      ignoreContainerClipping
     >
       {renderDroppableSquare}
     </Droppable>

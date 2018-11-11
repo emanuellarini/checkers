@@ -1,6 +1,7 @@
 import styled from 'styled-components'
+import withTheme from '@material-ui/core/styles/withTheme'
 
-export default styled.div`
+export default withTheme()(styled.div`
   overflow: hidden;
 
   .Container {
@@ -12,5 +13,11 @@ export default styled.div`
     align-items: center;
     justify-content: center;
     box-sizing: content-box;
+
+    .Hint {
+      margin: ${props => props.theme.spacing.unit}px;
+      text-align: center;
+      text-transform: uppercase;
+    }
   }
-`
+`)

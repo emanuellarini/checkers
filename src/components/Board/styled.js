@@ -9,8 +9,7 @@ export default withTheme()(styled(props => <Paper {...props} elevation={2} />)`
     flex-wrap: wrap;
     width: 100%;
     height: 100%;
-    margin-bottom: ${props => props.theme.spacing.unit * 2}px;
-    margin-top: ${props => props.theme.spacing.unit * 2}px;
+    margin: ${props => props.theme.spacing.unit}px;
     border: ridge 20px ${({theme}) => theme.palette.board.border};
   }
 
