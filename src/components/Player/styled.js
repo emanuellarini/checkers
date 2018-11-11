@@ -5,7 +5,6 @@ export default withTheme()(styled.div`
   && {
     color: white;
     width: 100%;
-    transition: box-shadow 350ms ease-in-out;
     padding: 0 0 ${props => props.theme.spacing.unit * 2}px;
   }
 

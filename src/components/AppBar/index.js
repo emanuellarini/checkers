@@ -10,13 +10,21 @@ import StyledAppBar from './styled'
 import {compose, pure} from 'recompose'
 import {connect} from 'react-redux'
 import Slide from '@material-ui/core/Slide'
+import Fade from '@material-ui/core/Fade'
+import Collapse from '@material-ui/core/Collapse'
 
 function AppBar({currentPlayer}) {
+  const collapseTimeout = {enter: 250}
+  const playerTimeout = {enter: 150}
+  const dividerTimeout = {enter: 250}
+  const playerTransitionStyle = {transitionDelay: 250}
+  const dividerTransitionStyle = {transitionDelay: 300}
+
   return (
     <StyledAppBar currentPlayer={currentPlayer}>
       <MuiAppBar position="static" color="default">
         <Toolbar>
-          <Typography variant="h6" color="inherit" style={{flexGrow: 1}}>
+          <Typography variant="h6" color="inherit" className="Title">
             Checkers Game
           </Typography>
 
@@ -25,16 +33,31 @@ function AppBar({currentPlayer}) {
           </IconButton>
         </Toolbar>
 
-        <Slide
-          in
-          direction={currentPlayer === 1 ? 'right' : 'left'}
-          key={'player-' + currentPlayer + '-slide'}
-        >
+        <Collapse in timeout={collapseTimeout} appear>
           <div className="Turns">
-            <Player player={currentPlayer} currentPlayer={currentPlayer} />
-            <Divider className="Divider" />
+            <Slide
+              in
+              unmountOnExit
+              mountOnEnter
+              direction={currentPlayer === 1 ? 'right' : 'left'}
+              key={'player-' + currentPlayer + '-slide'}
+              timeout={playerTimeout}
+              style={playerTransitionStyle}
+            >
+              <Player player={currentPlayer} currentPlayer={currentPlayer} />
+            </Slide>
+            <Fade
+              in
+              unmountOnExit
+              mountOnEnter
+              key={'divider-' + currentPlayer + '-slide'}
+              timeout={dividerTimeout}
+              style={dividerTransitionStyle}
+            >
+              <Divider className="Divider" />
+            </Fade>
           </div>
-        </Slide>
+        </Collapse>
       </MuiAppBar>
     </StyledAppBar>
   )
