@@ -4,7 +4,8 @@ export default () => {
   return createMuiTheme({
     palette: {
       primary: {
-        main: '#494949',
+        light: '#7d7d7d',
+        main: '#212121',
       },
       secondary: {
         main: '#B20000',
@@ -24,7 +25,7 @@ export default () => {
     overrides: {
       MuiAppBar: {
         root: {
-          backgroundColor: '#000 !important',
+          backgroundColor: '#313131 !important',
           color: '#fff !important',
         },
       },

@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import withTheme from '@material-ui/core/styles/withTheme'
 
@@ -13,94 +12,43 @@ export default withTheme()(styled.div`
     width: 100%;
   }
 
-  .Tabs {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
   .Divider {
     background-color: ${({theme, currentPlayer}) =>
       currentPlayer === 1
-        ? theme.palette.primary.main
+        ? theme.palette.primary.light
         : theme.palette.secondary.main};
-    height: 5px;
+    border-radius: 8px;
+    height: 3px;
     width: 50%;
+    margin-left: 25%;
     margin-bottom: 4px;
     animation: ${props =>
-        props.currentPlayer === 1 ? 'bounce-in-right' : 'bounce-in-left'}
-      1s both;
+        props.currentPlayer === 1 ? 'slide-right' : 'slide-left'}
+      350ms both;
   }
 
-  @keyframes bounce-in-right {
-    0% {
+  @keyframes slide-right {
+    from {
       transform: translateX(400%);
       animation-timing-function: ease-in;
       opacity: 0;
     }
-    38% {
+    to {
       transform: translateX(0);
-      animation-timing-function: ease-out;
       opacity: 1;
-    }
-    55% {
-      transform: translateX(30%);
-      animation-timing-function: ease-in;
-    }
-    72% {
-      transform: translateX(0);
-      animation-timing-function: ease-out;
-    }
-    81% {
-      transform: translateX(15%);
-      animation-timing-function: ease-in;
-    }
-    90% {
-      transform: translateX(0);
-      animation-timing-function: ease-out;
-    }
-    95% {
-      transform: translateX(5%);
-      animation-timing-function: ease-in;
-    }
-    100% {
-      transform: translateX(0);
       animation-timing-function: ease-out;
     }
   }
-  @keyframes bounce-in-left {
-    0% {
+
+  @keyframes slide-left {
+    from {
       transform: translateX(-400%);
       animation-timing-function: ease-in;
       opacity: 0;
     }
-    38% {
-      transform: translateX(100%);
-      animation-timing-function: ease-out;
+    to {
+      transform: translateX(0);
       opacity: 1;
-    }
-    55% {
-      transform: translateX(75%);
-      animation-timing-function: ease-in;
-    }
-    72% {
-      transform: translateX(100%);
-      animation-timing-function: ease-out;
-    }
-    81% {
-      transform: translateX(80%);
-      animation-timing-function: ease-in;
-    }
-    90% {
-      transform: translateX(100%);
-      animation-timing-function: ease-out;
-    }
-    95% {
-      transform: translateX(95%);
-      animation-timing-function: ease-in;
-    }
-    100% {
-      transform: translateX(100%);
       animation-timing-function: ease-out;
     }
   }

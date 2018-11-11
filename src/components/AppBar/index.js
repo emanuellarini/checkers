@@ -9,6 +9,7 @@ import Player from 'components/Player'
 import StyledAppBar from './styled'
 import {compose, pure} from 'recompose'
 import {connect} from 'react-redux'
+import Slide from '@material-ui/core/Slide'
 
 function AppBar({currentPlayer}) {
   return (
@@ -23,13 +24,17 @@ function AppBar({currentPlayer}) {
             <HelpIcon />
           </IconButton>
         </Toolbar>
-        <div className="Turns">
-          <div className="Tabs">
-            <Player player={1} currentPlayer={currentPlayer} />
-            <Player player={2} currentPlayer={currentPlayer} />
+
+        <Slide
+          in
+          direction={currentPlayer === 1 ? 'right' : 'left'}
+          key={'player-' + currentPlayer + '-slide'}
+        >
+          <div className="Turns">
+            <Player player={currentPlayer} currentPlayer={currentPlayer} />
+            <Divider className="Divider" />
           </div>
-          <Divider className="Divider" />
-        </div>
+        </Slide>
       </MuiAppBar>
     </StyledAppBar>
   )

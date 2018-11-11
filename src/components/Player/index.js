@@ -6,20 +6,14 @@ import Avatar from '@material-ui/core/Avatar'
 import StyledPlayer from './styled'
 import {compose, pure, setPropTypes} from 'recompose'
 
-function Player({
-  player,
-  currentPlayer,
-  capturedDiscsCount,
-  capturedKingDiscsCount,
-  multiCaptureMovesCount,
-}) {
+function Player({currentPlayer, capturedDiscsCount, capturedKingDiscsCount}) {
   return (
-    <StyledPlayer player={player} currentPlayer={currentPlayer}>
+    <StyledPlayer currentPlayer={currentPlayer}>
       <div className="Box Header">
         <Avatar className="Avatar">N</Avatar>
         <div className="Info">
           <Typography color="inherit" variant="subtitle2" component="p">
-            Player {player}
+            Player {currentPlayer}
           </Typography>
           <Typography color="inherit" variant="h5" component="p">
             Nameless
@@ -27,15 +21,7 @@ function Player({
         </div>
       </div>
       <div className="Box Body">
-        <div className="Statistic">
-          <Typography color="inherit" variant="h5" component="p">
-            {multiCaptureMovesCount}
-          </Typography>
-          <Typography variant="caption" color="inherit">
-            Multi Capture Moves
-          </Typography>
-        </div>
-        <div className="Statistic">
+        <div className="Statistic CapturedDiscs">
           <Typography color="inherit" variant="h5" component="p">
             {capturedDiscsCount}
           </Typography>
@@ -43,7 +29,7 @@ function Player({
             Captured Discs
           </Typography>
         </div>
-        <div className="Statistic">
+        <div className="Statistic CapturedKings">
           <Typography color="inherit" variant="h5" component="p">
             {capturedKingDiscsCount}
           </Typography>
@@ -58,9 +44,9 @@ function Player({
 
 const propTypes = {
   /**
-   * The player
+   * The current Player
    */
-  player: PropTypes.oneOf([1, 2]).isRequired,
+  currentPlayer: PropTypes.oneOf([1, 2]).isRequired,
 
   /**
    * The Player quantity of captured discs
@@ -71,11 +57,6 @@ const propTypes = {
    * The Player quantity of captured kings
    */
   capturedKingDiscsCount: PropTypes.number.isRequired,
-
-  /**
-   * The Player quantity of multicapture moves
-   */
-  multiCaptureMovesCount: PropTypes.number.isRequired,
 }
 
 function mapStateToProps(state, props) {
@@ -84,8 +65,6 @@ function mapStateToProps(state, props) {
       state[`player${props.player}`].statistics.capturedDiscsCount,
     capturedKingDiscsCount:
       state[`player${props.player}`].statistics.capturedKingDiscsCount,
-    multiCaptureMovesCount:
-      state[`player${props.player}`].statistics.multiCaptureMovesCount,
   }
 }
 

@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import withTheme from '@material-ui/core/styles/withTheme'
 
@@ -6,7 +5,6 @@ export default withTheme()(styled.div`
   && {
     color: white;
     width: 100%;
-    max-width: 300px;
     transition: box-shadow 350ms ease-in-out;
     padding: 0 0 ${props => props.theme.spacing.unit * 2}px;
   }
@@ -28,7 +26,7 @@ export default withTheme()(styled.div`
       .Avatar {
         margin-bottom: ${props => props.theme.spacing.unit}px;
         background: ${props =>
-          props.player === 1
+          props.currentPlayer === 1
             ? props.theme.palette.primary.main
             : props.theme.palette.secondary.main};
       }
@@ -45,6 +43,14 @@ export default withTheme()(styled.div`
         text-align: center;
         max-width: 90px;
         padding: 0 ${props => props.theme.spacing.unit / 2}px;
+
+        &.CapturedDiscs {
+          color: #64a2be;
+          border-right: 2px solid #403f3f;
+        }
+        &.CapturedKings {
+          color: #beac64;
+        }
       }
     }
   }
