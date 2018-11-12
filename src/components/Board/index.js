@@ -4,12 +4,10 @@ import PropTypes from 'prop-types'
 import {DragDropContext} from 'react-beautiful-dnd'
 import Board from './styled'
 import ConnectedSquare from 'components/Square'
-import Square from 'components/Square/styled'
 import ConnectedDisc from 'components/Disc'
 import _range from 'lodash/range'
 import {compose, setPropTypes, pure} from 'recompose'
 import {startMovement, endMovement} from 'store/movement'
-import {getSquareVariant} from 'rules/square/variant'
 
 function ConnectedBoard({startMovement, endMovement}) {
   function handleDragStart({source, draggableId}) {
@@ -38,10 +36,6 @@ function ConnectedBoard({startMovement, endMovement}) {
 
   const renderedSquares = _range(0, 8).map(function(x) {
     return _range(0, 8).map(function(y) {
-      if (getSquareVariant(x, y) === 'light') {
-        return <Square variant="light" key={`light-square-${x}-${y}`} />
-      }
-
       return (
         <ConnectedSquare
           key={`connected-board-square-${x}-${y}`}

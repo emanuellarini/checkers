@@ -19,6 +19,27 @@ import {
   determineIfDragIsDisabledSelector,
 } from 'selectors/disc'
 
+function connectedDisc({
+  renderDraggableDisc,
+  dragKeyName,
+  player,
+  playerDiscKey,
+  isKing,
+  isDragDisabled,
+}) {
+  const index = player * 100 + Number(playerDiscKey.replace(/^\D+/g, ''))
+
+  return (
+    <Draggable
+      draggableId={dragKeyName}
+      index={index}
+      isDragDisabled={isDragDisabled}
+    >
+      {renderDraggableDisc}
+    </Draggable>
+  )
+}
+
 const propTypes = {
   /**
    * Determine which Player owns the Disc
@@ -49,27 +70,6 @@ const propTypes = {
    * Renders a Draggable Disc
    */
   renderDraggableDisc: PropTypes.func.isRequired,
-}
-
-function connectedDisc({
-  renderDraggableDisc,
-  dragKeyName,
-  player,
-  playerDiscKey,
-  isKing,
-  isDragDisabled,
-}) {
-  const index = player * 100 + Number(playerDiscKey.replace(/^\D+/g, ''))
-
-  return (
-    <Draggable
-      draggableId={dragKeyName}
-      index={index}
-      isDragDisabled={isDragDisabled}
-    >
-      {renderDraggableDisc}
-    </Draggable>
-  )
 }
 
 function mapStateToProps(state, ownProps) {
@@ -115,7 +115,9 @@ const composedConnectedDisc = compose(
           player={player}
           dragKeyName={dragKeyName}
           isKing={isKing}
-          isDragging={snapshot.isDragging && !isDragDisabled}
+          isDragging={
+            snapshot.isDragging && !isDragDisabled && !snapshot.dropping
+          }
         />
       </div>
     ),

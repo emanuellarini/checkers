@@ -8,7 +8,7 @@
     "lodash": "^4.17.11",
     "prop-types": "^15.6.2",
     "react": "^16.5.2",
-    "react-beautiful-dnd": "^9.0.2",
+    "react-beautiful-dnd": "^10.0.0yarn -",
     "react-dom": "^16.5.2",
     "react-redux": "^5.0.7",
     "react-scripts": "2.0.4",

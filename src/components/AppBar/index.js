@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import MuiAppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
@@ -7,7 +8,7 @@ import Divider from '@material-ui/core/Divider'
 import HelpIcon from '@material-ui/icons/Help'
 import Player from 'components/Player'
 import StyledAppBar from './styled'
-import {compose, pure} from 'recompose'
+import {compose, setPropTypes, pure} from 'recompose'
 import {connect} from 'react-redux'
 import Slide from '@material-ui/core/Slide'
 import Fade from '@material-ui/core/Fade'
@@ -63,6 +64,13 @@ function AppBar({currentPlayer}) {
   )
 }
 
+const propTypes = {
+  /**
+   * The Current Player
+   */
+  currentPlayer: PropTypes.oneOf([1, 2]).isRequired,
+}
+
 function mapStateToProps(state) {
   return {
     currentPlayer: state.turns.currentPlayer,
@@ -71,6 +79,7 @@ function mapStateToProps(state) {
 
 const enhance = compose(
   connect(mapStateToProps),
+  setPropTypes(propTypes),
   pure,
 )
 

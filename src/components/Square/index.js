@@ -4,9 +4,24 @@ import PropTypes from 'prop-types'
 import Square from './styled'
 import {Droppable} from 'react-beautiful-dnd'
 import {determineDisabledStatus} from 'selectors/movement'
-import {compose, pure, withProps, setPropTypes} from 'recompose'
+import {
+  compose,
+  pure,
+  withProps,
+  setPropTypes,
+  branch,
+  renderComponent,
+  shouldUpdate,
+} from 'recompose'
+import {getSquareVariant} from 'rules/square/variant'
 
-function ConnectedSquare({children, isDropDisabled, dropKeyName}) {
+function LightSquare({coords}) {
+  return (
+    <Square variant="light" key={`light-square-${coords[0]}-${coords[1]}`} />
+  )
+}
+
+function ConnectedDarkSquare({coords, children, isDropDisabled, dropKeyName}) {
   function renderDroppableSquare(provided, snapshot) {
     // did this to disable a warning :(
     const placeholder =
@@ -72,8 +87,7 @@ function mapStateToProps(state, ownProps) {
   }
 }
 
-const enhance = compose(
-  connect(mapStateToProps),
+const composedSquare = compose(
   withProps(({coords}) => ({
     dropKeyName: `board-square-${coords[0]}-${coords[1]}`,
   })),
@@ -81,4 +95,19 @@ const enhance = compose(
   setPropTypes(propTypes),
 )
 
-export default enhance(ConnectedSquare)
+const composedLightSquare = compose(
+  setPropTypes({coords: propTypes.coords}),
+  shouldUpdate(false),
+  renderComponent(LightSquare),
+)
+
+const enhance = compose(
+  connect(mapStateToProps),
+  branch(
+    ({coords}) => getSquareVariant(coords[0], coords[1]) === 'light',
+    composedLightSquare,
+    composedSquare,
+  ),
+)
+
+export default enhance(ConnectedDarkSquare)
