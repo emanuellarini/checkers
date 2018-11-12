@@ -23,7 +23,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "yarn.json" }}
+          key: dependencies-{{ checksum "yarn.lock" }}
 
   deploy:
     machine:
