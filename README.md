@@ -1,5 +1,7 @@
 :video_game: Let's play checkers! :video_game:
 
+**You can check the Game at [Netlify](https://checkers-game.netlify.com/)**
+
 ## Up & Running
 
 1. **Clone the repo**
