@@ -1,7 +1,5 @@
 :video_game: Let's play checkers! :video_game:
 
-**You can check the Game at [Netlify](https://checkers-game.netlify.com/)**
-
 ## Up & Running
 
 1. **Clone the repo**
@@ -32,10 +30,11 @@
 
 This is a Checkers game made in React for personal study.
 
-You can follow the process on
-[Trello](https://trello.com/b/mjk3IU7g/checkers-board)
+Follow the process on [Trello](https://trello.com/b/mjk3IU7g/checkers-board)
 
-Ops: Rules can change based on my mood :stuck_out_tongue_winking_eye:
+**You can check the Game at [Netlify](https://checkers-game.netlify.com/)**
+
+_OBS: Rules can change based on my mood :stuck_out_tongue_winking_eye:_
 
 ## Game Description
 
