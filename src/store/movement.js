@@ -116,7 +116,9 @@ export const endMovement = (player, destinationCoords, disc, king = false) => (
   dispatch(makeMovement({disc, captured: capturedDiscs.length}))
 }
 
-export const endTurn = ({player}) => (dispatch, getState) => {
+export const endTurn = () => (dispatch, getState) => {
+  const player = getState().turns.currentPlayer
+
   const movementCount = getState().movement.movementCount
   if (movementCount === 0) return false
 

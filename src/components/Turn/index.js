@@ -66,7 +66,7 @@ const enhance = compose(
   withHandlers({
     spacebarPressed: props => e => {
       if (e.code === 'Space') {
-        props.endTurn({player: props.currentPlayer})
+        props.endTurn()
       }
       e.preventDefault()
       e.stopPropagation()
