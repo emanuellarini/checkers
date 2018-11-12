@@ -8,13 +8,14 @@ import Divider from '@material-ui/core/Divider'
 import HelpIcon from '@material-ui/icons/Help'
 import Player from 'components/Player'
 import StyledAppBar from './styled'
-import {compose, setPropTypes, pure} from 'recompose'
-import {connect} from 'react-redux'
 import Slide from '@material-ui/core/Slide'
 import Fade from '@material-ui/core/Fade'
 import Collapse from '@material-ui/core/Collapse'
+import {compose, setPropTypes, pure} from 'recompose'
+import {connect} from 'react-redux'
+import {underDevelopmentMessage} from 'store/notification'
 
-function AppBar({currentPlayer}) {
+function AppBar({underDevelopmentMessage, currentPlayer}) {
   const collapseTimeout = {enter: 350}
   const playerTimeout = {enter: 150}
   const dividerTimeout = {enter: 250}
@@ -29,7 +30,7 @@ function AppBar({currentPlayer}) {
             Checkers Game
           </Typography>
 
-          <IconButton onClick={() => null} color="inherit">
+          <IconButton onClick={underDevelopmentMessage} color="inherit">
             <HelpIcon />
           </IconButton>
         </Toolbar>
@@ -69,6 +70,11 @@ const propTypes = {
    * The Current Player
    */
   currentPlayer: PropTypes.oneOf([1, 2]).isRequired,
+
+  /**
+   * Callback to display notification
+   */
+  underDevelopmentMessage: PropTypes.func.isRequired,
 }
 
 function mapStateToProps(state) {
@@ -78,7 +84,10 @@ function mapStateToProps(state) {
 }
 
 const enhance = compose(
-  connect(mapStateToProps),
+  connect(
+    mapStateToProps,
+    {underDevelopmentMessage},
+  ),
   setPropTypes(propTypes),
   pure,
 )
