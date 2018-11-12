@@ -33,7 +33,7 @@ jobs:
           name: Call Netlify Deploy Hook
           command:
             curl -X POST -d ''
-            https://api.netlify.com/build_hooks/5be9cfbdc6aed61ee80e9224
+            https://api.netlify.com/build_hooks/$NETLIFY_HOOK_ID
 
 workflows:
   version: 2
