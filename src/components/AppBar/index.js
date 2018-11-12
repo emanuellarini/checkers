@@ -15,11 +15,11 @@ import Fade from '@material-ui/core/Fade'
 import Collapse from '@material-ui/core/Collapse'
 
 function AppBar({currentPlayer}) {
-  const collapseTimeout = {enter: 250}
+  const collapseTimeout = {enter: 350}
   const playerTimeout = {enter: 150}
   const dividerTimeout = {enter: 250}
-  const playerTransitionStyle = {transitionDelay: 250}
-  const dividerTransitionStyle = {transitionDelay: 300}
+  const playerTransitionStyle = {transitionDelay: 500}
+  const dividerTransitionStyle = {transitionDelay: 650}
 
   return (
     <StyledAppBar currentPlayer={currentPlayer}>
