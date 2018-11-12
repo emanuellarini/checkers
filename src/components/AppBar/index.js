@@ -15,7 +15,12 @@ import {compose, setPropTypes, pure} from 'recompose'
 import {connect} from 'react-redux'
 import {underDevelopmentMessage} from 'store/notification'
 
-function AppBar({underDevelopmentMessage, currentPlayer}) {
+function AppBar({
+  underDevelopmentMessage,
+  currentPlayer,
+  capturedDiscsCount,
+  capturedKingDiscsCount,
+}) {
   const collapseTimeout = {enter: 350}
   const playerTimeout = {enter: 150}
   const dividerTimeout = {enter: 250}
@@ -46,7 +51,12 @@ function AppBar({underDevelopmentMessage, currentPlayer}) {
               timeout={playerTimeout}
               style={playerTransitionStyle}
             >
-              <Player player={currentPlayer} currentPlayer={currentPlayer} />
+              <Player
+                player={currentPlayer}
+                currentPlayer={currentPlayer}
+                capturedDiscsCount={capturedDiscsCount}
+                capturedKingDiscsCount={capturedKingDiscsCount}
+              />
             </Slide>
             <Fade
               in
