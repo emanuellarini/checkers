@@ -18,7 +18,13 @@ function Turn({currentPlayer, canPassTurn, endTurn}) {
   const color = currentPlayer === 1 ? 'primary' : 'secondary'
 
   return (
-    <Slide direction="up" in={canPassTurn} mountOnEnter unmountOnExit>
+    <Slide
+      key={`button-turn-player-${currentPlayer}`}
+      direction="up"
+      in={canPassTurn}
+      mountOnEnter
+      unmountOnExit
+    >
       <Button
         variant="extendedFab"
         aria-label="Pass Turn"
