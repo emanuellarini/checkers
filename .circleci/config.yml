@@ -26,6 +26,9 @@ jobs:
           key: v1-dependencies-{{ checksum "yarn.json" }}
 
   deploy:
+    machine:
+      enabled: true
+
     working_directory: ~/repo
 
     steps:
