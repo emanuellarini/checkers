@@ -25,7 +25,7 @@ export default withTheme()(styled.div`
       .Avatar {
         margin-bottom: ${props => props.theme.spacing.unit}px;
         background: ${props =>
-          props.currentPlayer === 1
+          props.player === 1
             ? props.theme.palette.primary.main
             : props.theme.palette.secondary.main};
       }

@@ -75,11 +75,27 @@ const propTypes = {
    * Callback to display notification
    */
   underDevelopmentMessage: PropTypes.func.isRequired,
+
+  /**
+   * The Player quantity of captured discs
+   */
+  capturedDiscsCount: PropTypes.number.isRequired,
+
+  /**
+   * The Player quantity of captured kings
+   */
+  capturedKingDiscsCount: PropTypes.number.isRequired,
 }
 
 function mapStateToProps(state) {
+  const currentPlayer = state.turns.currentPlayer
+
   return {
-    currentPlayer: state.turns.currentPlayer,
+    currentPlayer,
+    capturedDiscsCount:
+      state[`player${currentPlayer}`].statistics.capturedDiscsCount,
+    capturedKingDiscsCount:
+      state[`player${currentPlayer}`].statistics.capturedKingDiscsCount,
   }
 }
 
