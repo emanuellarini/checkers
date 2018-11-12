@@ -51,6 +51,14 @@ describe('fn:verifyWinner', () => {
     expect(verifyWinner(player1WithoutKings, player2)).toEqual(2)
   })
 
+  it('returns null when player 1 has multiple discs versus a king disc', () => {
+    const player1Multiple = {
+      ...player1,
+      discs: {grey1: [0, 2], grey2: [0, 4]},
+    }
+    expect(verifyWinner(player1Multiple, player2)).toEqual(null)
+  })
+
   it('returns null when player still have discs', () => {
     expect(verifyWinner(player1, player2)).toEqual(null)
   })

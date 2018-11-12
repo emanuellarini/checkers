@@ -25,6 +25,7 @@ function playerDoesntOwnADisc(playersDiscs) {
 function playerHasADiscVersusAKing(playersDiscs) {
   if (
     Object.keys(playersDiscs[1].discs).length === 1 &&
+    Object.keys(playersDiscs[2].discs).length === 1 &&
     playersDiscs[1].kings.length === 0 &&
     playersDiscs[2].kings.length === 1
   ) {
@@ -32,6 +33,7 @@ function playerHasADiscVersusAKing(playersDiscs) {
   }
 
   if (
+    Object.keys(playersDiscs[1].discs).length === 1 &&
     Object.keys(playersDiscs[2].discs).length === 1 &&
     playersDiscs[2].kings.length === 0 &&
     playersDiscs[1].kings.length === 1
