@@ -1,4 +1,4 @@
 export default {
   src: process.env.NODE_PATH,
-  wrapper: 'utils/docz/redux-wrapper',
+  wrapper: 'utils/docz/wrapper',
 }

@@ -25,6 +25,7 @@ export default withTheme()(styled(({isKing, isDragging, ...otherProps}) => (
     border-radius: 50%;
     box-sizing: border-box;
     width: 70%;
+    position: relative;
     margin: 15%;
     padding-bottom: 70%;
     background: ${({player, theme}) => {
@@ -37,9 +38,9 @@ export default withTheme()(styled(({isKing, isDragging, ...otherProps}) => (
   &::after {
     content: '';
     border-radius: 50%;
-    width: 55%;
-    height: 55%;
-    margin: 22.5%;
+    width: 70%;
+    height: 70%;
+    margin: 15%;
     position: absolute;
     top: 0;
     left: 0;
