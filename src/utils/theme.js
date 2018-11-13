@@ -13,7 +13,7 @@ export default () => {
       square: {
         dark: '#88665D',
         light: '#BCAA99',
-        border: '#E2B100',
+        border: '#a5a382',
       },
       board: {
         border: '#492510',

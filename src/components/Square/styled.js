@@ -11,27 +11,27 @@ export default withTheme()(styled.div`
   ${({theme, variant}) =>
     variant === 'dark' &&
     `
-    border: solid 1px ${theme.palette.square.border};
+    border: outset 1px ${theme.palette.square.border};
   `} &:nth-child(8n + 1) {
-    border-left: solid 1px ${props => props.theme.palette.square.border};
+    border-left: outset 1px ${props => props.theme.palette.square.border};
   }
 
   &:nth-child(8n) {
-    border-right: solid 1px ${props => props.theme.palette.square.border};
+    border-right: outset 1px ${props => props.theme.palette.square.border};
   }
 
   &:nth-child(1),
   &:nth-child(3),
   &:nth-child(5),
   &:nth-child(7) {
-    border-top: solid 1px ${props => props.theme.palette.square.border};
+    border-top: outset 1px ${props => props.theme.palette.square.border};
   }
 
   &:nth-child(58),
   &:nth-child(60),
   &:nth-child(62),
   &:nth-child(64) {
-    border-bottom: solid 1px ${props => props.theme.palette.square.border};
+    border-bottom: outset 1px ${props => props.theme.palette.square.border};
   }
 
   @keyframes border-before {
@@ -100,7 +100,7 @@ export default withTheme()(styled.div`
       content: '';
       position: absolute;
       box-sizing: border-box;
-      border: 1px solid transparent;
+      border: 1px outset transparent;
       width: 0;
       height: 0;
       animation-timing-function: linear;
