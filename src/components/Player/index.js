@@ -5,14 +5,18 @@ import Avatar from '@material-ui/core/Avatar'
 import StyledPlayer from './styled'
 import {compose, pure, setPropTypes} from 'recompose'
 
-function Player({player, capturedDiscsCount, capturedKingDiscsCount}) {
+function Player({player, capturedDiscsCount, capturedKingDiscsCount, t}) {
+  const tPlayer = t('app.player', {player})
+  const tCapturedDiscs = t('statistics.captured_discs')
+  const tCapturedKings = t('statistics.captured_kings')
+
   return (
     <StyledPlayer player={player}>
       <div className="Box Header">
         <Avatar className="Avatar">N</Avatar>
         <div className="Info">
           <Typography color="inherit" variant="subtitle2" component="p">
-            Player {player}
+            {tPlayer}
           </Typography>
           <Typography color="inherit" variant="h5" component="p">
             Nameless
@@ -25,7 +29,7 @@ function Player({player, capturedDiscsCount, capturedKingDiscsCount}) {
             {capturedDiscsCount}
           </Typography>
           <Typography variant="caption" color="inherit">
-            Captured Discs
+            {tCapturedDiscs}
           </Typography>
         </div>
         <div className="Statistic CapturedKings">
@@ -33,7 +37,7 @@ function Player({player, capturedDiscsCount, capturedKingDiscsCount}) {
             {capturedKingDiscsCount}
           </Typography>
           <Typography variant="caption" color="inherit">
-            Captured Kings
+            {tCapturedKings}
           </Typography>
         </div>
       </div>
@@ -56,6 +60,11 @@ const propTypes = {
    * The Player quantity of captured kings
    */
   capturedKingDiscsCount: PropTypes.number.isRequired,
+
+  /**
+   * The translations
+   */
+  t: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

@@ -1,0 +1,24 @@
+{
+  "app": {
+    "name": "Jogo de Damas",
+    "player": "Jogador {{player}}"
+  },
+  "notifications": {
+    "help": "O guia de ajuda do jogo ainda está em desenvolvimento!"
+  },
+  "hint": {
+    "turn": "dica: você pode passar seu turno pressionando <b>a barra de espaço</b> após realizar um movimento"
+  },
+  "winner": {
+    "title": "Temos um vencedor!",
+    "message": "O vencedor deste jogo é o <b>Jogador {{player}}!</b>",
+    "button": "Jogar Novamente"
+  },
+  "statistics": {
+    "captured_discs": "Peças Capturadas",
+    "captured_kings": "Damas Capturadas"
+  },
+  "buttons": {
+    "pass_turn": "Passar Turno"
+  }
+}

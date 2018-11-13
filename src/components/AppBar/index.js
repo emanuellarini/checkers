@@ -13,13 +13,15 @@ import Fade from '@material-ui/core/Fade'
 import Collapse from '@material-ui/core/Collapse'
 import {compose, setPropTypes, pure} from 'recompose'
 import {connect} from 'react-redux'
-import {underDevelopmentMessage} from 'store/notification'
+import {notify} from 'store/notification'
+import {withNamespaces} from 'react-i18next'
 
 function AppBar({
-  underDevelopmentMessage,
+  notify,
   currentPlayer,
   capturedDiscsCount,
   capturedKingDiscsCount,
+  t,
 }) {
   const collapseTimeout = {enter: 350}
   const playerTimeout = {enter: 150}
@@ -27,15 +29,20 @@ function AppBar({
   const playerTransitionStyle = {transitionDelay: 500}
   const dividerTransitionStyle = {transitionDelay: 650}
 
+  function handleNotify() {
+    return notify(t('notifications.help'))
+  }
+  const appName = t('app.name')
+
   return (
     <StyledAppBar currentPlayer={currentPlayer}>
       <MuiAppBar position="static" color="default">
         <Toolbar>
           <Typography variant="h6" color="inherit" className="Title">
-            Checkers Game
+            {appName}
           </Typography>
 
-          <IconButton onClick={underDevelopmentMessage} color="inherit">
+          <IconButton onClick={handleNotify} color="inherit">
             <HelpIcon />
           </IconButton>
         </Toolbar>
@@ -52,6 +59,7 @@ function AppBar({
               style={playerTransitionStyle}
             >
               <Player
+                t={t}
                 player={currentPlayer}
                 currentPlayer={currentPlayer}
                 capturedDiscsCount={capturedDiscsCount}
@@ -84,7 +92,7 @@ const propTypes = {
   /**
    * Callback to display notification
    */
-  underDevelopmentMessage: PropTypes.func.isRequired,
+  notify: PropTypes.func.isRequired,
 
   /**
    * The Player quantity of captured discs
@@ -95,6 +103,11 @@ const propTypes = {
    * The Player quantity of captured kings
    */
   capturedKingDiscsCount: PropTypes.number.isRequired,
+
+  /**
+   * The app translation strings
+   */
+  t: PropTypes.func.isRequired,
 }
 
 function mapStateToProps(state) {
@@ -112,8 +125,9 @@ function mapStateToProps(state) {
 const enhance = compose(
   connect(
     mapStateToProps,
-    {underDevelopmentMessage},
+    {notify},
   ),
+  withNamespaces(),
   setPropTypes(propTypes),
   pure,
 )

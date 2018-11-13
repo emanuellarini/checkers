@@ -35,8 +35,8 @@ export default function(state = initialState, action) {
   }
 }
 
-export const underDevelopmentMessage = () => dispatch => {
-  dispatch(openNotification({message: 'This is still under development!'}))
+export const notify = message => dispatch => {
+  dispatch(openNotification({message}))
 }
 
 export const closeNotification = () => dispatch => {

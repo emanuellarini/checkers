@@ -1,0 +1,24 @@
+{
+  "app": {
+    "name": "Checkers Game",
+    "player": "Player {{player}}"
+  },
+  "notifications": {
+    "help": "The game help guide is under development!"
+  },
+  "hint": {
+    "turn": "hint: you can pass the turn by <b>pressing spacebar</b> after your move"
+  },
+  "winner": {
+    "title": "We have a Winner!",
+    "message": "The current winner is <b>Player {{player}}!</b>",
+    "button": "Play Again"
+  },
+  "statistics": {
+    "captured_discs": "Captured Discs",
+    "captured_kings": "Captured Kings"
+  },
+  "buttons": {
+    "pass_turn": "Pass My Turn"
+  }
+}

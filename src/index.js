@@ -6,6 +6,7 @@ import {Provider} from 'react-redux'
 import createTheme from 'utils/theme'
 import configureStore from './utils/create-store'
 import CssBaseline from '@material-ui/core/CssBaseline'
+import 'utils/i18n'
 // import * as serviceWorker from './serviceWorker';
 
 const theme = createTheme()

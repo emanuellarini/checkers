@@ -17,12 +17,16 @@ import {
   pure,
   setPropTypes,
 } from 'recompose'
+import {withNamespaces} from 'react-i18next'
 
 function Transition(props) {
   return <Slide direction="up" {...props} />
 }
 
-function WinnerAlert({open, player, onClose}) {
+function WinnerAlert({open, player, onClose, t}) {
+  const tTitle = t('winner.title')
+  const tMessage = {__html: t('winner.message', {player})}
+  const tButton = t('winner.button')
   return (
     <Dialog
       open={open}
@@ -32,18 +36,18 @@ function WinnerAlert({open, player, onClose}) {
       aria-describedby="winner-alert-dialog-slide-description"
     >
       <DialogTitle id="winner-alert-dialog-slide-title" disableTypography>
-        <Typography variant="title" align="center">
-          We have a Winner!
+        <Typography variant="h6" align="center" component="h2">
+          {tTitle}
         </Typography>
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="winner-alert-dialog-slide-description">
-          The current winner is <b>Player {player}!</b>
+          <span dangerouslySetInnerHTML={tMessage} />
         </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button variant="contained" fullWidth color="primary" onClick={onClose}>
-          Play Again!
+          {tButton}
         </Button>
       </DialogActions>
     </Dialog>
@@ -65,6 +69,11 @@ const propTypes = {
    * Callback to close modal
    */
   onClose: PropTypes.func.isRequired,
+
+  /**
+   * The translation function
+   */
+  t: PropTypes.func.isRequired,
 }
 
 function mapStateToProps(state) {
@@ -77,6 +86,7 @@ const enhanceWinnerAlert = compose(
   withStateHandlers(({open = true}) => ({open}), {
     onClose: () => () => ({open: false}),
   }),
+  withNamespaces(),
   setPropTypes(propTypes),
 )
 

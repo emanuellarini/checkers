@@ -13,10 +13,11 @@ import {
   onlyUpdateForKeys,
 } from 'recompose'
 import {endTurn} from 'store/movement'
+import {withNamespaces} from 'react-i18next'
 
-function Turn({currentPlayer, canPassTurn, endTurn}) {
+function Turn({currentPlayer, canPassTurn, endTurn, t}) {
   const color = currentPlayer === 1 ? 'primary' : 'secondary'
-
+  const tPassTurn = t('buttons.pass_turn')
   return (
     <Slide
       key={`button-turn-player-${currentPlayer}`}
@@ -33,7 +34,7 @@ function Turn({currentPlayer, canPassTurn, endTurn}) {
         size="large"
         component={StyledTurn}
       >
-        Pass My Turn
+        {tPassTurn}
         <ArrowRight className="Icon" />
       </Button>
     </Slide>
@@ -55,6 +56,11 @@ const propTypes = {
    * Callback to end current player turn
    */
   endTurn: PropTypes.func.isRequired,
+
+  /**
+   * The translations
+   */
+  t: PropTypes.func.isRequired,
 }
 
 function mapStateToProps(state) {
@@ -69,6 +75,7 @@ const enhance = compose(
     mapStateToProps,
     {endTurn},
   ),
+  withNamespaces(),
   withHandlers({
     spacebarPressed: props => e => {
       if (e.code === 'Space') {
