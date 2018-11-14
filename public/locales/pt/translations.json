@@ -15,8 +15,12 @@
     "button": "Jogar Novamente"
   },
   "statistics": {
-    "captured_discs": "Peças Capturadas",
-    "captured_kings": "Damas Capturadas"
+    "captured_discs": "Peças",
+    "captured_kings": "Damas",
+    "wins": "Vitórias",
+    "losses": "Derrotas",
+    "overall": "Geral",
+    "captures": "Capturas"
   },
   "buttons": {
     "pass_turn": "Passar Turno"

@@ -15,8 +15,12 @@
     "button": "Play Again"
   },
   "statistics": {
-    "captured_discs": "Captured Discs",
-    "captured_kings": "Captured Kings"
+    "captured_discs": "Discs",
+    "captured_kings": "Kings",
+    "wins": "Wins",
+    "losses": "Losses",
+    "overall": "Overall",
+    "captures": "Captures"
   },
   "buttons": {
     "pass_turn": "Pass My Turn"

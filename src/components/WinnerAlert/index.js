@@ -13,17 +13,19 @@ import {
   compose,
   renderNothing,
   withStateHandlers,
+  withHandlers,
   branch,
   pure,
   setPropTypes,
 } from 'recompose'
 import {withNamespaces} from 'react-i18next'
+import {restartTheGame} from 'store/index'
 
 function Transition(props) {
   return <Slide direction="up" {...props} />
 }
 
-function WinnerAlert({open, player, onClose, t}) {
+function WinnerAlert({open, player, onClickPlayAgain, t}) {
   const tTitle = t('winner.title')
   const tMessage = {__html: t('winner.message', {player})}
   const tButton = t('winner.button')
@@ -46,7 +48,12 @@ function WinnerAlert({open, player, onClose, t}) {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" fullWidth color="primary" onClick={onClose}>
+        <Button
+          variant="contained"
+          fullWidth
+          color="primary"
+          onClick={onClickPlayAgain}
+        >
           {tButton}
         </Button>
       </DialogActions>
@@ -66,9 +73,9 @@ const propTypes = {
   player: PropTypes.oneOf([null, 1, 2]).isRequired,
 
   /**
-   * Callback to close modal
+   * Callback to restart the game
    */
-  onClose: PropTypes.func.isRequired,
+  onClickPlayAgain: PropTypes.func.isRequired,
 
   /**
    * The translation function
@@ -86,12 +93,21 @@ const enhanceWinnerAlert = compose(
   withStateHandlers(({open = true}) => ({open}), {
     onClose: () => () => ({open: false}),
   }),
+  withHandlers({
+    onClickPlayAgain: props => () => {
+      props.onClose()
+      props.restartTheGame()
+    },
+  }),
   withNamespaces(),
   setPropTypes(propTypes),
 )
 
 const enhance = compose(
-  connect(mapStateToProps),
+  connect(
+    mapStateToProps,
+    {restartTheGame},
+  ),
   branch(props => !props.player, renderNothing, enhanceWinnerAlert),
   pure,
 )

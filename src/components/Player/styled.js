@@ -5,6 +5,7 @@ export default withTheme()(styled.div`
   && {
     color: white;
     width: 100%;
+    max-width: 320px;
     padding: 0 0 ${props => props.theme.spacing.unit * 2}px;
   }
 
@@ -32,22 +33,47 @@ export default withTheme()(styled.div`
     }
 
     &.Body {
-      margin-top: ${props => props.theme.spacing.unit}px;
       display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      flex-wrap: wrap;
+      max-width: 320px;
+
+      .Current,
+      .Overall {
+        flex: 1;
+      }
+
+      .Header {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 4px;
+      }
+
+      .Overall .Statistic {
+        border-right: 1px solid #3c3a3a;
+      }
+
+      .Current .Statistic {
+        border-left: 1px solid #3c3a3a;
+      }
 
       .Statistic {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
         text-align: center;
-        max-width: 90px;
-        padding: 0 ${props => props.theme.spacing.unit / 2}px;
 
-        &.CapturedDiscs {
-          color: #64a2be;
-          border-right: 2px solid #403f3f;
+        > div {
+          padding: 0 ${props => props.theme.spacing.unit * 2}px;
         }
-        &.CapturedKings {
+        .Wins {
+          color: green;
+        }
+        .Losses {
+          color: #da3d3d;
+        }
+        .CapturedDiscs {
+          color: #64a2be;
+        }
+        .CapturedKings {
           color: #beac64;
         }
       }

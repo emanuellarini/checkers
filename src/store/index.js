@@ -1,25 +1,22 @@
-import {combineReducers} from 'redux'
-import turns from './turns'
-import discs from './player/discs'
-import kings from './player/kings'
-import statistics from './player/statistics'
-import movement from './movement'
-import winner from './winner'
-import notification from './notification'
+import appReducer from './app'
+import {incWins, incLosses} from './player/statistics'
+import {createAction} from 'redux-actions'
 
-export default combineReducers({
-  turns,
-  winner,
-  movement,
-  notification,
-  player1: combineReducers({
-    discs: discs(1),
-    kings: kings(1),
-    statistics: statistics(1),
-  }),
-  player2: combineReducers({
-    discs: discs(2),
-    kings: kings(2),
-    statistics: statistics(2),
-  }),
-})
+const PLAY_AGAIN = 'checkers/game/PLAY_AGAIN'
+export const playAgain = createAction(PLAY_AGAIN)
+
+export default function reducer(state = {}, action) {
+  if (action.type === PLAY_AGAIN) {
+    state = undefined
+  }
+
+  return appReducer(state, action)
+}
+
+export const restartTheGame = () => (dispatch, getState) => {
+  const winner = getState().winner.player
+  if (!winner) return false
+  dispatch(playAgain())
+  dispatch(incWins({player: winner}))
+  dispatch(incLosses({player: winner === 1 ? 2 : 1}))
+}

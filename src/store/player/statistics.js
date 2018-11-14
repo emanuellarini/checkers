@@ -4,12 +4,16 @@ const playersTypes = {
     INC_CAPTURE_KINGS: 'checkers/player-1-statistics/INC_CAPTURE_KINGS',
     INC_MULTI_CAPTURE_MOVEMENTS:
       'checkers/player-1-statistics/INC_MULTI_CAPTURE_MOVEMENTS',
+    INC_WINS: 'checkers/player-1-statistics/INC_WINS',
+    INC_LOSSES: 'checkers/player-1-statistics/INC_LOSSES',
   },
   2: {
     INC_CAPTURE_DISCS: 'checkers/player-2-statistics/INC_CAPTURE_DISCS',
     INC_CAPTURE_KINGS: 'checkers/player-2-statistics/INC_CAPTURE_KINGS',
     INC_MULTI_CAPTURE_MOVEMENTS:
       'checkers/player-2-statistics/INC_MULTI_CAPTURE_MOVEMENTS',
+    INC_WINS: 'checkers/player-2-statistics/INC_WINS',
+    INC_LOSSES: 'checkers/player-2-statistics/INC_LOSSES',
   },
 }
 
@@ -36,10 +40,26 @@ export const incMultiCaptureMovements = ({player}) => {
   }
 }
 
+export const incWins = ({player}) => {
+  return {
+    player,
+    type: playersTypes[player].INC_WINS,
+  }
+}
+
+export const incLosses = ({player}) => {
+  return {
+    player,
+    type: playersTypes[player].INC_LOSSES,
+  }
+}
+
 const initialState = {
   capturedDiscsCount: 0,
   capturedKingDiscsCount: 0,
   multiCaptureMovesCount: 0,
+  wins: 0,
+  losses: 0,
 }
 
 export default function(player) {
@@ -67,6 +87,18 @@ export default function(player) {
         return {
           ...state,
           multiCaptureMovesCount: state.multiCaptureMovesCount + 1,
+        }
+      }
+      case playersTypes[action.player].INC_WINS: {
+        return {
+          ...state,
+          wins: state.wins + 1,
+        }
+      }
+      case playersTypes[action.player].INC_LOSSES: {
+        return {
+          ...state,
+          losses: state.losses + 1,
         }
       }
       default:

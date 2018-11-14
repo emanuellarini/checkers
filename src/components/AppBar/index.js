@@ -8,7 +8,6 @@ import Divider from '@material-ui/core/Divider'
 import HelpIcon from '@material-ui/icons/Help'
 import Player from 'components/Player'
 import StyledAppBar from './styled'
-import Slide from '@material-ui/core/Slide'
 import Fade from '@material-ui/core/Fade'
 import Collapse from '@material-ui/core/Collapse'
 import {compose, setPropTypes, pure} from 'recompose'
@@ -21,13 +20,13 @@ function AppBar({
   currentPlayer,
   capturedDiscsCount,
   capturedKingDiscsCount,
+  wins,
+  losses,
   t,
 }) {
   const collapseTimeout = {enter: 350}
-  const playerTimeout = {enter: 150}
   const dividerTimeout = {enter: 250}
-  const playerTransitionStyle = {transitionDelay: 500}
-  const dividerTransitionStyle = {transitionDelay: 650}
+  const dividerTransitionStyle = {transitionDelay: 750}
 
   function handleNotify() {
     return notify(t('notifications.help'))
@@ -49,23 +48,15 @@ function AppBar({
 
         <Collapse in timeout={collapseTimeout} appear>
           <div className="Turns">
-            <Slide
-              in
-              unmountOnExit
-              mountOnEnter
-              direction={currentPlayer === 1 ? 'right' : 'left'}
-              key={'player-' + currentPlayer + '-slide'}
-              timeout={playerTimeout}
-              style={playerTransitionStyle}
-            >
-              <Player
-                t={t}
-                player={currentPlayer}
-                currentPlayer={currentPlayer}
-                capturedDiscsCount={capturedDiscsCount}
-                capturedKingDiscsCount={capturedKingDiscsCount}
-              />
-            </Slide>
+            <Player
+              t={t}
+              wins={wins}
+              losses={losses}
+              player={currentPlayer}
+              currentPlayer={currentPlayer}
+              capturedDiscsCount={capturedDiscsCount}
+              capturedKingDiscsCount={capturedKingDiscsCount}
+            />
             <Fade
               in
               unmountOnExit
@@ -119,6 +110,8 @@ function mapStateToProps(state) {
       state[`player${currentPlayer}`].statistics.capturedDiscsCount,
     capturedKingDiscsCount:
       state[`player${currentPlayer}`].statistics.capturedKingDiscsCount,
+    wins: state[`player${currentPlayer}`].statistics.wins,
+    losses: state[`player${currentPlayer}`].statistics.losses,
   }
 }
 
