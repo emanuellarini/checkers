@@ -30,6 +30,8 @@ jobs:
       working_directory: ~/repo
 
       steps:
+        - checkout
+
         - run:
             name: Execute unit and integration tests
             command: yarn test
@@ -41,6 +43,8 @@ jobs:
     working_directory: ~/repo
 
     steps:
+      - checkout
+
       - run:
           name: Build App
           command: yarn build
