@@ -1,9 +1,13 @@
 const utils = require('../utils/index')
 
-describe('The Game Movements', () => {
-  test('player 1 can move its disc to the upper right square towards opponent', async () => {
-    const page = await utils.initializeBrowser()
+let page
 
+describe('The Game Movements', () => {
+  beforeAll(async () => {
+    page = await utils.initializeBrowser()
+  })
+
+  test('player 1 can move its disc to the upper right square towards opponent', async () => {
     const dropSquare = await page.waitForSelector(
       '[data-testid="board-square-4-3"]',
     )
