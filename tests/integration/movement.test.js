@@ -1,8 +1,8 @@
-import {initializeBrowser} from 'utils/tests'
+const utils = require('../utils/index')
 
 describe('The Game Movements', () => {
   test('player 1 can move its disc to the upper right square towards opponent', async () => {
-    const {page, browser} = await initializeBrowser()
+    const page = await utils.initializeBrowser()
 
     const dropSquare = await page.waitForSelector(
       '[data-testid="board-square-4-3"]',
@@ -30,8 +30,7 @@ describe('The Game Movements', () => {
       '[data-testid="board-square-4-3"]',
       e => e.innerHTML,
     )
-    expect(dropSquareHTML).toContain('disc-player-1-grey2')
 
-    await browser.close()
+    expect(dropSquareHTML).toContain('disc-player-1-grey2')
   })
 })

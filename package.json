@@ -28,16 +28,18 @@
     "docz": "^0.12.9",
     "docz-theme-default": "^0.12.9",
     "husky": "^1.1.2",
+    "jest-puppeteer": "^3.5.1",
     "prettier": "^1.14.3",
     "pretty-quick": "^1.7.0",
-    "react-testing-library": "^5.2.0",
-    "puppeteer": "^1.10.0"
+    "puppeteer": "^1.10.0",
+    "react-testing-library": "^5.2.0"
   },
   "scripts": {
     "start": "NODE_PATH=src/ react-scripts start",
     "build": "NODE_PATH=src/ react-scripts build",
     "test": "NODE_PATH=src/ react-scripts test --env=jsdom",
     "pretty-quick": "pretty-quick",
+    "test:integration": "BROWSER=none jest -c tests/integration/jest.config.js",
     "build:docz": "NODE_PATH=src/ yarn docz dev"
   },
   "eslintConfig": {

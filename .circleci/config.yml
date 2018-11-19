@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  prepare_start:
+  test_build:
     docker:
       - image: circleci/node:10.6.0-browsers
 
@@ -23,32 +23,19 @@ jobs:
 
       - run: yarn start
 
-  test:
+      - run: yarn test
+
+      - run: yarn test:integration
+
+      - run: yarn build
+
+  deploy:
     machine:
       enabled: true
 
     working_directory: ~/repo
 
     steps:
-      - checkout
-
-      - run:
-          name: Execute unit and integration tests
-          command: yarn test
-
-  build_deploy:
-    machine:
-      enabled: true
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
-      - run:
-          name: Build App
-          command: yarn build
-
       - run:
           name: Call Netlify Deploy Hook
           command:
@@ -59,20 +46,13 @@ workflows:
   version: 2
   test-build-deploy:
     jobs:
-      - prepare_start:
+      - test_build:
           filters:
             branches:
               only: master
-      - test:
+      - deploy:
           requires:
-            - prepare_start
-          filters:
-            branches:
-              only: master
-      - build_deploy:
-          requires:
-            - prepare_start
-            - test
+            - build
           filters:
             branches:
               only: master
