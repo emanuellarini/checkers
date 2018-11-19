@@ -52,7 +52,7 @@ workflows:
               only: master
       - deploy:
           requires:
-            - build
+            - test_build
           filters:
             branches:
               only: master
