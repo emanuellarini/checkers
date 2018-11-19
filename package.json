@@ -10,7 +10,6 @@
     "i18next-xhr-backend": "^1.5.1",
     "lodash": "^4.17.11",
     "prop-types": "^15.6.2",
-    "puppeteer": "^1.10.0",
     "react": "^16.5.2",
     "react-beautiful-dnd": "^10.0.0yarn -",
     "react-dom": "^16.5.2",
@@ -31,7 +30,8 @@
     "husky": "^1.1.2",
     "prettier": "^1.14.3",
     "pretty-quick": "^1.7.0",
-    "react-testing-library": "^5.2.0"
+    "react-testing-library": "^5.2.0",
+    "puppeteer": "^1.10.0"
   },
   "scripts": {
     "start": "NODE_PATH=src/ react-scripts start",
