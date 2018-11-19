@@ -21,7 +21,10 @@ jobs:
             - node_modules
           key: dependencies-{{ checksum "yarn.lock" }}
 
-      - run: yarn start
+      - run:
+          name: Background the app
+          command: yarn start
+          background: true
 
       - run: yarn test
 
