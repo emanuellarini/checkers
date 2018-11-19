@@ -27,14 +27,14 @@ jobs:
     machine:
       enabled: true
 
-      working_directory: ~/repo
+    working_directory: ~/repo
 
-      steps:
-        - checkout
+    steps:
+      - checkout
 
-        - run:
-            name: Execute unit and integration tests
-            command: yarn test
+      - run:
+          name: Execute unit and integration tests
+          command: yarn test
 
   build_deploy:
     machine:
