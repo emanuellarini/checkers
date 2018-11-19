@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  prepare_start:
     docker:
       - image: circleci/node:10.6.0-browsers
 
@@ -21,22 +21,30 @@ jobs:
             - node_modules
           key: dependencies-{{ checksum "yarn.lock" }}
 
-      - run:
-          name: Background the app
-          command: yarn start
-          background: true
+      - run: yarn start
 
-      - run: yarn test
+  test:
+    machine:
+      enabled: true
 
-      - run: yarn build
+      working_directory: ~/repo
 
-  deploy:
+      steps:
+        - run:
+            name: Execute unit and integration tests
+            command: yarn test
+
+  build_deploy:
     machine:
       enabled: true
 
     working_directory: ~/repo
 
     steps:
+      - run:
+          name: Build App
+          command: yarn build
+
       - run:
           name: Call Netlify Deploy Hook
           command:
@@ -47,13 +55,20 @@ workflows:
   version: 2
   test-build-deploy:
     jobs:
-      - build:
+      - prepare_start:
           filters:
             branches:
               only: master
-      - deploy:
+      - test:
           requires:
-            - build
+            - prepare_start
+          filters:
+            branches:
+              only: master
+      - build_deploy:
+          requires:
+            - prepare_start
+            - test
           filters:
             branches:
               only: master
