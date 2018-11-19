@@ -21,8 +21,6 @@ jobs:
             - node_modules
           key: dependencies-{{ checksum "yarn.lock" }}
 
-      - run: yarn start
-
       - run: yarn test
 
       - run: yarn test:integration
