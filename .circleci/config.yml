@@ -16,14 +16,16 @@ jobs:
 
       - run: yarn
 
-      - run: |
-          yarn test
-          yarn build
-
       - save_cache:
           paths:
             - node_modules
           key: dependencies-{{ checksum "yarn.lock" }}
+
+      - run: |
+          yarn start
+          yarn test
+
+      - run: yarn build
 
   deploy:
     machine:
