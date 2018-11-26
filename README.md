@@ -14,17 +14,25 @@
    $ yarn
    ```
 
-3. **Run**:
+3. **Start Application**:
 
    ```sh
    $ yarn start
    ```
 
-4. **Run Tests**
+## Tests
 
-   ```sh
-   $ yarn test
-   ```
+**Run Unit Tests**
+
+```sh
+$ yarn test
+```
+
+**Run Integration Tests**
+
+```sh
+$ yarn test:integration
+```
 
 ## Intro
 
@@ -34,7 +42,7 @@ Follow the process on [Trello](https://trello.com/b/mjk3IU7g/checkers-board)
 
 **You can check the Game at [Netlify](https://checkers-game.netlify.com/)**
 
-_OBS: Rules can change based on my mood :stuck_out_tongue_winking_eye:_
+_OBS: Rules can change based on my mood_ :stuck_out_tongue_winking_eye:
 
 ## Game Description
 
