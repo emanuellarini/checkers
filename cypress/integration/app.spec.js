@@ -4,6 +4,6 @@ describe('App', () => {
   });
 
   it('Initial testing', () => {
-    cy.get('header').contains('Learn React');
+    cy.get('header').contains('Checkers Game');
   });
 });
