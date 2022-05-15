@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { Container, ThemeProvider, CssBaseline } from '@mui/material';
+import { Paper, ThemeProvider, CssBaseline } from '@mui/material';
 
-import { Header } from './components';
+import { Header, Board } from './components';
 import { theme } from './lib/theme';
 
 function App() {
@@ -10,7 +10,25 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Header />
-      <Container></Container>
+      <Paper
+        elevation={4}
+        sx={{
+          mt: 4,
+          mb: 4,
+          ml: 'auto',
+          mr: 'auto',
+          maxWidth: '50vh',
+          maxHeight: '50vh',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(8, 1fr)',
+          gridAutoRows: 'calc(100% / 8)',
+          gridAutoColumns: 'calc(100% / 8)',
+          justifyContent: 'center',
+          border: '1.25em ridge #492510'
+        }}
+      >
+        <Board />
+      </Paper>
     </ThemeProvider>
   );
 }
