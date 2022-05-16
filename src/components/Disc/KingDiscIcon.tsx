@@ -7,9 +7,11 @@ export const KingDiscIcon = () => {
     <SvgIcon
       viewBox="0 0 1024 1024"
       sx={{
-        width: '60%',
-        height: '60%',
-        mr: 0.2 // fixing position
+        position: 'absolute',
+        top: '15%',
+        left: '14%',
+        width: '70%',
+        height: '70%'
       }}
     >
       <path
