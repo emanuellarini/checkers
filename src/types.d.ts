@@ -1,12 +1,8 @@
-import '@material-ui/core/styles';
+type Player = {
+  wins: number;
+  losses: number;
+  captured: number;
+  captures: number;
+};
 
-declare module '@mui/material/styles' {
-  interface Palette {
-    player1: Palette['primary'];
-    player2: Palette['primary'];
-  }
-  interface PaletteOptions {
-    player1: PaletteOptions['primary'];
-    player2: PaletteOptions['primary'];
-  }
-}
+type Discs = { [k: string]: number };

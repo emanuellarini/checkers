@@ -3,6 +3,7 @@ import React from 'react';
 import { Paper, Container, ThemeProvider, CssBaseline } from '@mui/material';
 
 import { Header, Board } from './components';
+import { GameProvider } from './context';
 import { theme } from './lib/theme';
 
 function App() {
@@ -21,7 +22,9 @@ function App() {
             border: '1.25em ridge #492510'
           }}
         >
-          <Board />
+          <GameProvider>
+            <Board />
+          </GameProvider>
         </Paper>
       </Container>
     </ThemeProvider>

@@ -1,51 +1,81 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 
 import { Paper } from '@mui/material';
 
+import { useGame } from '../../hooks';
+import { getPlayerId } from '../../lib/disc';
 import { KingDiscIcon } from './KingDiscIcon';
 
 export type DiscProps = {
-  player: 1 | 2;
-  isKing?: boolean;
-  index: number;
+  position: number;
 };
 
-export const Disc: React.FC<DiscProps> = memo(
-  ({ index, player = 1, isKing = false }) => (
-    <Draggable draggableId={`disc-${index}`} index={index}>
-      {(provided, snapshot) => {
-        return (
-          <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
+export const Disc: React.FC<DiscProps> = memo(({ position }) => {
+  const { discs, turn } = useGame();
+
+  const { player, disc } = useMemo(() => {
+    const discKey = Object.keys(discs).find(id => discs[id] === position);
+
+    if (discKey) {
+      return {
+        player: getPlayerId(discKey),
+        disc: {
+          key: discKey,
+          position: discs[discKey]
+        }
+      };
+    }
+
+    return {
+      player: null,
+      disc: null
+    };
+  }, [discs, position]);
+
+  if (!player || !disc) return null;
+
+  return (
+    <Draggable
+      draggableId={disc.key}
+      index={disc.position}
+      isDragDisabled={turn !== player}
+    >
+      {(provided, snapshot) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          style={{
+            ...provided.draggableProps.style,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <Paper
+            elevation={snapshot.isDragging ? 24 : 6}
+            component="div"
+            aria-label="Disc"
+            sx={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: `player${player}.main`,
+              pb: '90%',
+              width: '90%',
+              m: '5%',
+              border: 1,
+              borderRadius: '50%',
+              borderColor: 'common.white',
+              borderStyle: 'double'
+            }}
           >
-            <Paper
-              elevation={snapshot.isDragging ? 24 : 6}
-              component="div"
-              aria-label="Disc"
-              sx={{
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: `player${player}.main`,
-                pb: '70%',
-                width: '70%',
-                top: 0,
-                left: 0,
-                border: 1,
-                borderRadius: '50%',
-                borderColor: 'common.white',
-                borderStyle: 'double'
-              }}
-            >
-              {isKing && <KingDiscIcon />}
-            </Paper>
-          </div>
-        );
-      }}
+            {disc.key.startsWith('king') && <KingDiscIcon />}
+          </Paper>
+        </div>
+      )}
     </Draggable>
-  )
-);
+  );
+});
