@@ -17,13 +17,12 @@ import { Square } from '../Square';
 export const Board = () => {
   const {
     discs,
-    turn,
     squares,
     onSetDiscNewCoordinates,
-    onSetTurn,
     onSetIsDroppable,
     onSetUndroppableInAll,
-    onSetCapturedDisc
+    onSetCapturedDisc,
+    onIncrementTurnMovements
   } = useGame();
 
   const handleDragStart = useCallback<OnDragStartResponder>(
@@ -43,7 +42,7 @@ export const Board = () => {
         onSetIsDroppable(p);
       });
     },
-    [onSetUndroppableInAll, onSetIsDroppable, discs, turn, squares]
+    [onSetUndroppableInAll, onSetIsDroppable, discs, squares]
   );
 
   const handleDragEnd = useCallback<OnDragEndResponder>(
@@ -72,9 +71,14 @@ export const Board = () => {
         onSetCapturedDisc(capturedDisc);
       }
 
-      onSetTurn(prevState => (prevState === 1 ? 2 : 1));
+      onIncrementTurnMovements();
     },
-    [onSetCapturedDisc, onSetDiscNewCoordinates, discs, onSetTurn]
+    [
+      onSetCapturedDisc,
+      onSetDiscNewCoordinates,
+      discs,
+      onIncrementTurnMovements
+    ]
   );
 
   return (

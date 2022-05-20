@@ -1,11 +1,4 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  createContext,
-  useReducer,
-  useCallback,
-  useState
-} from 'react';
+import React, { createContext, useReducer, useCallback, useState } from 'react';
 
 import {
   DiscsStateType,
@@ -35,7 +28,8 @@ type GameContext = {
   onSetIsDroppable: (payload: SetIsDroppable['payload']) => void;
   onSetCapturedDisc: (payload: SetIsCaptured['payload']) => void;
   onSetUndroppableInAll: () => void;
-  onSetTurn: Dispatch<SetStateAction<number>>;
+  onIncrementTurnMovements: () => void;
+  onEndTurn: () => void;
 };
 
 const initialContext: GameContext = {
@@ -47,7 +41,8 @@ const initialContext: GameContext = {
   onSetIsDroppable: () => null,
   onSetCapturedDisc: () => null,
   onSetUndroppableInAll: () => null,
-  onSetTurn: () => null
+  onIncrementTurnMovements: () => null,
+  onEndTurn: () => null
 };
 
 export const GameContext = createContext(initialContext);
@@ -55,7 +50,10 @@ export const GameContext = createContext(initialContext);
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
-  const [players] = useReducer(playersReducer, initialContext.players);
+  const [players, playersDispatch] = useReducer(
+    playersReducer,
+    initialContext.players
+  );
   const [squares, squaresDispatch] = useReducer(
     squaresReducer,
     initialContext.squares
@@ -95,6 +93,18 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
     []
   );
 
+  const onIncrementTurnMovements = useCallback(() => {
+    playersDispatch({ type: 'INCREMENT_TURN_MOVEMENT', payload: turn });
+  }, [turn]);
+
+  const onEndTurn = useCallback(() => {
+    onSetTurn(turn === 1 ? 2 : 1);
+    playersDispatch({
+      type: 'RESET_TURN_MOVEMENT',
+      payload: turn
+    });
+  }, [onSetTurn, turn]);
+
   return (
     <GameContext.Provider
       value={{
@@ -106,7 +116,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         onSetIsDroppable,
         onSetCapturedDisc,
         onSetUndroppableInAll,
-        onSetTurn
+        onIncrementTurnMovements,
+        onEndTurn
       }}
     >
       {children}
