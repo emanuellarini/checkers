@@ -11,7 +11,8 @@ import {
   DiscsStateType,
   discsReducer,
   discsInitialState,
-  SetDiscNewCoordinates
+  SetDiscNewCoordinates,
+  SetIsCaptured
 } from './discsReducer';
 import {
   playersInitialState,
@@ -32,6 +33,7 @@ type GameContext = {
   discs: DiscsStateType;
   onSetDiscNewCoordinates: (payload: SetDiscNewCoordinates['payload']) => void;
   onSetIsDroppable: (payload: SetIsDroppable['payload']) => void;
+  onSetCapturedDisc: (payload: SetIsCaptured['payload']) => void;
   onSetUndroppableInAll: () => void;
   onSetTurn: Dispatch<SetStateAction<number>>;
 };
@@ -43,6 +45,7 @@ const initialContext: GameContext = {
   discs: discsInitialState,
   onSetDiscNewCoordinates: () => null,
   onSetIsDroppable: () => null,
+  onSetCapturedDisc: () => null,
   onSetUndroppableInAll: () => null,
   onSetTurn: () => null
 };
@@ -85,6 +88,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   }, []);
 
+  const onSetCapturedDisc = useCallback<GameContext['onSetCapturedDisc']>(
+    payload => {
+      discsDispatch({ type: 'SET_CAPTURED_DISC', payload });
+    },
+    []
+  );
+
   return (
     <GameContext.Provider
       value={{
@@ -94,6 +104,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         discs,
         onSetDiscNewCoordinates,
         onSetIsDroppable,
+        onSetCapturedDisc,
         onSetUndroppableInAll,
         onSetTurn
       }}

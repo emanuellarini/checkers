@@ -7,6 +7,10 @@ import {
 
 import { useGame } from '../../hooks';
 import { getPlayerId } from '../../lib/disc';
+import {
+  calculatePlayerMovablePositions,
+  getCapturedDisc
+} from '../../lib/movement';
 import { Disc } from '../Disc';
 import { Square } from '../Square';
 
@@ -18,38 +22,28 @@ export const Board = () => {
     onSetDiscNewCoordinates,
     onSetTurn,
     onSetIsDroppable,
-    onSetUndroppableInAll
+    onSetUndroppableInAll,
+    onSetCapturedDisc
   } = useGame();
 
   const handleDragStart = useCallback<OnDragStartResponder>(
     ({ draggableId }) => {
+      onSetUndroppableInAll();
+
       const discPosition = discs[draggableId];
       const player = getPlayerId(draggableId);
-      if (player === 1) {
-        const upperLeft = discPosition - 7;
-        squares.hasOwnProperty(upperLeft) &&
-          !Object.values(discs).some(p => p === upperLeft) &&
-          onSetIsDroppable(upperLeft);
+      const movablePositions = calculatePlayerMovablePositions(
+        player,
+        discs,
+        squares,
+        discPosition
+      );
 
-        const upperRight = discPosition - 9;
-        squares.hasOwnProperty(upperRight) && // possible move
-          !Object.values(discs).some(p => p === upperRight) && // no disc there
-          onSetIsDroppable(upperRight);
-      }
-
-      if (player === 2) {
-        const lowerLeft = discPosition + 7;
-        squares.hasOwnProperty(lowerLeft) &&
-          !Object.values(discs).some(p => p === lowerLeft) &&
-          onSetIsDroppable(lowerLeft);
-
-        const lowerRight = discPosition + 9;
-        squares.hasOwnProperty(lowerRight) && // possible move
-          !Object.values(discs).some(p => p === lowerRight) && // no disc there
-          onSetIsDroppable(lowerRight);
-      }
+      movablePositions.forEach(p => {
+        onSetIsDroppable(p);
+      });
     },
-    [onSetIsDroppable, discs, turn, squares]
+    [onSetUndroppableInAll, onSetIsDroppable, discs, turn, squares]
   );
 
   const handleDragEnd = useCallback<OnDragEndResponder>(
@@ -69,10 +63,18 @@ export const Board = () => {
         newPosition: Number(position)
       });
 
+      const capturedDisc = getCapturedDisc(
+        discs,
+        draggableId,
+        Number(position)
+      );
+      if (capturedDisc) {
+        onSetCapturedDisc(capturedDisc);
+      }
+
       onSetTurn(prevState => (prevState === 1 ? 2 : 1));
-      onSetUndroppableInAll();
     },
-    [onSetDiscNewCoordinates, onSetTurn, onSetUndroppableInAll]
+    [onSetCapturedDisc, onSetDiscNewCoordinates, discs, onSetTurn]
   );
 
   return (

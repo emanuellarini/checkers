@@ -1,5 +1,4 @@
-// boolean states for movable
-export type SquaresStateType = { [k: number]: boolean };
+export type SquaresStateType = Squares;
 
 export const squaresInitialState: SquaresStateType = {
   1: false,

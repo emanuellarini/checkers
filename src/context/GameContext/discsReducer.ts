@@ -37,7 +37,12 @@ export type SetDiscNewCoordinates = {
   };
 };
 
-export type DiscsActionType = SetDiscNewCoordinates;
+export type SetIsCaptured = {
+  type: 'SET_CAPTURED_DISC';
+  payload: string; // disc id
+};
+
+export type DiscsActionType = SetDiscNewCoordinates | SetIsCaptured;
 
 export const discsReducer = (
   state: DiscsStateType,
@@ -49,6 +54,12 @@ export const discsReducer = (
       ...state,
       [discId]: newPosition
     };
+  }
+
+  if (action.type === 'SET_CAPTURED_DISC') {
+    const newDiscs = { ...state };
+    delete newDiscs[action.payload];
+    return newDiscs;
   }
 
   return state;
