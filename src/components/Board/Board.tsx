@@ -18,6 +18,8 @@ export const Board = () => {
   const {
     discs,
     squares,
+    players,
+    turn,
     onSetDiscNewCoordinates,
     onSetIsDroppable,
     onSetUndroppableInAll,
@@ -28,6 +30,8 @@ export const Board = () => {
   const handleDragStart = useCallback<OnDragStartResponder>(
     ({ draggableId }) => {
       onSetUndroppableInAll();
+
+      if (players[turn].turnMovements > 0) return;
 
       const discPosition = discs[draggableId];
       const player = getPlayerId(draggableId);
@@ -42,7 +46,7 @@ export const Board = () => {
         onSetIsDroppable(p);
       });
     },
-    [onSetUndroppableInAll, onSetIsDroppable, discs, squares]
+    [onSetUndroppableInAll, onSetIsDroppable, discs, squares, players, turn]
   );
 
   const handleDragEnd = useCallback<OnDragEndResponder>(
@@ -67,6 +71,7 @@ export const Board = () => {
         draggableId,
         Number(position)
       );
+
       if (capturedDisc) {
         onSetCapturedDisc(capturedDisc);
       }

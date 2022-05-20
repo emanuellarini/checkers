@@ -54,15 +54,14 @@ export const getCapturedDisc = (
   newPosition: number
 ): string | undefined => {
   const currentPosition = discs[discId];
-  const player = getPlayerId(discId);
-  const middlePosition = newPosition - currentPosition;
+  const distance = newPosition - currentPosition;
 
-  if (middlePosition !== 14 && middlePosition !== -14) return undefined;
+  // did a jump over
+  if (![-18, -14, 14, 18].includes(distance)) return undefined;
 
   return Object.keys(discs).find(
     key =>
-      (discs[key] === Number(newPosition) + 7 ||
-        discs[key] === Number(newPosition) - 7) &&
-      getPlayerId(key) !== player
+      discs[key] === newPosition - distance / 2 &&
+      getPlayerId(key) !== getPlayerId(discId)
   );
 };

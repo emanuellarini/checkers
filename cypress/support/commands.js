@@ -24,7 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('dragAndDrop', (subject, target) => {
+Cypress.Commands.add('dragAndDrop', (subject, target, passTurn = false) => {
   Cypress.log({
     name: 'DRAGNDROP',
     message: `Dragging element ${subject} to ${target}`,
@@ -35,7 +35,7 @@ Cypress.Commands.add('dragAndDrop', (subject, target) => {
       };
     }
   });
-  const BUTTON_INDEX = 0;
+
   const SLOPPY_CLICK_THRESHOLD = 10;
   cy.get(target)
     .first()
@@ -47,28 +47,36 @@ Cypress.Commands.add('dragAndDrop', (subject, target) => {
           const coordsDrag = subject[0].getBoundingClientRect();
           cy.wrap(subject)
             .trigger('mousedown', {
-              button: BUTTON_INDEX,
+              button: 0,
+              which: 1,
               clientX: coordsDrag.x,
               clientY: coordsDrag.y,
               force: true
             })
             .trigger('mousemove', {
-              button: BUTTON_INDEX,
+              button: 0,
               clientX: coordsDrag.x + SLOPPY_CLICK_THRESHOLD,
               clientY: coordsDrag.y,
-              force: true,
-              tick: 200
+              force: true
             });
-
+          cy.wait(800);
           cy.get('body')
             .trigger('mousemove', {
-              button: BUTTON_INDEX,
+              button: 0,
               clientX: coordsDrop.x,
               clientY: coordsDrop.y,
               force: true
             })
             .trigger('mouseup');
         });
-    })
-    .wait(500);
+    });
+
+  cy.wait(800);
+
+  if (passTurn) {
+    cy.get('#root').trigger('keydown', {
+      code: 'Space',
+      force: true
+    });
+  }
 });
