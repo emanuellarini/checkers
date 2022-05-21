@@ -9,7 +9,8 @@ import { useGame } from '../../hooks';
 import { getPlayerId } from '../../lib/disc';
 import {
   calculatePlayerMovablePositions,
-  getCapturedDisc
+  getCapturedDisc,
+  calculatePlayerMovablePositionsWhenMultiCapturing
 } from '../../lib/movement';
 import { Disc } from '../Disc';
 import { Square } from '../Square';
@@ -30,17 +31,25 @@ export const Board = () => {
   const handleDragStart = useCallback<OnDragStartResponder>(
     ({ draggableId }) => {
       onSetUndroppableInAll();
-
-      if (players[turn].turnMovements > 0) return;
-
-      const discPosition = discs[draggableId];
       const player = getPlayerId(draggableId);
-      const movablePositions = calculatePlayerMovablePositions(
-        player,
-        discs,
-        squares,
-        discPosition
-      );
+      const discPosition = discs[draggableId];
+      let movablePositions;
+
+      if (players[turn].turnMovements > 0) {
+        movablePositions = calculatePlayerMovablePositionsWhenMultiCapturing(
+          player,
+          discs,
+          squares,
+          discPosition
+        );
+      } else {
+        movablePositions = calculatePlayerMovablePositions(
+          player,
+          discs,
+          squares,
+          discPosition
+        );
+      }
 
       movablePositions.forEach(p => {
         onSetIsDroppable(p);
