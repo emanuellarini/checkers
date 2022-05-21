@@ -1,112 +1,93 @@
-import { getPlayerId } from './disc';
-
-const getPositions = (player: number, discPosition: number) => ({
-  upperLeft: player === 1 ? discPosition - 7 : discPosition + 7,
-  upperRight: player === 1 ? discPosition - 9 : discPosition + 9,
-  twoUpperLeft: player === 1 ? discPosition - 14 : discPosition + 14,
-  twoUpperRight: player === 1 ? discPosition - 18 : discPosition + 18
+const getPositions = (player: number, position: Position) => ({
+  upperLeft: String(player === 1 ? +position - 7 : +position + 7),
+  upperRight: String(player === 1 ? +position - 9 : +position + 9),
+  twoUpperLeft: String(player === 1 ? +position - 14 : +position + 14),
+  twoUpperRight: String(player === 1 ? +position - 18 : +position + 18)
 });
 
 export const calculatePlayerMovablePositions = (
   player: number,
-  discs: Discs,
-  squares: Squares,
-  discPosition: number
-): number[] => {
-  const possibleMoves = [];
+  board: Board,
+  position: Position
+) => {
+  const possibleMoves: string[] = [];
 
   // player 1 goes up and player 2 goes down when moving!
   const { upperLeft, upperRight, twoUpperLeft, twoUpperRight } = getPositions(
     player,
-    discPosition
+    position
   );
 
-  // see if square is dark square (able to receive a disc)
-  // if (squares.hasOwnProperty(upperLeft)) {
-  const upperLeftDiscId = Object.keys(discs).find(
-    key => discs[key] === upperLeft
-  );
-  // has no disc on it, safe to move
-  if (!upperLeftDiscId) {
+  const boardUpperLeft = board[upperLeft];
+  const boardUpperRight = board[upperRight];
+  const boardTwoUpperLeft = board[twoUpperLeft];
+  const boardTwoUpperRight = board[twoUpperRight];
+
+  // does not contain a disc in the destination
+  if (!boardUpperLeft?.disc) {
     possibleMoves.push(upperLeft);
+    // does not contain a disc in the destination
+    // and has a disc in the intermediary diagonal square which belongs to another player
   } else if (
-    // has a disc on it, need to check if it's a capture movement
-    // squares.hasOwnProperty(twoUpperLeft) && // safe to move
-    getPlayerId(upperLeftDiscId) !== player // disc from other player
+    !boardTwoUpperLeft?.disc &&
+    boardUpperLeft?.disc?.player !== player
   ) {
     possibleMoves.push(twoUpperLeft);
   }
-  // }
 
-  // if (squares.hasOwnProperty(upperRight)) {
-  const upperRightDiscId = Object.keys(discs).find(
-    key => discs[key] === upperRight
-  );
-  if (!upperRightDiscId) {
+  if (!boardUpperRight?.disc) {
     possibleMoves.push(upperRight);
   } else if (
-    // squares.hasOwnProperty(twoUpperRight) &&
-    getPlayerId(upperRightDiscId) !== player
+    !boardTwoUpperRight?.disc &&
+    boardUpperRight?.disc?.player !== player
   ) {
     possibleMoves.push(twoUpperRight);
   }
-  // }
 
   return possibleMoves;
 };
 
-export const getCapturedDisc = (
-  discs: Discs,
-  discId: string,
-  newPosition: number
+export const getCapturedDiscPosition = (
+  board: Board,
+  currentPosition: Position,
+  newPosition: Position
 ): string | undefined => {
-  const currentPosition = discs[discId];
-  const distance = newPosition - currentPosition;
+  const distance = String(+newPosition - +currentPosition);
 
-  // did a jump over
-  if (![-18, -14, 14, 18].includes(distance)) return undefined;
+  const middlePosition = String((+newPosition + +currentPosition) / 2);
 
-  return Object.keys(discs).find(
-    key =>
-      discs[key] === newPosition - distance / 2 &&
-      getPlayerId(key) !== getPlayerId(discId)
-  );
+  // these numbers mean the disc has jump over
+  // no need to check if the disc belongs to te opposite player here
+  // because we already did that in possible moves fn
+  if (
+    !['-18', '-14', '14', '18'].includes(distance) ||
+    !board[middlePosition]?.disc
+  )
+    return undefined;
+
+  return middlePosition;
 };
 
 export const calculatePlayerMovablePositionsWhenMultiCapturing = (
   player: number,
-  discs: Discs,
-  squares: Squares,
-  discPosition: number
+  board: Board,
+  position: Position
 ) => {
-  const possibleMoves = [];
+  const possibleMoves: string[] = [];
   const { upperLeft, upperRight, twoUpperLeft, twoUpperRight } = getPositions(
     player,
-    discPosition
+    position
   );
+  const boardUpperLeft = board[upperLeft];
+  const boardUpperRight = board[upperRight];
+  const boardTwoUpperLeft = board[twoUpperLeft];
+  const boardTwoUpperRight = board[twoUpperRight];
 
-  // see if square is dark square (able to receive a disc)
-  const upperLeftDiscId = Object.keys(discs).find(
-    key => discs[key] === upperLeft
-  );
-  if (
-    // squares.hasOwnProperty(upperLeft) &&
-    // squares.hasOwnProperty(twoUpperLeft) &&
-    upperLeftDiscId &&
-    getPlayerId(upperLeftDiscId) !== player
-  ) {
+  if (boardUpperLeft?.disc?.player !== player && !boardTwoUpperLeft?.disc) {
     possibleMoves.push(twoUpperLeft);
   }
 
-  const upperRightDiscId = Object.keys(discs).find(
-    key => discs[key] === upperRight
-  );
-  if (
-    // squares.hasOwnProperty(upperRight) &&
-    // squares.hasOwnProperty(twoUpperRight) &&
-    upperRightDiscId &&
-    getPlayerId(upperRightDiscId) !== player
-  ) {
+  if (boardUpperRight?.disc?.player !== player && !boardTwoUpperRight?.disc) {
     possibleMoves.push(twoUpperRight);
   }
 

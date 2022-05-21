@@ -6,22 +6,19 @@ import {
 } from 'react-beautiful-dnd';
 
 import { useGame } from '../../hooks';
-import { getPlayerId } from '../../lib/disc';
 import {
   calculatePlayerMovablePositions,
-  getCapturedDisc,
+  getCapturedDiscPosition,
   calculatePlayerMovablePositionsWhenMultiCapturing
 } from '../../lib/movement';
-import { Disc } from '../Disc';
 import { Square } from '../Square';
 
 export const Board = () => {
   const {
-    discs,
-    squares,
+    board,
     players,
     turn,
-    onSetDiscNewCoordinates,
+    onMoveDisc,
     onSetIsDroppable,
     onSetUndroppableInAll,
     onSetCapturedDisc,
@@ -31,23 +28,20 @@ export const Board = () => {
   const handleDragStart = useCallback<OnDragStartResponder>(
     ({ draggableId }) => {
       onSetUndroppableInAll();
-      const player = getPlayerId(draggableId);
-      const discPosition = discs[draggableId];
+      const [, position] = draggableId.split('/');
       let movablePositions;
 
       if (players[turn].turnMovements > 0) {
         movablePositions = calculatePlayerMovablePositionsWhenMultiCapturing(
-          player,
-          discs,
-          squares,
-          discPosition
+          turn,
+          board,
+          position
         );
       } else {
         movablePositions = calculatePlayerMovablePositions(
-          player,
-          discs,
-          squares,
-          discPosition
+          turn,
+          board,
+          position
         );
       }
 
@@ -55,11 +49,11 @@ export const Board = () => {
         onSetIsDroppable(p);
       });
     },
-    [onSetUndroppableInAll, onSetIsDroppable, discs, squares, players, turn]
+    [onSetUndroppableInAll, onSetIsDroppable, board, players, turn]
   );
 
   const handleDragEnd = useCallback<OnDragEndResponder>(
-    ({ destination, source, draggableId }) => {
+    ({ destination, source }) => {
       if (
         !destination ||
         !source ||
@@ -68,39 +62,37 @@ export const Board = () => {
       )
         return;
 
-      const [, position] = destination.droppableId.split('-');
+      const [, currentPosition] = source.droppableId.split('-');
+      const [, newPosition] = destination.droppableId.split('-');
 
-      onSetDiscNewCoordinates({
-        discId: draggableId,
-        newPosition: Number(position)
+      onMoveDisc({
+        currentPosition,
+        newPosition
       });
 
-      const capturedDisc = getCapturedDisc(
-        discs,
-        draggableId,
-        Number(position)
+      const capturedPosition = getCapturedDiscPosition(
+        board,
+        currentPosition,
+        newPosition
       );
 
-      if (capturedDisc) {
-        onSetCapturedDisc(capturedDisc);
+      if (capturedPosition) {
+        onSetCapturedDisc(capturedPosition);
       }
 
       onIncrementTurnMovements();
     },
-    [
-      onSetCapturedDisc,
-      onSetDiscNewCoordinates,
-      discs,
-      onIncrementTurnMovements
-    ]
+    [onIncrementTurnMovements, onMoveDisc, onSetCapturedDisc, board]
   );
 
   return (
     <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
-      {Array.from({ length: 64 }).map((_, p) => (
-        <Square key={`square-${p}`} position={p}>
-          <Disc key={`disc-${p}`} position={p} />
-        </Square>
+      {Object.keys(board).map(position => (
+        <Square
+          {...board[position]}
+          key={`square-${position}`}
+          position={position}
+        />
       ))}
     </DragDropContext>
   );

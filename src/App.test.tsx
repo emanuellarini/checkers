@@ -15,7 +15,7 @@ describe('App', () => {
 
       // board
       const discs = screen.getAllByLabelText('Disc');
-      expect(discs.length).toEqual(64);
+      expect(discs.length).toEqual(24);
 
       const squares = screen.getAllByLabelText('Square');
       expect(squares.length).toEqual(64);

@@ -1,32 +1,26 @@
 import React, { createContext, useReducer, useCallback, useState } from 'react';
 
 import {
-  DiscsStateType,
-  discsReducer,
-  discsInitialState,
-  SetDiscNewCoordinates,
-  SetIsCaptured
-} from './discsReducer';
+  boardInitialState,
+  boardReducer,
+  BoardStateType,
+  MoveDisc,
+  RemoveDisc,
+  SetIsDroppable
+} from './boardReducer';
 import {
   playersInitialState,
   playersReducer,
   PlayersStateType
 } from './playersReducer';
-import {
-  SquaresStateType,
-  squaresInitialState,
-  squaresReducer,
-  SetIsDroppable
-} from './squaresReducer';
 
 type GameContext = {
   turn: number;
   players: PlayersStateType;
-  squares: SquaresStateType;
-  discs: DiscsStateType;
-  onSetDiscNewCoordinates: (payload: SetDiscNewCoordinates['payload']) => void;
+  board: BoardStateType;
+  onMoveDisc: (payload: MoveDisc['payload']) => void;
   onSetIsDroppable: (payload: SetIsDroppable['payload']) => void;
-  onSetCapturedDisc: (payload: SetIsCaptured['payload']) => void;
+  onSetCapturedDisc: (payload: RemoveDisc['payload']) => void;
   onSetUndroppableInAll: () => void;
   onIncrementTurnMovements: () => void;
   onEndTurn: () => void;
@@ -35,9 +29,8 @@ type GameContext = {
 const initialContext: GameContext = {
   turn: 1,
   players: playersInitialState,
-  squares: squaresInitialState,
-  discs: discsInitialState,
-  onSetDiscNewCoordinates: () => null,
+  board: boardInitialState,
+  onMoveDisc: () => null,
   onSetIsDroppable: () => null,
   onSetCapturedDisc: () => null,
   onSetUndroppableInAll: () => null,
@@ -54,25 +47,19 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
     playersReducer,
     initialContext.players
   );
-  const [squares, squaresDispatch] = useReducer(
-    squaresReducer,
-    initialContext.squares
-  );
-  const [discs, discsDispatch] = useReducer(discsReducer, initialContext.discs);
+  const [board, boardDispatch] = useReducer(boardReducer, initialContext.board);
   const [turn, onSetTurn] = useState<GameContext['turn']>(initialContext.turn);
 
-  const onSetDiscNewCoordinates = useCallback<
-    GameContext['onSetDiscNewCoordinates']
-  >(payload => {
-    discsDispatch({
-      type: 'SET_DISC_NEW_COORDINATES',
+  const onMoveDisc = useCallback<GameContext['onMoveDisc']>(payload => {
+    boardDispatch({
+      type: 'MOVE_DISC',
       payload
     });
   }, []);
 
   const onSetIsDroppable = useCallback<GameContext['onSetIsDroppable']>(
     payload => {
-      squaresDispatch({
+      boardDispatch({
         type: 'SET_IS_DROPPABLE',
         payload
       });
@@ -81,14 +68,14 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   const onSetUndroppableInAll = useCallback(() => {
-    squaresDispatch({
+    boardDispatch({
       type: 'SET_UNDROPPABLE_IN_ALL'
     });
   }, []);
 
   const onSetCapturedDisc = useCallback<GameContext['onSetCapturedDisc']>(
     payload => {
-      discsDispatch({ type: 'SET_CAPTURED_DISC', payload });
+      boardDispatch({ type: 'REMOVE_DISC', payload });
     },
     []
   );
@@ -110,9 +97,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         turn,
         players,
-        squares,
-        discs,
-        onSetDiscNewCoordinates,
+        board,
+        onMoveDisc,
         onSetIsDroppable,
         onSetCapturedDisc,
         onSetUndroppableInAll,

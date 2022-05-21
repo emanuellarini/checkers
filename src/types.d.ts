@@ -1,3 +1,5 @@
+type Position = string;
+
 type Player = {
   wins: number;
   losses: number;
@@ -6,8 +8,12 @@ type Player = {
   turnMovements: number;
 };
 
-// number means position in board from 0 to 63
-type Discs = { [k: string]: number };
+type Disc = { player: number; isKing: boolean };
 
-// boolean means movable
-type Squares = { [k: number]: boolean };
+type Square = {
+  isDarkSquare: boolean;
+  isDroppable?: boolean;
+  disc?: Disc;
+};
+
+type Board = { [k: Position]: Square };

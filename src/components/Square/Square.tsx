@@ -1,13 +1,12 @@
 import React, { memo } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
-import { useGame } from '../../hooks';
+import { Disc } from '../Disc';
 
-export type SquareProps = {
-  position: number;
-  children: React.ReactNode;
+export type SquareProps = Square & {
+  position: Position;
 };
 
 const getSquareStyle = (isDroppable = false) => ({
@@ -17,32 +16,42 @@ const getSquareStyle = (isDroppable = false) => ({
   backgroundColor: isDroppable ? '#88665d' : '#bcaa99',
   width: '100%',
   height: '100%',
-  boxSizing: 'border-box',
   // paddings and margins should be applied here instead of parent
   padding: '5%'
 });
 
-export const Square: React.FC<SquareProps> = memo(({ position, children }) => {
-  const { squares } = useGame();
+export const Square: React.FC<SquareProps> = memo(
+  ({ position, disc, isDroppable, isDarkSquare }) => {
+    if (!isDarkSquare) {
+      return <Box sx={getSquareStyle()} aria-label="Square" />;
+    }
 
-  if (!Object.keys(squares).includes(String(position))) {
-    return <Box sx={getSquareStyle()} />;
+    return (
+      <Droppable
+        droppableId={`square-${position}`}
+        isDropDisabled={!isDroppable}
+      >
+        {provided => (
+          <Box
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            sx={getSquareStyle(isDarkSquare)}
+            aria-label="Square"
+          >
+            {process.env.NODE_ENV !== 'production' ? (
+              // this will help you a lot :)
+              <Typography
+                variant="caption"
+                sx={{ color: 'white', position: 'absolute' }}
+              >
+                {position}
+              </Typography>
+            ) : null}
+            {disc ? <Disc {...disc} position={position} /> : null}
+            {provided.placeholder}
+          </Box>
+        )}
+      </Droppable>
+    );
   }
-
-  const id = `square-${position}`;
-
-  return (
-    <Droppable droppableId={id} isDropDisabled={!squares[position]}>
-      {provided => (
-        <Box
-          ref={provided.innerRef}
-          {...provided.droppableProps}
-          sx={getSquareStyle(true)}
-        >
-          {children}
-          {provided.placeholder}
-        </Box>
-      )}
-    </Droppable>
-  );
-});
+);
