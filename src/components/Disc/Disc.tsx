@@ -35,6 +35,7 @@ export const Disc: React.FC<DiscProps> = memo(
             aria-label="Disc"
           >
             <Paper
+              aria-label={isKing ? 'King' : undefined}
               elevation={snapshot.isDragging ? 24 : 6}
               component="div"
               sx={{

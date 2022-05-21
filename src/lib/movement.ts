@@ -1,50 +1,109 @@
-const getPositions = (player: number, position: Position) => ({
-  upperLeft: String(player === 1 ? +position - 7 : +position + 7),
-  upperRight: String(player === 1 ? +position - 9 : +position + 9),
-  twoUpperLeft: String(player === 1 ? +position - 14 : +position + 14),
-  twoUpperRight: String(player === 1 ? +position - 18 : +position + 18)
-});
+const isWithinBoard = (position: number) => position >= 0 && position <= 63;
+
+const getPositions = (player: number, position: Position) => {
+  const upperLeft = player === 1 ? +position - 7 : +position + 7;
+  const upperRight = player === 1 ? +position - 9 : +position + 9;
+  const twoUpperLeft = player === 1 ? +position - 14 : +position + 14;
+  const twoUpperRight = player === 1 ? +position - 18 : +position + 18;
+  const lowerLeft = player === 1 ? +position + 7 : +position - 7;
+  const lowerRight = player === 1 ? +position + 9 : +position - 9;
+  const twoLowerLeft = player === 1 ? +position + 14 : +position - 14;
+  const twoLowerRight = player === 1 ? +position + 18 : +position - 18;
+
+  return {
+    upperLeft: isWithinBoard(upperLeft) ? String(upperLeft) : '',
+    upperRight: isWithinBoard(upperRight) ? String(upperRight) : '',
+    twoUpperLeft: isWithinBoard(twoUpperLeft) ? String(twoUpperLeft) : '',
+    twoUpperRight: isWithinBoard(twoUpperRight) ? String(twoUpperRight) : '',
+    lowerLeft: isWithinBoard(lowerLeft) ? String(lowerLeft) : '',
+    lowerRight: isWithinBoard(lowerRight) ? String(lowerRight) : '',
+    twoLowerLeft: isWithinBoard(twoLowerLeft) ? String(twoLowerLeft) : '',
+    twoLowerRight: isWithinBoard(twoLowerRight) ? String(twoLowerRight) : ''
+  };
+};
+
+const getDirectionPossibleMoves = (
+  position: Position,
+  doublePosition: Position,
+  board: Board,
+  player: number
+) => {
+  const possibleMoves = [];
+  const square = board[position];
+  const squareDouble = board[doublePosition];
+
+  // does not contain a disc in the destination
+  if (square && !square.disc) {
+    possibleMoves.push(position);
+    // does not contain a disc in the destination
+    // and has a disc in the intermediary diagonal square which belongs to another player
+  } else if (
+    squareDouble &&
+    !squareDouble.disc &&
+    square.disc?.player !== player
+  ) {
+    possibleMoves.push(doublePosition);
+  }
+
+  return possibleMoves;
+};
 
 export const calculatePlayerMovablePositions = (
   player: number,
   board: Board,
   position: Position
 ) => {
-  const possibleMoves: string[] = [];
+  const {
+    upperLeft,
+    upperRight,
+    twoUpperLeft,
+    twoUpperRight,
+    lowerLeft,
+    lowerRight,
+    twoLowerLeft,
+    twoLowerRight
+  } = getPositions(player, position);
 
-  // player 1 goes up and player 2 goes down when moving!
-  const { upperLeft, upperRight, twoUpperLeft, twoUpperRight } = getPositions(
-    player,
-    position
+  const { disc } = board[position];
+
+  const upperLeftPossibleMoves = getDirectionPossibleMoves(
+    upperLeft,
+    twoUpperLeft,
+    board,
+    player
   );
 
-  const boardUpperLeft = board[upperLeft];
-  const boardUpperRight = board[upperRight];
-  const boardTwoUpperLeft = board[twoUpperLeft];
-  const boardTwoUpperRight = board[twoUpperRight];
+  const upperRightPossibleMoves = getDirectionPossibleMoves(
+    upperRight,
+    twoUpperRight,
+    board,
+    player
+  );
 
-  // does not contain a disc in the destination
-  if (!boardUpperLeft?.disc) {
-    possibleMoves.push(upperLeft);
-    // does not contain a disc in the destination
-    // and has a disc in the intermediary diagonal square which belongs to another player
-  } else if (
-    !boardTwoUpperLeft?.disc &&
-    boardUpperLeft?.disc?.player !== player
-  ) {
-    possibleMoves.push(twoUpperLeft);
+  let lowerLeftPossibleMoves: string[] = [];
+  let lowerRightPossibleMoves: string[] = [];
+  if (disc?.isKing) {
+    lowerLeftPossibleMoves = getDirectionPossibleMoves(
+      lowerLeft,
+      twoLowerLeft,
+      board,
+      player
+    );
+
+    lowerRightPossibleMoves = getDirectionPossibleMoves(
+      lowerRight,
+      twoLowerRight,
+      board,
+      player
+    );
   }
 
-  if (!boardUpperRight?.disc) {
-    possibleMoves.push(upperRight);
-  } else if (
-    !boardTwoUpperRight?.disc &&
-    boardUpperRight?.disc?.player !== player
-  ) {
-    possibleMoves.push(twoUpperRight);
-  }
-
-  return possibleMoves;
+  return [
+    ...upperLeftPossibleMoves,
+    ...upperRightPossibleMoves,
+    ...lowerLeftPossibleMoves,
+    ...lowerRightPossibleMoves
+  ];
 };
 
 export const getCapturedDiscPosition = (
@@ -74,14 +133,28 @@ export const calculatePlayerMovablePositionsWhenMultiCapturing = (
   position: Position
 ) => {
   const possibleMoves: string[] = [];
-  const { upperLeft, upperRight, twoUpperLeft, twoUpperRight } = getPositions(
-    player,
-    position
-  );
+  const { disc } = board[position];
+
+  const {
+    upperLeft,
+    upperRight,
+    twoUpperLeft,
+    twoUpperRight,
+    lowerLeft,
+    lowerRight,
+    twoLowerLeft,
+    twoLowerRight
+  } = getPositions(player, position);
+
   const boardUpperLeft = board[upperLeft];
   const boardUpperRight = board[upperRight];
   const boardTwoUpperLeft = board[twoUpperLeft];
   const boardTwoUpperRight = board[twoUpperRight];
+
+  const boardLowerLeft = board[lowerLeft];
+  const boardLowerRight = board[lowerRight];
+  const boardTwoLowerLeft = board[twoLowerLeft];
+  const boardTwoLowerRight = board[twoLowerRight];
 
   if (boardUpperLeft?.disc?.player !== player && !boardTwoUpperLeft?.disc) {
     possibleMoves.push(twoUpperLeft);
@@ -89,6 +162,22 @@ export const calculatePlayerMovablePositionsWhenMultiCapturing = (
 
   if (boardUpperRight?.disc?.player !== player && !boardTwoUpperRight?.disc) {
     possibleMoves.push(twoUpperRight);
+  }
+
+  if (
+    disc?.isKing &&
+    boardLowerLeft?.disc?.player !== player &&
+    !boardTwoLowerLeft?.disc
+  ) {
+    possibleMoves.push(twoLowerLeft);
+  }
+
+  if (
+    disc?.isKing &&
+    boardLowerRight?.disc?.player !== player &&
+    !boardTwoLowerRight?.disc
+  ) {
+    possibleMoves.push(twoLowerRight);
   }
 
   return possibleMoves;

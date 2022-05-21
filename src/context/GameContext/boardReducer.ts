@@ -1,3 +1,5 @@
+import { getIsKingDisc } from '../../lib/disc';
+
 export type BoardStateType = Board;
 
 export const boardInitialState: BoardStateType = {
@@ -218,12 +220,19 @@ export const boardReducer = (
 
     const { disc, ...otherProps } = state[currentPosition];
 
+    if (!disc) return state;
+
+    const isKing = getIsKingDisc(newPosition, disc);
+
     return {
       ...state,
       [currentPosition]: otherProps,
       [newPosition]: {
         ...state[newPosition],
-        disc
+        disc: {
+          ...disc,
+          isKing
+        }
       }
     };
   }
