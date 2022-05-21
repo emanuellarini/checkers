@@ -36,7 +36,7 @@ Cypress.Commands.add('dragAndDrop', (subject, target, passTurn = false) => {
     }
   });
 
-  const SLOPPY_CLICK_THRESHOLD = 10;
+  const SLOPPY_CLICK_THRESHOLD = 2;
   cy.get(target)
     .first()
     .then($target => {
@@ -46,32 +46,31 @@ Cypress.Commands.add('dragAndDrop', (subject, target, passTurn = false) => {
         .then(subject => {
           const coordsDrag = subject[0].getBoundingClientRect();
           cy.wrap(subject)
-            .trigger('mousedown', {
+            .trigger('mousemove', {
               button: 0,
-              which: 1,
               clientX: coordsDrag.x,
-              clientY: coordsDrag.y,
-              force: true
+              clientY: coordsDrag.y
             })
+            .trigger('mousedown', { force: true, button: 0 });
+
+          cy.wrap(subject).trigger('mousemove', {
+            button: 0,
+            clientX: coordsDrag.x,
+            clientY: coordsDrag.y
+          });
+
+          cy.get(target)
             .trigger('mousemove', {
               button: 0,
-              clientX: coordsDrag.x + SLOPPY_CLICK_THRESHOLD,
-              clientY: coordsDrag.y,
-              force: true
-            });
-          cy.wait(800);
-          cy.get('body')
-            .trigger('mousemove', {
-              button: 0,
-              clientX: coordsDrop.x,
-              clientY: coordsDrop.y,
-              force: true
+              clientX: coordsDrop.x + SLOPPY_CLICK_THRESHOLD,
+              clientY: coordsDrop.y + SLOPPY_CLICK_THRESHOLD
             })
+            .wait(500)
             .trigger('mouseup');
+
+          cy.wait(450);
         });
     });
-
-  cy.wait(800);
 
   if (passTurn) {
     cy.get('#root').trigger('keydown', {

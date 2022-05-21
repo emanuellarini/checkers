@@ -1,1 +1,7 @@
-{}
+{
+  "viewportHeight": 600,
+  "viewportWidth": 400,
+  "scrollBehavior": false,
+  "animationDistanceThreshold": 1,
+  "waitForAnimation": true
+}

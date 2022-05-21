@@ -17,6 +17,7 @@ const getSquareStyle = (isDroppable = false) => ({
   backgroundColor: isDroppable ? '#88665d' : '#bcaa99',
   width: '100%',
   height: '100%',
+  boxSizing: 'border-box',
   // paddings and margins should be applied here instead of parent
   padding: '5%'
 });
