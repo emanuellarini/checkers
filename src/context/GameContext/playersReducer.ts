@@ -5,50 +5,38 @@ export const playersInitialState: PlayersStateType = {
     wins: 0,
     losses: 0,
     captures: 0,
-    captured: 0,
-    turnMovements: 0
+    captured: 0
   },
   2: {
     wins: 0,
     losses: 0,
     captures: 0,
-    captured: 0,
-    turnMovements: 0
+    captured: 0
   }
 };
 
-export type IncrementTurnMovement = {
-  type: 'INCREMENT_TURN_MOVEMENT';
-  payload: number; // player id
+export type IncrementProp = {
+  type: 'INCREMENT_PROP';
+  payload: {
+    player: number;
+    prop: keyof Player;
+  };
 };
 
-export type ResetTurnMovement = {
-  type: 'RESET_TURN_MOVEMENT';
-  payload: number; // player id
-};
-
-type PlayersActionType = IncrementTurnMovement | ResetTurnMovement;
+type PlayersActionType = IncrementProp;
 
 export const playersReducer = (
   state: PlayersStateType,
   action: PlayersActionType
 ): PlayersStateType => {
-  if (action.type === 'INCREMENT_TURN_MOVEMENT') {
-    return {
-      ...state,
-      [action.payload]: {
-        ...state[action.payload],
-        turnMovements: state[action.payload].turnMovements + 1
-      }
-    };
-  }
+  if (action.type === 'INCREMENT_PROP') {
+    const { player, prop } = action.payload;
 
-  if (action.type === 'RESET_TURN_MOVEMENT') {
     return {
       ...state,
-      [action.payload]: {
-        ...state[action.payload],
-        turnMovements: 0
+      [player]: {
+        ...state[player],
+        [prop]: state[player][prop] + 1
       }
     };
   }

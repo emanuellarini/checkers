@@ -1,9 +1,10 @@
 import React, { memo } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 
 import { Disc } from '../Disc';
+import { Debug } from './Debug';
 
 export type SquareProps = Square & {
   position: Position;
@@ -38,20 +39,14 @@ export const Square: React.FC<SquareProps> = memo(
             sx={getSquareStyle(isDarkSquare)}
             aria-label="Square"
           >
-            {process.env.NODE_ENV !== 'production' ? (
-              // this will help you a lot :)
-              <Typography
-                variant="caption"
-                sx={{ color: 'white', position: 'absolute' }}
-              >
-                {position}
-              </Typography>
-            ) : null}
+            <Debug position={position} />
             {disc ? <Disc {...disc} position={position} /> : null}
             {provided.placeholder}
           </Box>
         )}
       </Droppable>
     );
-  }
+  },
+  (prev, next) =>
+    prev.disc !== next.disc && prev.isDroppable !== next.isDroppable
 );

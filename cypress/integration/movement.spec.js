@@ -25,6 +25,13 @@ describe('Movement', () => {
     cy.getDisc('24').should('not.exist');
   });
 
+  it('can not move again if already moved', () => {
+    cy.dragAndDrop('44', '37');
+    cy.dragAndDrop('42', '35');
+    cy.getDisc('42').should('exist');
+    cy.getDisc('35').should('not.exist');
+  });
+
   it('can move and capture a disc in all diagonals', () => {
     // player 1 can move to upper right diagonal
     cy.dragAndDrop('44', '37', true);

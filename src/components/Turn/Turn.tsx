@@ -7,8 +7,7 @@ import { useGame } from '../../hooks';
 import text from '../../lib/text';
 
 export const Turn = () => {
-  const { turn, onEndTurn, players } = useGame();
-  const movements = players[turn].turnMovements;
+  const { turn, movements, onEndTurn } = useGame();
 
   useEffect(() => {
     const handleSpaceBarPress = (e: KeyboardEvent) => {

@@ -5,7 +5,6 @@ type Player = {
   losses: number;
   captured: number;
   captures: number;
-  turnMovements: number;
 };
 
 type Disc = { player: number; isKing: boolean };

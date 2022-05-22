@@ -165,9 +165,9 @@ export const boardInitialState: BoardStateType = {
   '63': { isDarkSquare: false }
 };
 
-export type SetIsDroppable = {
-  type: 'SET_IS_DROPPABLE';
-  payload: Position;
+export type SetDroppable = {
+  type: 'SET_DROPPABLE';
+  payload: Position[];
 };
 
 export type SetUndroppableInAll = {
@@ -188,7 +188,7 @@ export type RemoveDisc = {
 };
 
 export type BoardActionType =
-  | SetIsDroppable
+  | SetDroppable
   | SetUndroppableInAll
   | MoveDisc
   | RemoveDisc;
@@ -197,14 +197,15 @@ export const boardReducer = (
   state: BoardStateType,
   action: BoardActionType
 ): BoardStateType => {
-  if (action.type === 'SET_IS_DROPPABLE') {
-    return {
-      ...state,
-      [action.payload]: {
-        ...state[action.payload],
-        isDroppable: true
-      }
-    };
+  if (action.type === 'SET_DROPPABLE') {
+    return Object.keys(state).reduce((acc, v) => {
+      acc[v] = {
+        ...state[v],
+        isDroppable: action.payload.includes(v)
+      };
+
+      return acc;
+    }, {} as BoardStateType);
   }
 
   if (action.type === 'SET_UNDROPPABLE_IN_ALL') {

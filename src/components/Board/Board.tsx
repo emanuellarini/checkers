@@ -6,50 +6,18 @@ import {
 } from 'react-beautiful-dnd';
 
 import { useGame } from '../../hooks';
-import {
-  calculatePlayerMovablePositions,
-  getCapturedDiscPosition,
-  calculatePlayerMovablePositionsWhenMultiCapturing
-} from '../../lib/movement';
 import { Square } from '../Square';
 
 export const Board = () => {
-  const {
-    board,
-    players,
-    turn,
-    onMoveDisc,
-    onSetIsDroppable,
-    onSetUndroppableInAll,
-    onSetCapturedDisc,
-    onIncrementTurnMovements
-  } = useGame();
+  const { board, onStartMovement, onEndMovement } = useGame();
 
   const handleDragStart = useCallback<OnDragStartResponder>(
     ({ draggableId }) => {
-      onSetUndroppableInAll();
       const [, position] = draggableId.split('/');
-      let movablePositions;
 
-      if (players[turn].turnMovements > 0) {
-        movablePositions = calculatePlayerMovablePositionsWhenMultiCapturing(
-          turn,
-          board,
-          position
-        );
-      } else {
-        movablePositions = calculatePlayerMovablePositions(
-          turn,
-          board,
-          position
-        );
-      }
-
-      movablePositions.forEach(p => {
-        onSetIsDroppable(p);
-      });
+      onStartMovement(position);
     },
-    [onSetUndroppableInAll, onSetIsDroppable, board, players, turn]
+    [onStartMovement]
   );
 
   const handleDragEnd = useCallback<OnDragEndResponder>(
@@ -65,24 +33,9 @@ export const Board = () => {
       const [, currentPosition] = source.droppableId.split('-');
       const [, newPosition] = destination.droppableId.split('-');
 
-      onMoveDisc({
-        currentPosition,
-        newPosition
-      });
-
-      const capturedPosition = getCapturedDiscPosition(
-        board,
-        currentPosition,
-        newPosition
-      );
-
-      if (capturedPosition) {
-        onSetCapturedDisc(capturedPosition);
-      }
-
-      onIncrementTurnMovements();
+      onEndMovement(currentPosition, newPosition);
     },
-    [onIncrementTurnMovements, onMoveDisc, onSetCapturedDisc, board]
+    [onEndMovement]
   );
 
   return (

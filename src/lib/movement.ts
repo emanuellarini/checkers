@@ -1,6 +1,7 @@
-const isWithinBoard = (position: number) => position >= 0 && position <= 63;
+const canDropIntoSquare = (board: Board, position: number) =>
+  position >= 0 && position <= 63 && board[position].isDarkSquare;
 
-const getPositions = (player: number, position: Position) => {
+const getPositions = (board: Board, player: number, position: Position) => {
   const upperLeft = player === 1 ? +position - 7 : +position + 7;
   const upperRight = player === 1 ? +position - 9 : +position + 9;
   const twoUpperLeft = player === 1 ? +position - 14 : +position + 14;
@@ -11,14 +12,22 @@ const getPositions = (player: number, position: Position) => {
   const twoLowerRight = player === 1 ? +position + 18 : +position - 18;
 
   return {
-    upperLeft: isWithinBoard(upperLeft) ? String(upperLeft) : '',
-    upperRight: isWithinBoard(upperRight) ? String(upperRight) : '',
-    twoUpperLeft: isWithinBoard(twoUpperLeft) ? String(twoUpperLeft) : '',
-    twoUpperRight: isWithinBoard(twoUpperRight) ? String(twoUpperRight) : '',
-    lowerLeft: isWithinBoard(lowerLeft) ? String(lowerLeft) : '',
-    lowerRight: isWithinBoard(lowerRight) ? String(lowerRight) : '',
-    twoLowerLeft: isWithinBoard(twoLowerLeft) ? String(twoLowerLeft) : '',
-    twoLowerRight: isWithinBoard(twoLowerRight) ? String(twoLowerRight) : ''
+    upperLeft: canDropIntoSquare(board, upperLeft) ? String(upperLeft) : '',
+    upperRight: canDropIntoSquare(board, upperRight) ? String(upperRight) : '',
+    twoUpperLeft: canDropIntoSquare(board, twoUpperLeft)
+      ? String(twoUpperLeft)
+      : '',
+    twoUpperRight: canDropIntoSquare(board, twoUpperRight)
+      ? String(twoUpperRight)
+      : '',
+    lowerLeft: canDropIntoSquare(board, lowerLeft) ? String(lowerLeft) : '',
+    lowerRight: canDropIntoSquare(board, lowerRight) ? String(lowerRight) : '',
+    twoLowerLeft: canDropIntoSquare(board, twoLowerLeft)
+      ? String(twoLowerLeft)
+      : '',
+    twoLowerRight: canDropIntoSquare(board, twoLowerRight)
+      ? String(twoLowerRight)
+      : ''
   };
 };
 
@@ -62,7 +71,7 @@ export const calculatePlayerMovablePositions = (
     lowerRight,
     twoLowerLeft,
     twoLowerRight
-  } = getPositions(player, position);
+  } = getPositions(board, player, position);
 
   const { disc } = board[position];
 
@@ -144,7 +153,7 @@ export const calculatePlayerMovablePositionsWhenMultiCapturing = (
     lowerRight,
     twoLowerLeft,
     twoLowerRight
-  } = getPositions(player, position);
+  } = getPositions(board, player, position);
 
   const boardUpperLeft = board[upperLeft];
   const boardUpperRight = board[upperRight];
@@ -156,17 +165,26 @@ export const calculatePlayerMovablePositionsWhenMultiCapturing = (
   const boardTwoLowerLeft = board[twoLowerLeft];
   const boardTwoLowerRight = board[twoLowerRight];
 
-  if (boardUpperLeft?.disc?.player !== player && !boardTwoUpperLeft?.disc) {
+  if (
+    boardUpperLeft?.disc &&
+    boardUpperLeft.disc.player !== player &&
+    !boardTwoUpperLeft?.disc
+  ) {
     possibleMoves.push(twoUpperLeft);
   }
 
-  if (boardUpperRight?.disc?.player !== player && !boardTwoUpperRight?.disc) {
+  if (
+    boardUpperRight?.disc &&
+    boardUpperRight.disc?.player !== player &&
+    !boardTwoUpperRight?.disc
+  ) {
     possibleMoves.push(twoUpperRight);
   }
 
   if (
     disc?.isKing &&
-    boardLowerLeft?.disc?.player !== player &&
+    boardLowerLeft?.disc &&
+    boardLowerLeft.disc?.player !== player &&
     !boardTwoLowerLeft?.disc
   ) {
     possibleMoves.push(twoLowerLeft);
@@ -174,6 +192,7 @@ export const calculatePlayerMovablePositionsWhenMultiCapturing = (
 
   if (
     disc?.isKing &&
+    boardLowerRight.disc &&
     boardLowerRight?.disc?.player !== player &&
     !boardTwoLowerRight?.disc
   ) {
