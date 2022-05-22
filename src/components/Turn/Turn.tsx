@@ -7,11 +7,11 @@ import { useGame } from '../../hooks';
 import text from '../../lib/text';
 
 export const Turn = () => {
-  const { turn, movements, onEndTurn } = useGame();
+  const { turn, movements, onEndTurn, winner } = useGame();
 
   useEffect(() => {
     const handleSpaceBarPress = (e: KeyboardEvent) => {
-      if (!movements) return;
+      if (!movements || winner) return;
 
       e.preventDefault();
       e.stopPropagation();
@@ -25,7 +25,7 @@ export const Turn = () => {
     return () => {
       window.removeEventListener('keydown', handleSpaceBarPress);
     };
-  }, [movements, onEndTurn]);
+  }, [winner, movements, onEndTurn]);
 
   if (!movements) return null;
 
