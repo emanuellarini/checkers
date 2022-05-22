@@ -14,7 +14,12 @@ export const Stat: React.FC<{ label: string; value: number; color: string }> =
         textAlign: 'center'
       }}
     >
-      <Typography variant="h5" color={color} aria-label={label}>
+      <Typography
+        variant="h5"
+        color={color}
+        aria-label={label}
+        component="span"
+      >
         {value}
       </Typography>
       <Typography color={color}>{label}</Typography>

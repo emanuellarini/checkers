@@ -29,7 +29,7 @@ export const Turn = () => {
 
   if (!movements) return null;
 
-  const color = turn === 1 ? 'primary' : 'secondary';
+  const color = turn === 0 ? 'primary' : 'secondary';
 
   return (
     <Slide key={`button-turn-player-${turn}`} direction="up" in>

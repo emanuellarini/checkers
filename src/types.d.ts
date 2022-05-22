@@ -6,12 +6,12 @@ type Player = {
   gameStats: {
     wins: number;
     losses: number;
-    discs: number;
-    kings: number;
+    capturedDiscs: number;
+    capturedKings: number;
   };
 };
 
-type Disc = { player: keyof Players; isKing: boolean };
+type Disc = { player: PlayerKey; isKing: boolean };
 
 type Square = {
   isDarkSquare: boolean;
@@ -21,6 +21,8 @@ type Square = {
 
 type Board = { [k: Position]: Square };
 
-type Players = { [k: number]: Player };
+type Players = Player[];
 
-type Turn = keyof Players;
+type PlayerKey = 0 | 1;
+
+type Turn = PlayerKey;

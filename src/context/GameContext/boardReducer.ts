@@ -5,73 +5,73 @@ export const boardInitialState: BoardStateType = {
   '1': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 2, isKing: false }
+    disc: { player: 1, isKing: false }
   },
   '2': { isDarkSquare: false, isDroppable: false },
   '3': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 2, isKing: false }
+    disc: { player: 1, isKing: false }
   },
   '4': { isDarkSquare: false, isDroppable: false },
   '5': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 2, isKing: false }
+    disc: { player: 1, isKing: false }
   },
   '6': { isDarkSquare: false, isDroppable: false },
   '7': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 2, isKing: false }
+    disc: { player: 1, isKing: false }
   },
   '8': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 2, isKing: false }
+    disc: { player: 1, isKing: false }
   },
   '9': { isDarkSquare: false, isDroppable: false },
   '10': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 2, isKing: false }
+    disc: { player: 1, isKing: false }
   },
   '11': { isDarkSquare: false, isDroppable: false },
   '12': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 2, isKing: false }
+    disc: { player: 1, isKing: false }
   },
   '13': { isDarkSquare: false, isDroppable: false },
   '14': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 2, isKing: false }
+    disc: { player: 1, isKing: false }
   },
   '15': { isDarkSquare: false, isDroppable: false },
   '16': { isDarkSquare: false, isDroppable: false },
   '17': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 2, isKing: false }
+    disc: { player: 1, isKing: false }
   },
   '18': { isDarkSquare: false, isDroppable: false },
   '19': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 2, isKing: false }
+    disc: { player: 1, isKing: false }
   },
   '20': { isDarkSquare: false, isDroppable: false },
   '21': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 2, isKing: false }
+    disc: { player: 1, isKing: false }
   },
   '22': { isDarkSquare: false, isDroppable: false },
   '23': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 2, isKing: false }
+    disc: { player: 1, isKing: false }
   },
   '24': { isDarkSquare: true, isDroppable: false },
   '25': { isDarkSquare: false, isDroppable: false },
@@ -92,73 +92,73 @@ export const boardInitialState: BoardStateType = {
   '40': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 1, isKing: false }
+    disc: { player: 0, isKing: false }
   },
   '41': { isDarkSquare: false, isDroppable: false },
   '42': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 1, isKing: false }
+    disc: { player: 0, isKing: false }
   },
   '43': { isDarkSquare: false, isDroppable: false },
   '44': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 1, isKing: false }
+    disc: { player: 0, isKing: false }
   },
   '45': { isDarkSquare: false, isDroppable: false },
   '46': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 1, isKing: false }
+    disc: { player: 0, isKing: false }
   },
   '47': { isDarkSquare: false, isDroppable: false },
   '48': { isDarkSquare: false, isDroppable: false },
   '49': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 1, isKing: false }
+    disc: { player: 0, isKing: false }
   },
   '50': { isDarkSquare: false, isDroppable: false },
   '51': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 1, isKing: false }
+    disc: { player: 0, isKing: false }
   },
   '52': { isDarkSquare: false, isDroppable: false },
   '53': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 1, isKing: false }
+    disc: { player: 0, isKing: false }
   },
   '54': { isDarkSquare: false, isDroppable: false },
   '55': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 1, isKing: false }
+    disc: { player: 0, isKing: false }
   },
   '56': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 1, isKing: false }
+    disc: { player: 0, isKing: false }
   },
   '57': { isDarkSquare: false, isDroppable: false },
   '58': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 1, isKing: false }
+    disc: { player: 0, isKing: false }
   },
   '59': { isDarkSquare: false, isDroppable: false },
   '60': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 1, isKing: false }
+    disc: { player: 0, isKing: false }
   },
   '61': { isDarkSquare: false, isDroppable: false },
   '62': {
     isDarkSquare: true,
     isDroppable: false,
-    disc: { player: 1, isKing: false }
+    disc: { player: 0, isKing: false }
   },
   '63': { isDarkSquare: false, isDroppable: false }
 };

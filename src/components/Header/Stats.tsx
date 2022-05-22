@@ -16,7 +16,9 @@ export const Stats: React.FC<{ gameStats: Player['gameStats'] }> = memo(
       }}
     >
       <Box sx={{ ...flexColumnStyle, mr: 2 }}>
-        <Typography variant="overline">Overall</Typography>
+        <Typography variant="overline" component="span">
+          Overall
+        </Typography>
         <Box
           sx={{
             display: 'flex',
@@ -30,7 +32,9 @@ export const Stats: React.FC<{ gameStats: Player['gameStats'] }> = memo(
       </Box>
 
       <Box sx={flexColumnStyle}>
-        <Typography variant="overline">This Game</Typography>
+        <Typography variant="overline" component="span">
+          This Game
+        </Typography>
         <Box
           sx={{
             display: 'flex',
@@ -38,8 +42,16 @@ export const Stats: React.FC<{ gameStats: Player['gameStats'] }> = memo(
             justifyContent: 'center'
           }}
         >
-          <Stat color="info.main" value={gameStats.discs} label="Discs" />
-          <Stat color="warning.main" value={gameStats.kings} label="Kings" />
+          <Stat
+            color="info.main"
+            value={gameStats.capturedDiscs}
+            label="Discs"
+          />
+          <Stat
+            color="warning.main"
+            value={gameStats.capturedKings}
+            label="Kings"
+          />
         </Box>
       </Box>
     </Box>

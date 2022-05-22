@@ -37,7 +37,7 @@ type GameContext = {
 };
 
 const initialContext: GameContext = {
-  turn: 1,
+  turn: 0,
   movements: 0,
   winner: null,
   players: playersInitialState,
@@ -67,7 +67,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   const onEndTurn = useCallback(() => {
-    onSetTurn(turn === 1 ? 2 : 1);
+    onSetTurn(turn === 0 ? 1 : 0);
     onSetMovements(initialContext.movements);
   }, [onSetTurn, turn]);
 
@@ -125,7 +125,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
             type: 'INCREMENT_PROP',
             payload: {
               player: turn,
-              prop: 'kings'
+              prop: 'capturedKings'
             }
           });
         } else {
@@ -133,7 +133,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
             type: 'INCREMENT_PROP',
             payload: {
               player: turn,
-              prop: 'discs'
+              prop: 'capturedDiscs'
             }
           });
         }
@@ -150,7 +150,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
           playersDispatch({
             type: 'INCREMENT_PROP',
             payload: {
-              player: turn === 1 ? 2 : 1,
+              player: turn === 0 ? 1 : 0,
               prop: 'losses'
             }
           });

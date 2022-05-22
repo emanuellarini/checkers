@@ -12,11 +12,7 @@ export const Board = () => {
   const { board, onStartMovement, onEndMovement } = useGame();
 
   const handleDragStart = useCallback<OnDragStartResponder>(
-    ({ draggableId }) => {
-      const [, position] = draggableId.split('/');
-
-      onStartMovement(position);
-    },
+    ({ draggableId }) => onStartMovement(draggableId),
     [onStartMovement]
   );
 

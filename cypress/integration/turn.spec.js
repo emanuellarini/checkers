@@ -4,18 +4,18 @@ describe('Turn', () => {
   });
 
   it('can pass turn by clicking button after a move', () => {
-    cy.get('header').contains('Checkers Game - Player 1 Turn');
+    cy.get('header h2').contains('Player 1 Turn');
     cy.get('Pass Turn').should('not.exist');
 
     cy.dragAndDrop('44', '37', false);
 
     cy.get('button[aria-label="Pass Turn"]').click();
 
-    cy.get('header').contains('Checkers Game - Player 2 Turn');
+    cy.get('h2').contains('Player 2 Turn');
   });
 
   it('can pass turn by pressing spacebar', () => {
-    cy.get('header').contains('Checkers Game - Player 1 Turn');
+    cy.get('header h2').contains(/Player 1 Turn/i);
 
     cy.dragAndDrop('44', '37', false);
 
@@ -24,6 +24,8 @@ describe('Turn', () => {
       force: true
     });
 
-    cy.get('header').contains('Checkers Game - Player 2 Turn');
+    cy.wait(200);
+
+    cy.get('header h2').contains(/Player 2 Turn/i);
   });
 });

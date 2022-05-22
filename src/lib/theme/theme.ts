@@ -2,11 +2,11 @@ import { createTheme } from '@mui/material';
 
 export const theme = createTheme({
   palette: {
-    player1: {
+    player0: {
       main: 'black',
       contrastText: 'white'
     },
-    player2: {
+    player1: {
       main: 'red',
       contrastText: 'white'
     }

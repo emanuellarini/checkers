@@ -1,15 +1,15 @@
 const canDropIntoSquare = (board: Board, position: number) =>
   position >= 0 && position <= 63 && board[position].isDarkSquare;
 
-const getPositions = (board: Board, player: number, position: Position) => {
-  const upperLeft = player === 1 ? +position - 7 : +position + 7;
-  const upperRight = player === 1 ? +position - 9 : +position + 9;
-  const twoUpperLeft = player === 1 ? +position - 14 : +position + 14;
-  const twoUpperRight = player === 1 ? +position - 18 : +position + 18;
-  const lowerLeft = player === 1 ? +position + 7 : +position - 7;
-  const lowerRight = player === 1 ? +position + 9 : +position - 9;
-  const twoLowerLeft = player === 1 ? +position + 14 : +position - 14;
-  const twoLowerRight = player === 1 ? +position + 18 : +position - 18;
+const getPositions = (board: Board, player: PlayerKey, position: Position) => {
+  const upperLeft = player === 0 ? +position - 7 : +position + 7;
+  const upperRight = player === 0 ? +position - 9 : +position + 9;
+  const twoUpperLeft = player === 0 ? +position - 14 : +position + 14;
+  const twoUpperRight = player === 0 ? +position - 18 : +position + 18;
+  const lowerLeft = player === 0 ? +position + 7 : +position - 7;
+  const lowerRight = player === 0 ? +position + 9 : +position - 9;
+  const twoLowerLeft = player === 0 ? +position + 14 : +position - 14;
+  const twoLowerRight = player === 0 ? +position + 18 : +position - 18;
 
   return {
     upperLeft: canDropIntoSquare(board, upperLeft) ? String(upperLeft) : '',
@@ -58,7 +58,7 @@ const getDirectionPossibleMoves = (
 };
 
 export const calculatePlayerMovablePositions = (
-  player: number,
+  player: PlayerKey,
   board: Board,
   position: Position
 ) => {
@@ -137,7 +137,7 @@ export const getCapturedDiscPosition = (
 };
 
 export const calculatePlayerMovablePositionsWhenMultiCapturing = (
-  player: number,
+  player: PlayerKey,
   board: Board,
   position: Position
 ) => {

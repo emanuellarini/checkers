@@ -92,5 +92,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('getDisc', position =>
-  cy.get(`div[data-rbd-droppable-id="square-${position}"] > div`)
+  cy.get(
+    `div[data-rbd-droppable-id="square-${position}"] > div[aria-label="Disc"]`
+  )
 );

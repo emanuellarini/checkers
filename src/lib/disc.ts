@@ -3,7 +3,7 @@ export const getIsKingDisc = (position: Position, disc?: Disc) => {
 
   if (disc.isKing) return true;
 
-  if (disc.player === 1) {
+  if (disc.player === 0) {
     return ['1', '3', '5', '7'].includes(position);
   }
 

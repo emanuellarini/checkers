@@ -13,7 +13,7 @@ type PlayerProps = Player & {
 export const Player: React.FC<PlayerProps> = memo(
   ({ name, gameStats, turn, avatarUrl }) => (
     <Slide
-      direction={turn === 1 ? 'right' : 'left'}
+      direction={turn === 0 ? 'right' : 'left'}
       in
       mountOnEnter
       unmountOnExit
@@ -32,7 +32,9 @@ export const Player: React.FC<PlayerProps> = memo(
             src={avatarUrl}
             sx={{ width: '3.25em', height: '3.25em', mb: 1 }}
           />
-          <Typography variant="overline">Player {turn} Turn</Typography>
+          <Typography variant="overline" component="h2">{`Player ${
+            turn + 1
+          } Turn`}</Typography>
           <Typography variant="h5">{name}</Typography>
           <Stats gameStats={gameStats} />
         </Box>

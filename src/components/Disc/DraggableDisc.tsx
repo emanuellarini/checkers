@@ -14,7 +14,7 @@ export const DraggableDisc: React.FC<DraggableDiscProps> = memo(
 
     return (
       <Draggable
-        draggableId={`${player}/${position}`}
+        draggableId={position}
         index={Number(position)}
         isDragDisabled={turn !== player}
       >
