@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Paper, Container, ThemeProvider, CssBaseline } from '@mui/material';
 
-import { Header, Board, Turn } from './components';
+import { Header, Board, Turn, Hint, Win } from './components';
 import { GameProvider } from './context';
 import { theme } from './lib/theme';
 
@@ -11,7 +11,8 @@ export const App = () => (
     <CssBaseline />
     <GameProvider>
       <Header />
-      <Container sx={{ mt: 4, mb: 4 }}>
+      <Container sx={{ mt: 1, mb: 4, maxWidth: '80%' }}>
+        <Hint />
         <Paper
           elevation={4}
           sx={{
@@ -25,6 +26,7 @@ export const App = () => (
           <Turn />
         </Paper>
       </Container>
+      <Win />
     </GameProvider>
   </ThemeProvider>
 );

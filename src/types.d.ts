@@ -1,13 +1,17 @@
 type Position = string;
 
 type Player = {
-  wins: number;
-  losses: number;
-  captured: number;
-  captures: number;
+  name: string;
+  email: string;
+  gameStats: {
+    wins: number;
+    losses: number;
+    discs: number;
+    kings: number;
+  };
 };
 
-type Disc = { player: number; isKing: boolean };
+type Disc = { player: keyof Players; isKing: boolean };
 
 type Square = {
   isDarkSquare: boolean;
@@ -16,3 +20,7 @@ type Square = {
 };
 
 type Board = { [k: Position]: Square };
+
+type Players = { [k: number]: Player };
+
+type Turn = keyof Players;

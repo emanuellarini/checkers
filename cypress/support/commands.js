@@ -26,7 +26,7 @@
 
 Cypress.Commands.add(
   'dragAndDrop',
-  (currentPosition, nextPosition, passTurn = false) => {
+  (currentPosition, nextPosition, passTurn = true) => {
     Cypress.log({
       name: 'drag-drop',
       message: `Dragging element from square ${currentPosition} to ${nextPosition}`,
@@ -80,10 +80,13 @@ Cypress.Commands.add(
         name: 'pass-turn',
         message: 'Passing Turn'
       });
+
       cy.get('#root').trigger('keydown', {
         code: 'Space',
         force: true
       });
+
+      cy.wait(350);
     }
   }
 );

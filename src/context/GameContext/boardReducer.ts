@@ -1,5 +1,3 @@
-import { getIsKingDisc } from '../../lib/disc';
-
 export type BoardStateType = Board;
 
 export const boardInitialState: BoardStateType = {
@@ -165,25 +163,30 @@ export const boardInitialState: BoardStateType = {
   '63': { isDarkSquare: false, isDroppable: false }
 };
 
-export type SetDroppable = {
+type SetDroppable = {
   type: 'SET_DROPPABLE';
   payload: Position[];
 };
 
-export type MoveDisc = {
+type MoveDisc = {
   type: 'MOVE_DISC';
   payload: {
     currentPosition: Position;
     newPosition: Position;
+    isKing: boolean;
   };
 };
 
-export type RemoveDisc = {
+type RemoveDisc = {
   type: 'REMOVE_DISC';
   payload: Position;
 };
 
-export type BoardActionType = SetDroppable | MoveDisc | RemoveDisc;
+type Reset = {
+  type: 'RESET';
+};
+
+export type BoardActionType = SetDroppable | MoveDisc | RemoveDisc | Reset;
 
 export const boardReducer = (
   state: BoardStateType,
@@ -201,13 +204,11 @@ export const boardReducer = (
   }
 
   if (action.type === 'MOVE_DISC') {
-    const { currentPosition, newPosition } = action.payload;
+    const { currentPosition, newPosition, isKing } = action.payload;
 
     const { disc, ...otherProps } = state[currentPosition];
 
     if (!disc) return state;
-
-    const isKing = getIsKingDisc(newPosition, disc);
 
     return {
       ...state,
@@ -230,6 +231,10 @@ export const boardReducer = (
       ...state,
       [action.payload]: otherProps
     };
+  }
+
+  if (action.type === 'RESET') {
+    return boardInitialState;
   }
 
   return state;

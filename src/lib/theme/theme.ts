@@ -10,5 +10,15 @@ export const theme = createTheme({
       main: 'red',
       contrastText: 'white'
     }
+  },
+  components: {
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#313131 !important',
+          color: '#fff !important'
+        }
+      }
+    }
   }
 });

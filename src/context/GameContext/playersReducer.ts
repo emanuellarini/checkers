@@ -1,29 +1,41 @@
-export type PlayersStateType = { [k: string]: Player };
+export type PlayersStateType = Players;
 
 export const playersInitialState: PlayersStateType = {
   1: {
-    wins: 0,
-    losses: 0,
-    captures: 0,
-    captured: 0
+    name: 'John Doe',
+    email: '',
+    gameStats: {
+      wins: 0,
+      losses: 0,
+      discs: 0,
+      kings: 0
+    }
   },
   2: {
-    wins: 0,
-    losses: 0,
-    captures: 0,
-    captured: 0
+    name: 'Mary Jane',
+    email: '',
+    gameStats: {
+      wins: 0,
+      losses: 0,
+      discs: 0,
+      kings: 0
+    }
   }
 };
 
-export type IncrementProp = {
+type IncrementProp = {
   type: 'INCREMENT_PROP';
   payload: {
-    player: number;
-    prop: keyof Player;
+    player: keyof Players;
+    prop: keyof Player['gameStats'];
   };
 };
 
-type PlayersActionType = IncrementProp;
+type Reset = {
+  type: 'RESET';
+};
+
+type PlayersActionType = IncrementProp | Reset;
 
 export const playersReducer = (
   state: PlayersStateType,
@@ -36,7 +48,32 @@ export const playersReducer = (
       ...state,
       [player]: {
         ...state[player],
-        [prop]: state[player][prop] + 1
+        gameStats: {
+          ...state[player].gameStats,
+          [prop]: Number(state[player].gameStats[prop]) + 1
+        }
+      }
+    };
+  }
+
+  if (action.type === 'RESET') {
+    return {
+      ...state,
+      1: {
+        ...state[1],
+        gameStats: {
+          ...state[1].gameStats,
+          discs: 0,
+          kings: 0
+        }
+      },
+      2: {
+        ...state[2],
+        gameStats: {
+          ...state[2].gameStats,
+          discs: 0,
+          kings: 0
+        }
       }
     };
   }

@@ -6,11 +6,13 @@ import React, {
   useMemo
 } from 'react';
 
+import { getIsKingDisc } from '../../lib/disc';
 import {
   calculatePlayerMovablePositions,
   calculatePlayerMovablePositionsWhenMultiCapturing,
   getCapturedDiscPosition
 } from '../../lib/movement';
+import { hasWonThisTurn } from '../../lib/win';
 import {
   boardInitialState,
   boardReducer,
@@ -23,22 +25,26 @@ import {
 } from './playersReducer';
 
 type GameContext = {
-  turn: number;
+  turn: Turn;
   movements: number;
+  winner: Turn | null;
   players: PlayersStateType;
   board: BoardStateType;
   onStartMovement: (position: Position) => void;
   onEndMovement: (currentPosition: Position, newPosition: Position) => void;
+  onResetGame: () => void;
   onEndTurn: () => void;
 };
 
 const initialContext: GameContext = {
   turn: 1,
   movements: 0,
+  winner: null,
   players: playersInitialState,
   board: boardInitialState,
   onStartMovement: () => null,
   onEndMovement: () => null,
+  onResetGame: () => null,
   onEndTurn: () => null
 };
 
@@ -53,13 +59,16 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
   );
   const [board, boardDispatch] = useReducer(boardReducer, initialContext.board);
   const [turn, onSetTurn] = useState<GameContext['turn']>(initialContext.turn);
-  const [movements, onSetMovements] = useState<number>(
+  const [movements, onSetMovements] = useState<GameContext['movements']>(
     initialContext.movements
+  );
+  const [winner, onSetWinner] = useState<GameContext['winner']>(
+    initialContext.winner
   );
 
   const onEndTurn = useCallback(() => {
     onSetTurn(turn === 1 ? 2 : 1);
-    onSetMovements(0);
+    onSetMovements(initialContext.movements);
   }, [onSetTurn, turn]);
 
   const onStartMovement = useCallback<GameContext['onStartMovement']>(
@@ -90,11 +99,16 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const onEndMovement = useCallback<GameContext['onEndMovement']>(
     (currentPosition, newPosition) => {
+      const isKing = getIsKingDisc(newPosition, board[currentPosition].disc);
+
+      onSetMovements(movements + 1);
+
       boardDispatch({
         type: 'MOVE_DISC',
         payload: {
           currentPosition,
-          newPosition
+          newPosition,
+          isKing
         }
       });
 
@@ -106,35 +120,70 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
 
       if (capturedPosition) {
         boardDispatch({ type: 'REMOVE_DISC', payload: capturedPosition });
-        playersDispatch({
-          type: 'INCREMENT_PROP',
-          payload: {
-            player: turn === 1 ? 2 : 1,
-            prop: 'captured'
-          }
-        });
-        playersDispatch({
-          type: 'INCREMENT_PROP',
-          payload: {
-            player: turn,
-            prop: 'captures'
-          }
-        });
-      }
+        if (board[capturedPosition]?.disc?.isKing) {
+          playersDispatch({
+            type: 'INCREMENT_PROP',
+            payload: {
+              player: turn,
+              prop: 'kings'
+            }
+          });
+        } else {
+          playersDispatch({
+            type: 'INCREMENT_PROP',
+            payload: {
+              player: turn,
+              prop: 'discs'
+            }
+          });
+        }
 
-      onSetMovements(movements + 1);
+        if (hasWonThisTurn(players, turn, board)) {
+          playersDispatch({
+            type: 'INCREMENT_PROP',
+            payload: {
+              player: turn,
+              prop: 'wins'
+            }
+          });
+
+          playersDispatch({
+            type: 'INCREMENT_PROP',
+            payload: {
+              player: turn === 1 ? 2 : 1,
+              prop: 'losses'
+            }
+          });
+
+          onSetWinner(turn);
+        }
+      }
     },
-    [board, turn, movements, onSetMovements]
+    [board, turn, movements, onSetMovements, players, onSetWinner]
   );
+
+  const onResetGame = useCallback<GameContext['onResetGame']>(() => {
+    boardDispatch({
+      type: 'RESET'
+    });
+
+    playersDispatch({
+      type: 'RESET'
+    });
+
+    onSetMovements(initialContext.movements);
+    onSetWinner(initialContext.winner);
+  }, [onSetWinner, onSetMovements]);
 
   const memoizedGame = useMemo(
     () => ({
       turn,
       players,
       board,
-      movements
+      movements,
+      winner
     }),
-    [turn, players, board, movements]
+    [turn, players, board, movements, winner]
   );
 
   return (
@@ -143,7 +192,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         ...memoizedGame,
         onStartMovement,
         onEndMovement,
-        onEndTurn
+        onEndTurn,
+        onResetGame
       }}
     >
       {children}
