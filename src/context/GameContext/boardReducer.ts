@@ -170,10 +170,6 @@ export type SetDroppable = {
   payload: Position[];
 };
 
-export type SetUndroppableInAll = {
-  type: 'SET_UNDROPPABLE_IN_ALL';
-};
-
 export type MoveDisc = {
   type: 'MOVE_DISC';
   payload: {
@@ -187,33 +183,21 @@ export type RemoveDisc = {
   payload: Position;
 };
 
-export type BoardActionType =
-  | SetDroppable
-  | SetUndroppableInAll
-  | MoveDisc
-  | RemoveDisc;
+export type BoardActionType = SetDroppable | MoveDisc | RemoveDisc;
 
 export const boardReducer = (
   state: BoardStateType,
   action: BoardActionType
 ): BoardStateType => {
   if (action.type === 'SET_DROPPABLE') {
-    return Object.keys(state).reduce((acc, v) => {
-      acc[v] = {
-        ...state[v],
-        isDroppable: action.payload.includes(v)
+    return Object.keys(state).reduce((acc, position) => {
+      acc[position] = {
+        ...state[position],
+        isDroppable: action.payload.includes(position) // disable others as well
       };
 
       return acc;
     }, {} as BoardStateType);
-  }
-
-  if (action.type === 'SET_UNDROPPABLE_IN_ALL') {
-    return Object.keys(state).reduce((acc, key) => {
-      acc[key] = { ...state[key], isDroppable: false };
-
-      return acc;
-    }, {} as Board);
   }
 
   if (action.type === 'MOVE_DISC') {
