@@ -2,8 +2,9 @@
 
 This is an updated version of [old checkers game](https://github.com/emanuellarini/checkers/tree/master)
 
-Checkout the [new Trello board](https://trello.com/b/TJqoFT2R/checkers-20).  
-The idea is to compare old vs new packages and standards to see if I improved over the years :) 
+Checkout the [new Trello board](https://trello.com/b/TJqoFT2R/checkers-20).
+
+Let's see if I improved my Frontend skills over the years :) 
 
 ### Up & Running
 
