@@ -42,7 +42,9 @@ export const Board = () => {
     <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
       {Object.keys(board).map(position => (
         <Square
-          {...board[position]}
+          isDroppable={board[position].isDroppable}
+          isDarkSquare={board[position].isDarkSquare}
+          disc={board[position].disc}
           key={`square-${position}`}
           position={position}
         />

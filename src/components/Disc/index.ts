@@ -1,1 +1,1 @@
-export * from './Disc';
+export * from './DraggableDisc';

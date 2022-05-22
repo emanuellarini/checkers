@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { AppBar, Typography, Toolbar } from '@mui/material';
 
 import { useGame } from '../../hooks';
+
+const Title: React.FC<{ turn: number }> = memo(({ turn }) => (
+  <Typography variant="h6" component="div">
+    Checkers Game - Player {turn} Turn
+  </Typography>
+));
 
 export const Header = () => {
   const { turn } = useGame();
@@ -10,9 +16,7 @@ export const Header = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" component="div">
-          Checkers Game - Player {turn} Turn
-        </Typography>
+        <Title turn={turn} />
       </Toolbar>
     </AppBar>
   );

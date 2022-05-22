@@ -1,9 +1,9 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 
 import { Box } from '@mui/material';
 
-import { Disc } from '../Disc';
+import { DraggableDisc } from '../Disc';
 import { Debug } from './Debug';
 
 export type SquareProps = Square & {
@@ -23,30 +23,29 @@ const getSquareStyle = (isDroppable = false) => ({
 
 export const Square: React.FC<SquareProps> = memo(
   ({ position, disc, isDroppable, isDarkSquare }) => {
-    if (!isDarkSquare) {
-      return <Box sx={getSquareStyle()} aria-label="Square" />;
-    }
+    const squareStyle = useMemo(
+      () => getSquareStyle(isDarkSquare),
+      [isDarkSquare]
+    );
 
     return (
       <Droppable
         droppableId={`square-${position}`}
-        isDropDisabled={!isDroppable}
+        isDropDisabled={!isDroppable || !isDarkSquare}
       >
         {provided => (
           <Box
             ref={provided.innerRef}
             {...provided.droppableProps}
-            sx={getSquareStyle(isDarkSquare)}
+            sx={squareStyle}
             aria-label="Square"
           >
             <Debug position={position} />
-            {disc ? <Disc {...disc} position={position} /> : null}
-            {provided.placeholder}
+            {disc ? <DraggableDisc {...disc} position={position} /> : null}
+            <Box sx={{ display: 'none' }}>{provided.placeholder}</Box>
           </Box>
         )}
       </Droppable>
     );
-  },
-  (prev, next) =>
-    prev.disc !== next.disc && prev.isDroppable !== next.isDroppable
+  }
 );
