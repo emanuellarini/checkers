@@ -3,6 +3,12 @@ import { useList } from 'react-firebase-hooks/database';
 
 import { getIsKingDisc } from '../../lib/disc';
 import {
+  calculatePlayerMovablePositions,
+  calculatePlayerMovablePositionsWhenMultiCapturing,
+  getCapturedDiscPosition
+} from '../../lib/movement';
+import { hasWonThisTurn } from '../../lib/win';
+import {
   getGameRef,
   moveDisc,
   setMovements,
@@ -10,13 +16,7 @@ import {
   resetBoard,
   removeDisc,
   setPlayerStat
-} from '../../lib/firebase';
-import {
-  calculatePlayerMovablePositions,
-  calculatePlayerMovablePositionsWhenMultiCapturing,
-  getCapturedDiscPosition
-} from '../../lib/movement';
-import { hasWonThisTurn } from '../../lib/win';
+} from '../../services/firebase';
 
 type GameContext = {
   turn: Game['turn'];

@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, update, onValue, remove } from 'firebase/database';
 
-import { defaultBoard } from './defaultBoard';
+import { defaultBoard } from '../lib/defaultBoard';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDoleJdry9zhlZ56riNID2pxSf0BUVEkO4',
@@ -53,6 +53,23 @@ export const setPlayerStat = <TItem extends keyof PlayerStats>(
   player: Turn,
   stat: Record<TItem, number>
 ) => {
-  const playerRef = ref(db, `games/${gameId}/players/${player}gameStats`);
+  const playerRef = ref(db, `games/${gameId}/players/${player}/gameStats`);
   update(playerRef, stat);
+};
+
+export const createNewGame = (gameId: string) => {
+  resetBoard(gameId);
+};
+
+export const setPlayerInfo = (
+  gameId: string,
+  player: Turn,
+  name: Player['name'],
+  email: Player['email']
+) => {
+  const playerRef = ref(db, `games/${gameId}/players/${player}`);
+  update(playerRef, {
+    name,
+    email
+  });
 };
