@@ -8,6 +8,7 @@ import { Debug } from './Debug';
 
 export type SquareProps = Square & {
   position: Position;
+  isDroppable: boolean;
 };
 
 const getSquareStyle = (isDroppable = false) => ({

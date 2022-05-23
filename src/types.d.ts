@@ -1,21 +1,22 @@
 type Position = string;
 
+type PlayerStats = {
+  wins: number;
+  losses: number;
+  capturedDiscs: number;
+  capturedKings: number;
+};
+
 type Player = {
   name: string;
   email: string;
-  gameStats: {
-    wins: number;
-    losses: number;
-    capturedDiscs: number;
-    capturedKings: number;
-  };
+  gameStats: PlayerStats;
 };
 
 type Disc = { player: PlayerKey; isKing: boolean };
 
 type Square = {
   isDarkSquare: boolean;
-  isDroppable?: boolean;
   disc?: Disc;
 };
 
@@ -26,3 +27,10 @@ type Players = Player[];
 type PlayerKey = 0 | 1;
 
 type Turn = PlayerKey;
+
+type Game = {
+  turn: Turn;
+  movements: number;
+  players: Players;
+  board: Board;
+};

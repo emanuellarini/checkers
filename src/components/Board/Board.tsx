@@ -9,7 +9,7 @@ import { useGame } from '../../hooks';
 import { Square } from '../Square';
 
 export const Board = () => {
-  const { board, onStartMovement, onEndMovement } = useGame();
+  const { board, onStartMovement, onEndMovement, movablePositions } = useGame();
 
   const handleDragStart = useCallback<OnDragStartResponder>(
     ({ draggableId }) => onStartMovement(draggableId),
@@ -38,7 +38,7 @@ export const Board = () => {
     <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
       {Object.keys(board).map(position => (
         <Square
-          isDroppable={board[position].isDroppable}
+          isDroppable={movablePositions.includes(position)}
           isDarkSquare={board[position].isDarkSquare}
           disc={board[position].disc}
           key={`square-${position}`}

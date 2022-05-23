@@ -61,7 +61,7 @@ export const calculatePlayerMovablePositions = (
   player: PlayerKey,
   board: Board,
   position: Position
-) => {
+): Position[] => {
   const {
     upperLeft,
     upperRight,
@@ -89,8 +89,8 @@ export const calculatePlayerMovablePositions = (
     player
   );
 
-  let lowerLeftPossibleMoves: string[] = [];
-  let lowerRightPossibleMoves: string[] = [];
+  let lowerLeftPossibleMoves: Position[] = [];
+  let lowerRightPossibleMoves: Position[] = [];
   if (disc?.isKing) {
     lowerLeftPossibleMoves = getDirectionPossibleMoves(
       lowerLeft,
@@ -140,8 +140,8 @@ export const calculatePlayerMovablePositionsWhenMultiCapturing = (
   player: PlayerKey,
   board: Board,
   position: Position
-) => {
-  const possibleMoves: string[] = [];
+): Position[] => {
+  const possibleMoves: Position[] = [];
   const { disc } = board[position];
 
   const {

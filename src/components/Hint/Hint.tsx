@@ -6,7 +6,12 @@ export const Hint = memo(() => (
   <Typography
     variant="overline"
     component="p"
-    sx={{ display: 'flex', justifyContent: 'center', m: 'none' }}
+    sx={{
+      display: 'flex',
+      justifyContent: 'center',
+      m: 'none',
+      flexWrap: 'wrap'
+    }}
   >
     HINT: YOU CAN PASS THE TURN BY
     <Typography

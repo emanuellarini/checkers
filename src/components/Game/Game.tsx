@@ -11,7 +11,7 @@ export const Game = () => {
   const maxWidth = matches ? '100%' : '80%';
 
   return (
-    <GameProvider>
+    <GameProvider gameId="test">
       <Header />
       <Container sx={{ mt: 1, mb: 4, maxWidth }}>
         <Hint />

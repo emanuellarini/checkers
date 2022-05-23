@@ -1,47 +1,45 @@
-import React, {
-  createContext,
-  useReducer,
-  useCallback,
-  useState,
-  useMemo
-} from 'react';
+import React, { createContext, useCallback, useState, useMemo } from 'react';
+import { useList } from 'react-firebase-hooks/database';
 
 import { getIsKingDisc } from '../../lib/disc';
+import {
+  getGameRef,
+  moveDisc,
+  setMovements,
+  setTurn,
+  resetBoard,
+  removeDisc,
+  setPlayerStat
+} from '../../lib/firebase';
 import {
   calculatePlayerMovablePositions,
   calculatePlayerMovablePositionsWhenMultiCapturing,
   getCapturedDiscPosition
 } from '../../lib/movement';
 import { hasWonThisTurn } from '../../lib/win';
-import {
-  boardInitialState,
-  boardReducer,
-  BoardStateType
-} from './boardReducer';
-import {
-  playersInitialState,
-  playersReducer,
-  PlayersStateType
-} from './playersReducer';
 
 type GameContext = {
-  turn: Turn;
-  movements: number;
+  turn: Game['turn'];
+  movements: Game['movements'];
   winner: Turn | null;
-  players: PlayersStateType;
-  board: BoardStateType;
+  players: Game['players'];
+  board: Game['board'];
+  movablePositions: Position[];
   onStartMovement: (position: Position) => void;
   onEndMovement: (currentPosition: Position, newPosition: Position) => void;
   onResetGame: () => void;
   onEndTurn: () => void;
 };
 
+type GameProviderProps = { children: React.ReactNode; gameId: string };
+
 const initialContext: GameContext = {
   turn: 0,
   movements: 0,
   winner: null,
-  players: playersInitialState,
-  board: boardInitialState,
+  players: [],
+  board: {},
+  movablePositions: [],
   onStartMovement: () => null,
   onEndMovement: () => null,
   onResetGame: () => null,
@@ -50,140 +48,119 @@ const initialContext: GameContext = {
 
 export const GameContext = createContext(initialContext);
 
-export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
-  children
+export const GameProvider: React.FC<GameProviderProps> = ({
+  children,
+  gameId
 }) => {
-  const [players, playersDispatch] = useReducer(
-    playersReducer,
-    initialContext.players
-  );
-  const [board, boardDispatch] = useReducer(boardReducer, initialContext.board);
-  const [turn, onSetTurn] = useState<GameContext['turn']>(initialContext.turn);
-  const [movements, onSetMovements] = useState<GameContext['movements']>(
-    initialContext.movements
-  );
+  const [snapshots, loading] = useList(getGameRef(gameId));
+  const game = useMemo<Game>(() => {
+    if (loading || !snapshots)
+      return {
+        players: [],
+        board: {},
+        turn: 0,
+        movements: 0
+      };
+
+    return snapshots.reduce((acc, v) => {
+      acc[v.key as keyof Game] = v.val();
+      return acc;
+    }, {} as Game);
+  }, [snapshots, loading]);
   const [winner, onSetWinner] = useState<GameContext['winner']>(
     initialContext.winner
   );
+  const [movablePositions, setMovablePositions] = useState<
+    GameContext['movablePositions']
+  >(initialContext.movablePositions);
 
   const onEndTurn = useCallback(() => {
-    onSetTurn(turn === 0 ? 1 : 0);
-    onSetMovements(initialContext.movements);
-  }, [onSetTurn, turn]);
+    setTurn(gameId, game.turn === 0 ? 1 : 0);
+    setMovements(gameId, 0);
+  }, [gameId, game]);
 
   const onStartMovement = useCallback<GameContext['onStartMovement']>(
     position => {
+      setMovablePositions([]);
+
       let movablePositions;
 
-      if (movements === 0) {
+      if (game.movements === 0) {
         movablePositions = calculatePlayerMovablePositions(
-          turn,
-          board,
+          game.turn,
+          game.board,
           position
         );
       } else {
         movablePositions = calculatePlayerMovablePositionsWhenMultiCapturing(
-          turn,
-          board,
+          game.turn,
+          game.board,
           position
         );
       }
 
-      boardDispatch({
-        type: 'SET_DROPPABLE',
-        payload: movablePositions
-      });
+      setMovablePositions(movablePositions);
     },
-    [board, movements, turn]
+    [setMovablePositions, game]
   );
 
   const onEndMovement = useCallback<GameContext['onEndMovement']>(
     (currentPosition, newPosition) => {
-      const isKing = getIsKingDisc(newPosition, board[currentPosition].disc);
+      const isKing = getIsKingDisc(
+        newPosition,
+        game.board[currentPosition].disc
+      );
 
-      onSetMovements(movements + 1);
-
-      boardDispatch({
-        type: 'MOVE_DISC',
-        payload: {
-          currentPosition,
-          newPosition,
-          isKing
-        }
-      });
+      setMovements(gameId, game.movements + 1);
+      moveDisc(gameId, currentPosition, newPosition, isKing);
 
       const capturedPosition = getCapturedDiscPosition(
-        board,
+        game.board,
         currentPosition,
         newPosition
       );
 
       if (capturedPosition) {
-        boardDispatch({ type: 'REMOVE_DISC', payload: capturedPosition });
-        if (board[capturedPosition]?.disc?.isKing) {
-          playersDispatch({
-            type: 'INCREMENT_PROP',
-            payload: {
-              player: turn,
-              prop: 'capturedKings'
-            }
+        removeDisc(gameId, capturedPosition);
+        if (game.board[capturedPosition]?.disc?.isKing) {
+          setPlayerStat(gameId, game.turn, {
+            capturedKings: game.players[game.turn].gameStats.capturedKings + 1
           });
         } else {
-          playersDispatch({
-            type: 'INCREMENT_PROP',
-            payload: {
-              player: turn,
-              prop: 'capturedDiscs'
-            }
+          setPlayerStat(gameId, game.turn, {
+            capturedDiscs: game.players[game.turn].gameStats.capturedDiscs + 1
           });
         }
 
-        if (hasWonThisTurn(players, turn, board)) {
-          playersDispatch({
-            type: 'INCREMENT_PROP',
-            payload: {
-              player: turn,
-              prop: 'wins'
-            }
+        if (hasWonThisTurn(game.players, game.turn, game.board)) {
+          setPlayerStat(gameId, game.turn, {
+            wins: game.players[game.turn].gameStats.wins + 1
           });
 
-          playersDispatch({
-            type: 'INCREMENT_PROP',
-            payload: {
-              player: turn === 0 ? 1 : 0,
-              prop: 'losses'
-            }
+          setPlayerStat(gameId, game.turn === 1 ? 0 : 1, {
+            losses: game.players[game.turn].gameStats.losses + 1
           });
 
-          onSetWinner(turn);
+          onSetWinner(game.turn);
         }
       }
     },
-    [board, turn, movements, onSetMovements, players, onSetWinner]
+    [gameId, game, onSetWinner]
   );
 
   const onResetGame = useCallback<GameContext['onResetGame']>(() => {
-    boardDispatch({
-      type: 'RESET'
-    });
-
-    playersDispatch({
-      type: 'RESET'
-    });
-
-    onSetMovements(initialContext.movements);
+    resetBoard(gameId);
+    setMovements(gameId, 0);
     onSetWinner(initialContext.winner);
-  }, [onSetWinner, onSetMovements]);
+  }, [gameId, onSetWinner]);
 
   const memoizedGame = useMemo(
     () => ({
-      turn,
-      players,
-      board,
-      movements,
-      winner
+      ...game,
+      winner,
+      movablePositions
     }),
-    [turn, players, board, movements, winner]
+    [game, winner, movablePositions]
   );
 
   return (
@@ -196,7 +173,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         onResetGame
       }}
     >
-      {children}
+      {loading || !snapshots ? 'loading' : children}
     </GameContext.Provider>
   );
 };
