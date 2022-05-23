@@ -1,5 +1,4 @@
 import React, { createContext, useCallback, useState, useMemo } from 'react';
-import { useList } from 'react-firebase-hooks/database';
 
 import { getIsKingDisc } from '../../lib/disc';
 import {
@@ -9,7 +8,6 @@ import {
 } from '../../lib/movement';
 import { hasWonThisTurn } from '../../lib/win';
 import {
-  getGameRef,
   moveDisc,
   setMovements,
   setTurn,
@@ -31,7 +29,11 @@ type GameContext = {
   onEndTurn: () => void;
 };
 
-type GameProviderProps = { children: React.ReactNode; gameId: string };
+export type GameProviderProps = {
+  children: React.ReactNode;
+  gameId: string;
+  game: Game;
+};
 
 const initialContext: GameContext = {
   turn: 0,
@@ -50,23 +52,9 @@ export const GameContext = createContext(initialContext);
 
 export const GameProvider: React.FC<GameProviderProps> = ({
   children,
-  gameId
+  gameId,
+  game
 }) => {
-  const [snapshots, loading] = useList(getGameRef(gameId));
-  const game = useMemo<Game>(() => {
-    if (loading || !snapshots)
-      return {
-        players: [],
-        board: {},
-        turn: 0,
-        movements: 0
-      };
-
-    return snapshots.reduce((acc, v) => {
-      acc[v.key as keyof Game] = v.val();
-      return acc;
-    }, {} as Game);
-  }, [snapshots, loading]);
   const [winner, onSetWinner] = useState<GameContext['winner']>(
     initialContext.winner
   );
@@ -173,7 +161,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({
         onResetGame
       }}
     >
-      {loading || !snapshots ? 'loading' : children}
+      {children}
     </GameContext.Provider>
   );
 };

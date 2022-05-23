@@ -1,7 +1,15 @@
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, update, onValue, remove } from 'firebase/database';
+import {
+  getDatabase,
+  ref,
+  update,
+  onValue,
+  remove,
+  set
+} from 'firebase/database';
 
 import { defaultBoard } from '../lib/defaultBoard';
+import { getDefaultPlayer } from '../lib/defaultPlayer';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDoleJdry9zhlZ56riNID2pxSf0BUVEkO4',
@@ -15,7 +23,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-export const getGameRef = (gameId: string) => ref(db, `games/${gameId}`);
+export const getGameRef = (gameId?: string) =>
+  gameId ? ref(db, `games/${gameId}`) : null;
 
 export const moveDisc = (
   gameId: string,
@@ -57,8 +66,26 @@ export const setPlayerStat = <TItem extends keyof PlayerStats>(
   update(playerRef, stat);
 };
 
-export const createNewGame = (gameId: string) => {
-  resetBoard(gameId);
+export const createNewGame = async ({
+  gameId,
+  player1,
+  player2
+}: {
+  gameId: string;
+  player1: Pick<Player, 'name' | 'email'>;
+  player2: Pick<Player, 'name' | 'email'>;
+}) => {
+  try {
+    await set(ref(db, `games/${gameId}`), {
+      board: defaultBoard,
+      players: [getDefaultPlayer(player1), getDefaultPlayer(player2)],
+      turn: 0,
+      movements: 0
+    });
+    return gameId;
+  } catch (e) {
+    return null;
+  }
 };
 
 export const setPlayerInfo = (
