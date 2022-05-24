@@ -12,7 +12,7 @@ export const Board = () => {
   const { board, onStartMovement, onEndMovement, movablePositions } = useGame();
 
   const handleDragStart = useCallback<OnDragStartResponder>(
-    ({ draggableId }) => onStartMovement(draggableId),
+    ({ draggableId }) => onStartMovement(Number(draggableId)),
     [onStartMovement]
   );
 
@@ -29,20 +29,20 @@ export const Board = () => {
       const [, currentPosition] = source.droppableId.split('-');
       const [, newPosition] = destination.droppableId.split('-');
 
-      onEndMovement(currentPosition, newPosition);
+      onEndMovement(Number(currentPosition), Number(newPosition));
     },
     [onEndMovement]
   );
 
   return (
     <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
-      {Object.keys(board).map(position => (
+      {board.map(square => (
         <DroppableSquare
-          isDroppable={movablePositions.includes(position)}
-          isDarkSquare={board[position].isDarkSquare}
-          disc={board[position].disc}
-          key={`square-${position}`}
-          position={position}
+          isDroppable={movablePositions.includes(square.position)}
+          isDarkSquare={square.isDarkSquare}
+          disc={square.disc}
+          key={`square-${square.position}`}
+          position={square.position}
         />
       ))}
     </DragDropContext>

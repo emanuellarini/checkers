@@ -1,6 +1,6 @@
 describe('Win', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:3000');
+    cy.createGame();
   });
 
   it('can win by capturing all other player discs', () => {

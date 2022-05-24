@@ -40,7 +40,7 @@ const initialContext: GameContext = {
   movements: 0,
   winner: null,
   players: [],
-  board: {},
+  board: [],
   movablePositions: [],
   onStartMovement: () => null,
   onEndMovement: () => null,
@@ -62,9 +62,9 @@ export const GameProvider: React.FC<GameProviderProps> = ({
     GameContext['movablePositions']
   >(initialContext.movablePositions);
 
-  const onEndTurn = useCallback(() => {
-    setTurn(gameId, game.turn === 0 ? 1 : 0);
-    setMovements(gameId, 0);
+  const onEndTurn = useCallback(async () => {
+    await setTurn(gameId, game.turn === 0 ? 1 : 0);
+    await setMovements(gameId, 0);
   }, [gameId, game]);
 
   const onStartMovement = useCallback<GameContext['onStartMovement']>(
@@ -93,14 +93,14 @@ export const GameProvider: React.FC<GameProviderProps> = ({
   );
 
   const onEndMovement = useCallback<GameContext['onEndMovement']>(
-    (currentPosition, newPosition) => {
+    async (currentPosition, newPosition) => {
       const isKing = getIsKingDisc(
         newPosition,
         game.board[currentPosition].disc
       );
 
-      setMovements(gameId, game.movements + 1);
-      moveDisc(gameId, currentPosition, newPosition, isKing);
+      await setMovements(gameId, game.movements + 1);
+      await moveDisc(gameId, currentPosition, newPosition, isKing);
 
       const capturedPosition = getCapturedDiscPosition(
         game.board,
@@ -109,23 +109,23 @@ export const GameProvider: React.FC<GameProviderProps> = ({
       );
 
       if (capturedPosition) {
-        removeDisc(gameId, capturedPosition);
+        await removeDisc(gameId, capturedPosition);
         if (game.board[capturedPosition]?.disc?.isKing) {
-          setPlayerStat(gameId, game.turn, {
+          await setPlayerStat(gameId, game.turn, {
             capturedKings: game.players[game.turn].gameStats.capturedKings + 1
           });
         } else {
-          setPlayerStat(gameId, game.turn, {
+          await setPlayerStat(gameId, game.turn, {
             capturedDiscs: game.players[game.turn].gameStats.capturedDiscs + 1
           });
         }
 
         if (hasWonThisTurn(game.players, game.turn, game.board)) {
-          setPlayerStat(gameId, game.turn, {
+          await setPlayerStat(gameId, game.turn, {
             wins: game.players[game.turn].gameStats.wins + 1
           });
 
-          setPlayerStat(gameId, game.turn === 1 ? 0 : 1, {
+          await setPlayerStat(gameId, game.turn === 1 ? 0 : 1, {
             losses: game.players[game.turn].gameStats.losses + 1
           });
 
@@ -136,9 +136,9 @@ export const GameProvider: React.FC<GameProviderProps> = ({
     [gameId, game, onSetWinner]
   );
 
-  const onResetGame = useCallback<GameContext['onResetGame']>(() => {
-    resetBoard(gameId);
-    setMovements(gameId, 0);
+  const onResetGame = useCallback<GameContext['onResetGame']>(async () => {
+    await resetBoard(gameId);
+    await setMovements(gameId, 0);
     onSetWinner(initialContext.winner);
   }, [gameId, onSetWinner]);
 

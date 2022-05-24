@@ -96,3 +96,18 @@ Cypress.Commands.add('getDisc', position =>
     `div[data-rbd-droppable-id="square-${position}"] > div[aria-label="Disc"]`
   )
 );
+
+Cypress.Commands.add('createGame', () => {
+  cy.visit('http://localhost:3000');
+
+  cy.get('input[name="gameId"]')
+    .invoke('val')
+    .then(val => {
+      cy.get('input[name="player1.name"]').type('test');
+      cy.get('input[name="player1.email"]').type('test@test.com');
+      cy.get('input[name="player2.name"]').type('test2');
+      cy.get('input[name="player2.email"]').type('test2@test.com');
+      cy.get('button[type="submit"]').click();
+      cy.location('pathname').should('eq', `/${val}`);
+    });
+});

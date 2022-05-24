@@ -1,6 +1,6 @@
 describe('Turn', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:3000');
+    cy.createGame();
   });
 
   it('can pass turn by clicking button after a move', () => {

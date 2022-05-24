@@ -1,6 +1,6 @@
 describe('Movement', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:3000');
+    cy.createGame();
   });
 
   it('can not move if not in first diagonals', () => {

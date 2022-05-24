@@ -1,5 +1,8 @@
 import React, { useMemo } from 'react';
-import { useList } from 'react-firebase-hooks/database';
+import {
+  useDocumentData,
+  useCollectionData
+} from 'react-firebase-hooks/firestore';
 
 import { Container, Paper, useMediaQuery, useTheme } from '@mui/material';
 import { RouteComponentProps } from '@reach/router';
@@ -14,7 +17,7 @@ import {
   NotFound
 } from '../components';
 import { GameProvider, GameProviderProps } from '../context';
-import { getGameRef } from '../services/firebase';
+import { getGameRef, getBoardRef, getPlayersRef } from '../services/firebase';
 
 type PlayProps = RouteComponentProps & {
   gameId?: GameProviderProps['gameId'];
@@ -24,32 +27,62 @@ export const Play: React.FC<PlayProps> = ({ gameId }) => {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down('md'));
   const maxWidth = matches ? '100%' : '80%';
-  const [snapshots, loading] = useList(getGameRef(gameId));
-  const game = useMemo<Game>(() => {
-    if (loading || !snapshots?.length)
+  const [gameStats, isLoadingGame, gameStatsError] = useDocumentData(
+    getGameRef(gameId)
+  );
+  const [board, isLoadingBoard, boardError] = useCollectionData(
+    getBoardRef(gameId)
+  );
+  const [players, isLoadingPlayers, playersError] = useCollectionData(
+    getPlayersRef(gameId)
+  );
+
+  const game = useMemo(() => {
+    if (
+      isLoadingGame ||
+      isLoadingBoard ||
+      !gameStats ||
+      !board ||
+      isLoadingPlayers ||
+      !players
+    )
       return {
         players: [],
-        board: {},
+        board: [],
         turn: 0,
         movements: 0
       };
 
-    return snapshots.reduce((acc, v) => {
-      acc[v.key as keyof Game] = v.val();
-      return acc;
-    }, {} as Game);
-  }, [snapshots, loading]);
+    return {
+      ...gameStats,
+      board,
+      players
+    };
+  }, [
+    isLoadingGame,
+    isLoadingBoard,
+    isLoadingPlayers,
+    board,
+    gameStats,
+    players
+  ]);
 
-  if (loading) {
+  if (isLoadingGame || isLoadingPlayers || isLoadingBoard) {
     return <Loading message="Searching your game..." />;
   }
 
-  if (!gameId || !snapshots?.length) {
+  if (
+    !gameId ||
+    !game.players?.length ||
+    gameStatsError ||
+    boardError ||
+    playersError
+  ) {
     return <NotFound />;
   }
 
   return (
-    <GameProvider game={game} gameId={gameId}>
+    <GameProvider game={game as Game} gameId={gameId}>
       <Header />
       <Container sx={{ mt: 1, mb: 4 }}>
         <Hint />

@@ -1,12 +1,18 @@
 import { initializeApp } from 'firebase/app';
 import {
-  getDatabase,
-  ref,
-  update,
-  onValue,
-  remove,
-  set
-} from 'firebase/database';
+  collection,
+  getFirestore,
+  doc,
+  setDoc,
+  updateDoc,
+  where,
+  orderBy,
+  query,
+  addDoc,
+  getDocs,
+  getDoc,
+  deleteField
+} from 'firebase/firestore';
 
 import { defaultBoard } from '../lib/defaultBoard';
 import { getDefaultPlayer } from '../lib/defaultPlayer';
@@ -21,49 +27,90 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const db = getFirestore(app);
 
-export const getGameRef = (gameId?: string) =>
-  gameId ? ref(db, `games/${gameId}`) : null;
+// odd = collection
+// even = doc
+export const getGameRef = (gameId?: string) => doc(db, `games/${gameId}`);
 
-export const moveDisc = (
+export const getBoardRef = (gameId?: string) =>
+  query(collection(db, `games/${gameId}/board`), orderBy('position', 'asc'));
+
+export const getPlayersRef = (gameId?: string) =>
+  collection(db, `games/${gameId}/players`);
+
+export const moveDisc = async (
   gameId: string,
   currentPosition: Position,
   newPosition: Position,
   isKing: boolean
 ) => {
-  const currentRef = ref(db, `games/${gameId}/board/${currentPosition}/disc`);
-  const newRef = ref(db, `games/${gameId}/board/${newPosition}/disc`);
-  onValue(currentRef, snap => {
-    const disc = snap.val();
-    remove(currentRef);
-    update(newRef, { ...disc, isKing });
-  });
+  // const batch = writeBatch(db);
+
+  const currentSquareQuery = query(
+    collection(db, `games/${gameId}/board`),
+    where('position', '==', currentPosition)
+  );
+  const currentSquareSnaps = await getDocs(currentSquareQuery);
+  const currentSquare = currentSquareSnaps.docs[0].data();
+  const newSquareQuery = query(
+    collection(db, `games/${gameId}/board`),
+    where('position', '==', newPosition)
+  );
+  const newSquareSnaps = await getDocs(newSquareQuery);
+  const newSquare = newSquareSnaps.docs[0].data();
+  const newSquareId = newSquareSnaps.docs[0].id;
+
+  const newRef = doc(db, `games/${gameId}/board/${newSquareId}`);
+
+  const newData = {
+    ...newSquare,
+    disc: {
+      ...currentSquare.disc,
+      isKing
+    }
+  };
+
+  await updateDoc(newRef, newData);
+  await removeDisc(gameId, currentPosition);
 };
 
-export const removeDisc = (gameId: string, position: Position) => {
-  remove(ref(db, `games/${gameId}/board/${position}/disc`));
+export const removeDisc = async (gameId: string, position: Position) => {
+  const squareQuery = query(
+    collection(db, `games/${gameId}/board`),
+    where('position', '==', position)
+  );
+  const squareSnap = await getDocs(squareQuery);
+  const squareId = squareSnap.docs[0].id;
+  const squareRef = doc(db, `games/${gameId}/board/${squareId}`);
+  return updateDoc(squareRef, { disc: deleteField() });
 };
 
-export const setMovements = (gameId: string, count: number) => {
-  update(ref(db, `games/${gameId}`), { movements: count });
-};
+export const setMovements = (gameId: string, count: number) =>
+  updateDoc(doc(db, `games/${gameId}`), { movements: count });
 
-export const setTurn = (gameId: string, turn: Turn) => {
-  update(ref(db, `games/${gameId}`), { turn });
-};
+export const setTurn = (gameId: string, turn: number) =>
+  updateDoc(doc(db, `games/${gameId}`), { turn });
 
-export const resetBoard = (gameId: string) => {
-  update(ref(db, `games/${gameId}`), { board: defaultBoard });
-};
+export const resetBoard = (gameId: string) =>
+  updateDoc(doc(db, `games/${gameId}`), { board: defaultBoard });
 
-export const setPlayerStat = <TItem extends keyof PlayerStats>(
+export const setPlayerStat = async <TItem extends keyof PlayerStats>(
   gameId: string,
   player: Turn,
   stat: Record<TItem, number>
 ) => {
-  const playerRef = ref(db, `games/${gameId}/players/${player}/gameStats`);
-  update(playerRef, stat);
+  const playerRef = doc(db, `games/${gameId}/players/${player}`);
+  const playerSnap = await getDoc(playerRef);
+  const data = playerSnap.data();
+
+  return updateDoc(doc(db, `games/${gameId}/players/${player}`), {
+    ...data,
+    gameStats: {
+      ...data?.gameStats,
+      ...stat
+    }
+  });
 };
 
 export const createNewGame = async ({
@@ -76,12 +123,24 @@ export const createNewGame = async ({
   player2: Pick<Player, 'name' | 'email'>;
 }) => {
   try {
-    await set(ref(db, `games/${gameId}`), {
-      board: defaultBoard,
-      players: [getDefaultPlayer(player1), getDefaultPlayer(player2)],
+    await setDoc(doc(db, 'games/' + gameId), {
       turn: 0,
       movements: 0
     });
+
+    defaultBoard.map(square =>
+      addDoc(collection(db, 'games', gameId, 'board'), square)
+    );
+
+    await setDoc(
+      doc(db, `games/${gameId}/players/0`),
+      getDefaultPlayer(player1)
+    );
+    await setDoc(
+      doc(db, `games/${gameId}/players/1`),
+      getDefaultPlayer(player2)
+    );
+
     return gameId;
   } catch (e) {
     return null;
@@ -93,10 +152,8 @@ export const setPlayerInfo = (
   player: Turn,
   name: Player['name'],
   email: Player['email']
-) => {
-  const playerRef = ref(db, `games/${gameId}/players/${player}`);
-  update(playerRef, {
+) =>
+  updateDoc(doc(db, `games/${gameId}/players/${player}`), {
     name,
     email
   });
-};

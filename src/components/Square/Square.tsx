@@ -2,7 +2,7 @@ import React, { memo, useMemo, forwardRef, ReactNode } from 'react';
 
 import { Box } from '@mui/material';
 
-export type SquareProps = Square & {
+export type SquareProps = Omit<Square, 'position'> & {
   children: ReactNode;
 };
 

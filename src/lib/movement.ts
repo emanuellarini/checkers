@@ -12,22 +12,14 @@ const getPositions = (board: Board, player: PlayerKey, position: Position) => {
   const twoLowerRight = player === 0 ? +position + 18 : +position - 18;
 
   return {
-    upperLeft: canDropIntoSquare(board, upperLeft) ? String(upperLeft) : '',
-    upperRight: canDropIntoSquare(board, upperRight) ? String(upperRight) : '',
-    twoUpperLeft: canDropIntoSquare(board, twoUpperLeft)
-      ? String(twoUpperLeft)
-      : '',
-    twoUpperRight: canDropIntoSquare(board, twoUpperRight)
-      ? String(twoUpperRight)
-      : '',
-    lowerLeft: canDropIntoSquare(board, lowerLeft) ? String(lowerLeft) : '',
-    lowerRight: canDropIntoSquare(board, lowerRight) ? String(lowerRight) : '',
-    twoLowerLeft: canDropIntoSquare(board, twoLowerLeft)
-      ? String(twoLowerLeft)
-      : '',
-    twoLowerRight: canDropIntoSquare(board, twoLowerRight)
-      ? String(twoLowerRight)
-      : ''
+    upperLeft: canDropIntoSquare(board, upperLeft) ? upperLeft : -1,
+    upperRight: canDropIntoSquare(board, upperRight) ? upperRight : -1,
+    twoUpperLeft: canDropIntoSquare(board, twoUpperLeft) ? twoUpperLeft : -1,
+    twoUpperRight: canDropIntoSquare(board, twoUpperRight) ? twoUpperRight : -1,
+    lowerLeft: canDropIntoSquare(board, lowerLeft) ? lowerLeft : -1,
+    lowerRight: canDropIntoSquare(board, lowerRight) ? lowerRight : -1,
+    twoLowerLeft: canDropIntoSquare(board, twoLowerLeft) ? twoLowerLeft : -1,
+    twoLowerRight: canDropIntoSquare(board, twoLowerRight) ? twoLowerRight : -1
   };
 };
 
@@ -119,18 +111,15 @@ export const getCapturedDiscPosition = (
   board: Board,
   currentPosition: Position,
   newPosition: Position
-): string | undefined => {
-  const distance = String(+newPosition - +currentPosition);
+): Position | undefined => {
+  const distance = newPosition - currentPosition;
 
-  const middlePosition = String((+newPosition + +currentPosition) / 2);
+  const middlePosition = (newPosition + currentPosition) / 2;
 
   // these numbers mean the disc has jump over
   // no need to check if the disc belongs to te opposite player here
   // because we already did that in possible moves fn
-  if (
-    !['-18', '-14', '14', '18'].includes(distance) ||
-    !board[middlePosition]?.disc
-  )
+  if (![-18, -14, 14, 18].includes(distance) || !board[middlePosition]?.disc)
     return undefined;
 
   return middlePosition;

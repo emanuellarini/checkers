@@ -1,4 +1,4 @@
-type Position = string;
+type Position = number;
 
 type PlayerStats = {
   wins: number;
@@ -16,11 +16,12 @@ type Player = {
 type Disc = { player: PlayerKey; isKing: boolean };
 
 type Square = {
+  position: Position;
   isDarkSquare: boolean;
   disc?: Disc;
 };
 
-type Board = { [k: Position]: Square };
+type Board = Square[];
 
 type Players = Player[];
 

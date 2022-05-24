@@ -78,6 +78,7 @@ export const Main: React.FC<RouteComponentProps> = () => {
           abortEarly: false
         });
         const gameId = await createNewGame(data);
+        setIsSubmitting(false);
 
         if (!gameId) {
           setHasError('Unable to create a new game. Try again later.');
@@ -87,6 +88,7 @@ export const Main: React.FC<RouteComponentProps> = () => {
         reset();
         await navigate(`/${gameId}`);
       } catch (err) {
+        setIsSubmitting(false);
         if (err instanceof Yup.ValidationError) {
           const validationErrors = {};
           if (err instanceof Yup.ValidationError) {
@@ -99,7 +101,6 @@ export const Main: React.FC<RouteComponentProps> = () => {
           }
         }
       }
-      setIsSubmitting(false);
     },
     [handleClose, setIsSubmitting, setHasError]
   );
