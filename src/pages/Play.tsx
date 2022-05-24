@@ -7,7 +7,6 @@ import { RouteComponentProps } from '@reach/router';
 import {
   Board,
   Header,
-  DefaultHeader,
   Turn,
   Win,
   Hint,
@@ -46,12 +45,7 @@ export const Play: React.FC<PlayProps> = ({ gameId }) => {
   }
 
   if (!gameId || !snapshots?.length) {
-    return (
-      <>
-        <DefaultHeader />
-        <NotFound />
-      </>
-    );
+    return <NotFound />;
   }
 
   return (
