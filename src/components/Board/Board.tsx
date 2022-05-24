@@ -6,7 +6,7 @@ import {
 } from 'react-beautiful-dnd';
 
 import { useGame } from '../../hooks';
-import { Square } from '../Square';
+import { DroppableSquare } from '../Square';
 
 export const Board = () => {
   const { board, onStartMovement, onEndMovement, movablePositions } = useGame();
@@ -37,7 +37,7 @@ export const Board = () => {
   return (
     <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
       {Object.keys(board).map(position => (
-        <Square
+        <DroppableSquare
           isDroppable={movablePositions.includes(position)}
           isDarkSquare={board[position].isDarkSquare}
           disc={board[position].disc}

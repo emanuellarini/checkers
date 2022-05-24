@@ -1,14 +1,9 @@
-import React, { memo, useMemo } from 'react';
-import { Droppable } from 'react-beautiful-dnd';
+import React, { memo, useMemo, forwardRef, ReactNode } from 'react';
 
 import { Box } from '@mui/material';
 
-import { DraggableDisc } from '../Disc';
-import { Debug } from './Debug';
-
 export type SquareProps = Square & {
-  position: Position;
-  isDroppable: boolean;
+  children: ReactNode;
 };
 
 const getSquareStyle = (isDroppable = false) => ({
@@ -22,31 +17,19 @@ const getSquareStyle = (isDroppable = false) => ({
   padding: '5%'
 });
 
-export const Square: React.FC<SquareProps> = memo(
-  ({ position, disc, isDroppable, isDarkSquare }) => {
-    const squareStyle = useMemo(
-      () => getSquareStyle(isDarkSquare),
-      [isDarkSquare]
-    );
+export const Square = memo(
+  forwardRef<HTMLDivElement, SquareProps>(
+    ({ isDarkSquare, children, ...otherProps }, ref) => {
+      const squareStyle = useMemo(
+        () => getSquareStyle(isDarkSquare),
+        [isDarkSquare]
+      );
 
-    return (
-      <Droppable
-        droppableId={`square-${position}`}
-        isDropDisabled={!isDroppable || !isDarkSquare}
-      >
-        {provided => (
-          <Box
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-            sx={squareStyle}
-            aria-label="Square"
-          >
-            <Debug position={position} />
-            {disc ? <DraggableDisc {...disc} position={position} /> : null}
-            <Box sx={{ display: 'none' }}>{provided.placeholder}</Box>
-          </Box>
-        )}
-      </Droppable>
-    );
-  }
+      return (
+        <Box ref={ref} {...otherProps} sx={squareStyle} aria-label="Square">
+          {children}
+        </Box>
+      );
+    }
+  )
 );
