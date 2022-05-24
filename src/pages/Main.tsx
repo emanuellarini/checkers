@@ -109,8 +109,8 @@ export const Main: React.FC<RouteComponentProps> = () => {
       <DefaultHeader />
 
       <Snackbar open={!!error} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-          This is a success message!
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          Unable to create game. Try again later.
         </Alert>
       </Snackbar>
 
@@ -148,12 +148,12 @@ export const Main: React.FC<RouteComponentProps> = () => {
               helperText="You can provide your own game id "
             />
             <Scope path="player1">
-              <Input name="name" label="Player 1 Name" />
-              <Input name="email" label="Player 1 E-mail" />
+              <Input id="player1.name" name="name" label="Player 1 Name" />
+              <Input id="player1.email" name="email" label="Player 1 E-mail" />
             </Scope>
             <Scope path="player2">
-              <Input name="name" label="Player 2 Name" />
-              <Input name="email" label="Player 2 E-mail" />
+              <Input id="player2.name" name="name" label="Player 2 Name" />
+              <Input id="player2.email" name="email" label="Player 2 E-mail" />
             </Scope>
             <LoadingButton
               color="primary"

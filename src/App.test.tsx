@@ -6,19 +6,30 @@ import { App } from './App';
 
 describe('App', () => {
   describe('Elements', () => {
-    it('renders the App content', () => {
+    it('renders the header and the create form', () => {
       render(<App />);
 
-      // header
-      const header = screen.getByText(/checkers game/i);
-      expect(header).toBeInTheDocument();
+      screen.getByText(/checkers game/i);
+      screen.getByText(/create new game/i);
 
-      // board
-      const discs = screen.getAllByLabelText('Disc');
-      expect(discs.length).toEqual(24);
+      screen.getByLabelText(/game id/i);
+      screen.getByDisplayValue(/1234/i);
+      screen.getByRole('textbox', {
+        name: /player 1 name/i
+      });
+      screen.getByRole('textbox', {
+        name: /player 1 e\-mail/i
+      });
+      screen.getByRole('textbox', {
+        name: /player 2 name/i
+      });
+      screen.getByRole('textbox', {
+        name: /player 2 e\-mail/i
+      });
 
-      const squares = screen.getAllByLabelText('Square');
-      expect(squares.length).toEqual(64);
+      screen.getByRole('button', {
+        name: /create/i
+      });
     });
   });
 });
