@@ -44,7 +44,7 @@ const Index = () => {
   const handleClose = useCallback(() => setHasError(''), [setHasError]);
 
   const handleSubmit = useCallback<SubmitHandler<FormData>>(
-    async (data, { reset }) => {
+    async data => {
       setIsSubmitting(true);
       handleClose();
       try {
@@ -84,9 +84,7 @@ const Index = () => {
           setHasError('Unable to create a new game. Try again later.');
           return;
         }
-
-        reset();
-        router.push(`/${gameId}`);
+        await router.push(`/${gameId}`);
       } catch (err) {
         setIsSubmitting(false);
         if (err instanceof Yup.ValidationError) {
