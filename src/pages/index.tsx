@@ -2,10 +2,9 @@ import React, { useCallback, useRef, useState } from 'react';
 
 import { LoadingButton } from '@mui/lab';
 import { Alert, Container, Paper, Snackbar, Typography } from '@mui/material';
-import { navigate } from '@reach/router';
-import { RouteComponentProps } from '@reach/router';
 import { Scope, FormHandles, SubmitHandler } from '@unform/core';
 import { Form } from '@unform/web';
+import { useRouter } from 'next/router';
 import * as Yup from 'yup';
 
 import { DefaultHeader, Input } from '../components';
@@ -36,7 +35,8 @@ const getInitialValues = () => ({
   }
 });
 
-export const Main: React.FC<RouteComponentProps> = () => {
+const Index = () => {
+  const router = useRouter();
   const formRef = useRef<FormHandles>(null);
   const [submitting, setIsSubmitting] = useState(false);
   const [error, setHasError] = useState<string>('');
@@ -86,7 +86,7 @@ export const Main: React.FC<RouteComponentProps> = () => {
         }
 
         reset();
-        await navigate(`/${gameId}`);
+        router.push(`/${gameId}`);
       } catch (err) {
         setIsSubmitting(false);
         if (err instanceof Yup.ValidationError) {
@@ -102,7 +102,7 @@ export const Main: React.FC<RouteComponentProps> = () => {
         }
       }
     },
-    [handleClose, setIsSubmitting, setHasError]
+    [handleClose, setIsSubmitting, setHasError, router]
   );
 
   return (
@@ -171,3 +171,5 @@ export const Main: React.FC<RouteComponentProps> = () => {
     </>
   );
 };
+
+export default Index;

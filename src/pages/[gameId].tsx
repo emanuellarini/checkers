@@ -5,25 +5,17 @@ import {
 } from 'react-firebase-hooks/firestore';
 
 import { Container, Paper, useMediaQuery, useTheme } from '@mui/material';
-import { RouteComponentProps } from '@reach/router';
+import { useRouter } from 'next/router';
 
-import {
-  Board,
-  Header,
-  Turn,
-  Win,
-  Hint,
-  Loading,
-  NotFound
-} from '../components';
+import { Board, Header, Turn, Win, Hint, Loading } from '../components';
 import { GameProvider, GameProviderProps } from '../context';
 import { getGameRef, getBoardRef, getPlayersRef } from '../services/firebase';
+import NotFound from './404';
 
-type PlayProps = RouteComponentProps & {
-  gameId?: GameProviderProps['gameId'];
-};
+const Play = () => {
+  const { query } = useRouter();
+  const gameId = query.gameId as GameProviderProps['gameId'];
 
-export const Play: React.FC<PlayProps> = ({ gameId }) => {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down('md'));
   const maxWidth = matches ? '100%' : '80%';
@@ -105,3 +97,5 @@ export const Play: React.FC<PlayProps> = ({ gameId }) => {
     </GameProvider>
   );
 };
+
+export default Play;
