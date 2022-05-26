@@ -81,7 +81,7 @@ Cypress.Commands.add(
         message: 'Passing Turn'
       });
 
-      cy.get('#root').trigger('keydown', {
+      cy.get('body').trigger('keydown', {
         code: 'Space',
         force: true
       });
@@ -108,6 +108,6 @@ Cypress.Commands.add('createGame', () => {
       cy.get('input[name="player2.name"]').type('test2');
       cy.get('input[name="player2.email"]').type('test2@test.com');
       cy.get('button[type="submit"]').click();
-      cy.location('pathname').should('eq', `/${val}`);
+      cy.location('pathname', { timeout: 15000 }).should('eq', `/${val}`);
     });
 });

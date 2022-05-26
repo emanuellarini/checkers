@@ -24,14 +24,15 @@ import {
   setTurn,
   resetGame,
   removeDisc,
-  setPlayerStat
+  setPlayerStat,
+  setWinner
 } from '../../services/firebase';
 import { discsReducer } from './discsReducer';
 
 type GameContext = {
   turn: Game['turn'];
   movements: Game['movements'];
-  winner: Turn | null;
+  winner: Game['winner'];
   players: Game['players'];
   discs: Game['discs'];
   squares: Game['squares'];
@@ -50,6 +51,7 @@ export type GameProviderProps = {
   gameStats: {
     turn: Game['turn'];
     movements: Game['movements'];
+    winner: Game['winner'];
   };
 };
 
@@ -82,9 +84,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({
     connectToRoom({ gameId });
   }, [gameId, connectToRoom]);
 
-  const [winner, onSetWinner] = useState<GameContext['winner']>(
-    initialContext.winner
-  );
   const [movablePositions, setMovablePositions] = useState<
     GameContext['movablePositions']
   >(initialContext.movablePositions);
@@ -129,9 +128,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({
         newPosition,
         discs.find(disc => disc.position === currentPosition)
       );
-
-      setMovements(gameId, gameStats.movements + 1);
-
       discsDispatch({
         type: 'MOVE_DISC',
         payload: {
@@ -140,6 +136,8 @@ export const GameProvider: React.FC<GameProviderProps> = ({
           isKing
         }
       });
+
+      setMovements(gameId, gameStats.movements + 1);
       moveDisc(gameId, currentPosition, newPosition, isKing);
 
       const capturedPosition = getCapturedDiscPosition(
@@ -177,27 +175,25 @@ export const GameProvider: React.FC<GameProviderProps> = ({
             losses: players[gameStats.turn].gameStats.losses + 1
           });
 
-          onSetWinner(gameStats.turn);
+          setWinner(gameId, gameStats.turn);
         }
       }
     },
-    [discs, gameId, players, gameStats, onSetWinner]
+    [discs, gameId, players, gameStats]
   );
 
   const onResetGame = useCallback<GameContext['onResetGame']>(() => {
     resetGame(gameId);
-    onSetWinner(initialContext.winner);
-  }, [gameId, onSetWinner]);
+  }, [gameId]);
 
   const memoizedGame = useMemo(
     () => ({
       discs,
       players,
-      winner,
       movablePositions,
       ...gameStats
     }),
-    [gameStats, discs, players, winner, movablePositions]
+    [gameStats, discs, players, movablePositions]
   );
 
   return (

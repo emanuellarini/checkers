@@ -11,7 +11,7 @@ export const useRoom = () => {
       try {
         await client.joinOrCreate('game', { gameId });
       } catch (e) {
-        console.log('ERROR!', e);
+        console.error('ERROR!', e);
         setError(true);
       }
     },

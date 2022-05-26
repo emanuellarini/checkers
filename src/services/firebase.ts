@@ -17,7 +17,6 @@ import {
 
 import { defaultDiscs } from '../lib/defaultDiscs';
 import { getDefaultPlayer } from '../lib/defaultPlayer';
-import { defaultSquares } from '../lib/defaultSquares';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDoleJdry9zhlZ56riNID2pxSf0BUVEkO4',
@@ -78,19 +77,47 @@ export const removeDisc = async (gameId: string, position: Position) => {
 export const setMovements = (gameId: string, count: number) =>
   updateDoc(doc(db, `games/${gameId}`), { movements: count });
 
-export const setTurn = (gameId: string, turn: number) =>
+export const setTurn = (gameId: string, turn: Game['turn']) =>
   updateDoc(doc(db, `games/${gameId}`), { turn });
 
-export const resetGame = (gameId: string) =>
+export const setWinner = (gameId: string, winner: Game['winner']) =>
+  updateDoc(doc(db, `games/${gameId}`), { winner });
+
+export const resetGame = async (gameId: string) => {
   updateDoc(doc(db, `games/${gameId}`), {
-    discs: defaultSquares,
+    discs: defaultDiscs,
     turn: 0,
-    movements: 0
+    movements: 0,
+    winner: null
   });
+  const player0Ref = doc(db, `games/${gameId}/players/0`);
+  const player0Snap = await getDoc(player0Ref);
+  const player0 = player0Snap.data();
+  updateDoc(doc(db, `games/${gameId}/players/0`), {
+    ...player0,
+    gameStats: {
+      ...player0?.gameStats,
+      capturedKings: 0,
+      capturedDiscs: 0
+    }
+  });
+
+  const player1Ref = doc(db, `games/${gameId}/players/1`);
+  const player1Snap = await getDoc(player1Ref);
+  const player1 = player1Snap.data();
+  updateDoc(doc(db, `games/${gameId}/players/1`), {
+    ...player1,
+    gameStats: {
+      ...player1?.gameStats,
+      capturedKings: 0,
+      capturedDiscs: 0
+    }
+  });
+};
 
 export const setPlayerStat = async <TItem extends keyof PlayerStats>(
   gameId: string,
-  player: Turn,
+  player: PlayerKey,
   stat: Record<TItem, number>
 ) => {
   const playerRef = doc(db, `games/${gameId}/players/${player}`);
@@ -118,7 +145,8 @@ export const createNewGame = async ({
   try {
     await setDoc(doc(db, 'games/' + gameId), {
       turn: 0,
-      movements: 0
+      movements: 0,
+      winner: null
     });
 
     defaultDiscs.map(disc =>
@@ -139,14 +167,3 @@ export const createNewGame = async ({
     return null;
   }
 };
-
-export const setPlayerInfo = (
-  gameId: string,
-  player: Turn,
-  name: Player['name'],
-  email: Player['email']
-) =>
-  updateDoc(doc(db, `games/${gameId}/players/${player}`), {
-    name,
-    email
-  });

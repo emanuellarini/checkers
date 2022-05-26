@@ -23,11 +23,13 @@ const SlideTransition = React.forwardRef(
 );
 
 export const Win = () => {
-  const { winner, onResetGame } = useGame();
+  const { winner, players, onResetGame } = useGame();
+
+  if (winner === null) return null;
 
   return (
     <Dialog
-      open={!!winner}
+      open
       TransitionComponent={SlideTransition}
       keepMounted
       aria-describedby="alert-dialog-slide-description"
@@ -35,12 +37,13 @@ export const Win = () => {
       <DialogTitle>We have a winner!</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-slide-description">
-          Player {winner} has won the game! Congratulations!
+          Player <b>{players[winner].name}</b> has won the game!
+          Congratulations!
         </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={onResetGame} aria-label="Restart Game">
-          Restart Game
+          Start New Game
         </Button>
       </DialogActions>
     </Dialog>

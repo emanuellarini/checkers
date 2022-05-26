@@ -35,6 +35,7 @@ type PlayerKey = 0 | 1;
 type Turn = PlayerKey;
 
 type Game = {
+  winner: PlayerKey | null;
   turn: Turn;
   movements: number;
   players: Players;
