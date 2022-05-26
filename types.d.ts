@@ -10,6 +10,7 @@ type PlayerStats = {
 type Player = {
   name: string;
   email: string;
+  avatarUrl: string;
   gameStats: PlayerStats;
 };
 

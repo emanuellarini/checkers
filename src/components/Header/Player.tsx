@@ -7,7 +7,6 @@ import { flexColumnStyle } from './styles';
 
 type PlayerProps = Player & {
   turn: Turn;
-  avatarUrl?: string;
 };
 
 export const Player: React.FC<PlayerProps> = memo(
