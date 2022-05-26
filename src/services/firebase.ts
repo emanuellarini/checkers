@@ -11,11 +11,13 @@ import {
   addDoc,
   getDocs,
   getDoc,
-  deleteField
+  deleteDoc,
+  documentId
 } from 'firebase/firestore';
 
-import { defaultBoard } from '../lib/defaultBoard';
+import { defaultDiscs } from '../lib/defaultDiscs';
 import { getDefaultPlayer } from '../lib/defaultPlayer';
+import { defaultSquares } from '../lib/defaultSquares';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDoleJdry9zhlZ56riNID2pxSf0BUVEkO4',
@@ -33,8 +35,8 @@ const db = getFirestore(app);
 // even = doc
 export const getGameRef = (gameId?: string) => doc(db, `games/${gameId}`);
 
-export const getBoardRef = (gameId?: string) =>
-  query(collection(db, `games/${gameId}/board`), orderBy('position', 'asc'));
+export const getDiscsRef = (gameId?: string) =>
+  query(collection(db, `games/${gameId}/discs`), orderBy(documentId(), 'asc'));
 
 export const getPlayersRef = (gameId?: string) =>
   collection(db, `games/${gameId}/players`);
@@ -45,45 +47,32 @@ export const moveDisc = async (
   newPosition: Position,
   isKing: boolean
 ) => {
-  // const batch = writeBatch(db);
-
-  const currentSquareQuery = query(
-    collection(db, `games/${gameId}/board`),
+  const discQuery = query(
+    collection(db, `games/${gameId}/discs`),
     where('position', '==', currentPosition)
   );
-  const currentSquareSnaps = await getDocs(currentSquareQuery);
-  const currentSquare = currentSquareSnaps.docs[0].data();
-  const newSquareQuery = query(
-    collection(db, `games/${gameId}/board`),
-    where('position', '==', newPosition)
-  );
-  const newSquareSnaps = await getDocs(newSquareQuery);
-  const newSquare = newSquareSnaps.docs[0].data();
-  const newSquareId = newSquareSnaps.docs[0].id;
+  const discSnaps = await getDocs(discQuery);
+  const disc = discSnaps.docs[0];
 
-  const newRef = doc(db, `games/${gameId}/board/${newSquareId}`);
-
-  const newData = {
-    ...newSquare,
-    disc: {
-      ...currentSquare.disc,
-      isKing
-    }
+  const updatedDisc = {
+    ...disc.data(),
+    isKing,
+    position: newPosition
   };
+  const discRef = doc(db, `games/${gameId}/discs/${disc.id}`);
 
-  await updateDoc(newRef, newData);
-  await removeDisc(gameId, currentPosition);
+  await updateDoc(discRef, updatedDisc);
 };
 
 export const removeDisc = async (gameId: string, position: Position) => {
-  const squareQuery = query(
-    collection(db, `games/${gameId}/board`),
+  const discQuery = query(
+    collection(db, `games/${gameId}/discs`),
     where('position', '==', position)
   );
-  const squareSnap = await getDocs(squareQuery);
-  const squareId = squareSnap.docs[0].id;
-  const squareRef = doc(db, `games/${gameId}/board/${squareId}`);
-  return updateDoc(squareRef, { disc: deleteField() });
+  const discSnap = await getDocs(discQuery);
+  const discId = discSnap.docs[0].id;
+  const discRef = doc(db, `games/${gameId}/discs/${discId}`);
+  return deleteDoc(discRef);
 };
 
 export const setMovements = (gameId: string, count: number) =>
@@ -92,8 +81,12 @@ export const setMovements = (gameId: string, count: number) =>
 export const setTurn = (gameId: string, turn: number) =>
   updateDoc(doc(db, `games/${gameId}`), { turn });
 
-export const resetBoard = (gameId: string) =>
-  updateDoc(doc(db, `games/${gameId}`), { board: defaultBoard });
+export const resetGame = (gameId: string) =>
+  updateDoc(doc(db, `games/${gameId}`), {
+    discs: defaultSquares,
+    turn: 0,
+    movements: 0
+  });
 
 export const setPlayerStat = async <TItem extends keyof PlayerStats>(
   gameId: string,
@@ -128,8 +121,8 @@ export const createNewGame = async ({
       movements: 0
     });
 
-    defaultBoard.map(square =>
-      addDoc(collection(db, 'games', gameId, 'board'), square)
+    defaultDiscs.map(disc =>
+      addDoc(collection(db, 'games', gameId, 'discs'), disc)
     );
 
     await setDoc(

@@ -4,11 +4,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import { useGame } from '../../hooks';
 import { Disc } from './Disc';
 
-export type DraggableDiscProps = Disc & {
-  position: Position;
-};
-
-export const DraggableDisc: React.FC<DraggableDiscProps> = memo(
+export const DraggableDisc: React.FC<Disc> = memo(
   ({ position, isKing = false, player }) => {
     const { turn } = useGame();
 

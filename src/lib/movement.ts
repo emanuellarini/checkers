@@ -1,48 +1,58 @@
-const canDropIntoSquare = (board: Board, position: number) =>
-  position >= 0 && position <= 63 && board[position].isDarkSquare;
+import { defaultSquares } from './defaultSquares';
 
-const getPositions = (board: Board, player: PlayerKey, position: Position) => {
-  const upperLeft = player === 0 ? +position - 7 : +position + 7;
-  const upperRight = player === 0 ? +position - 9 : +position + 9;
-  const twoUpperLeft = player === 0 ? +position - 14 : +position + 14;
-  const twoUpperRight = player === 0 ? +position - 18 : +position + 18;
-  const lowerLeft = player === 0 ? +position + 7 : +position - 7;
-  const lowerRight = player === 0 ? +position + 9 : +position - 9;
-  const twoLowerLeft = player === 0 ? +position + 14 : +position - 14;
-  const twoLowerRight = player === 0 ? +position + 18 : +position - 18;
+const isDroppableSquare = (position: Position) =>
+  // position is within board
+  position >= 0 &&
+  // position is within board
+  position <= 63 &&
+  // needs to be a dark square
+  defaultSquares.find(square => square.position === position)?.isDarkSquare;
+
+const canDropInAdjacentSquare = (discs: Disc[], position: Position) =>
+  isDroppableSquare(position) &&
+  !discs.some(disc => disc.position === position);
+
+const canDropInJumpedSquare = (
+  discs: Disc[],
+  position: Position,
+  player: PlayerKey
+) =>
+  canDropInAdjacentSquare(discs, position) &&
+  discs.find(disc => disc.position === position)?.player !== player;
+
+const getPositions = (player: PlayerKey, position: Position) => {
+  const upperLeft = player === 0 ? position - 7 : position + 7;
+  const upperRight = player === 0 ? position - 9 : position + 9;
+  const twoUpperLeft = player === 0 ? position - 14 : position + 14;
+  const twoUpperRight = player === 0 ? position - 18 : position + 18;
+  const lowerLeft = player === 0 ? position + 7 : position - 7;
+  const lowerRight = player === 0 ? position + 9 : position - 9;
+  const twoLowerLeft = player === 0 ? position + 14 : position - 14;
+  const twoLowerRight = player === 0 ? position + 18 : position - 18;
 
   return {
-    upperLeft: canDropIntoSquare(board, upperLeft) ? upperLeft : -1,
-    upperRight: canDropIntoSquare(board, upperRight) ? upperRight : -1,
-    twoUpperLeft: canDropIntoSquare(board, twoUpperLeft) ? twoUpperLeft : -1,
-    twoUpperRight: canDropIntoSquare(board, twoUpperRight) ? twoUpperRight : -1,
-    lowerLeft: canDropIntoSquare(board, lowerLeft) ? lowerLeft : -1,
-    lowerRight: canDropIntoSquare(board, lowerRight) ? lowerRight : -1,
-    twoLowerLeft: canDropIntoSquare(board, twoLowerLeft) ? twoLowerLeft : -1,
-    twoLowerRight: canDropIntoSquare(board, twoLowerRight) ? twoLowerRight : -1
+    upperLeft: isDroppableSquare(upperLeft) ? upperLeft : -1,
+    upperRight: isDroppableSquare(upperRight) ? upperRight : -1,
+    twoUpperLeft: isDroppableSquare(twoUpperLeft) ? twoUpperLeft : -1,
+    twoUpperRight: isDroppableSquare(twoUpperRight) ? twoUpperRight : -1,
+    lowerLeft: isDroppableSquare(lowerLeft) ? lowerLeft : -1,
+    lowerRight: isDroppableSquare(lowerRight) ? lowerRight : -1,
+    twoLowerLeft: isDroppableSquare(twoLowerLeft) ? twoLowerLeft : -1,
+    twoLowerRight: isDroppableSquare(twoLowerRight) ? twoLowerRight : -1
   };
 };
 
 const getDirectionPossibleMoves = (
   position: Position,
   doublePosition: Position,
-  board: Board,
-  player: number
+  discs: Disc[],
+  player: PlayerKey
 ) => {
   const possibleMoves = [];
-  const square = board[position];
-  const squareDouble = board[doublePosition];
 
-  // does not contain a disc in the destination
-  if (square && !square.disc) {
+  if (canDropInAdjacentSquare(discs, position)) {
     possibleMoves.push(position);
-    // does not contain a disc in the destination
-    // and has a disc in the intermediary diagonal square which belongs to another player
-  } else if (
-    squareDouble &&
-    !squareDouble.disc &&
-    square.disc?.player !== player
-  ) {
+  } else if (canDropInJumpedSquare(discs, doublePosition, player)) {
     possibleMoves.push(doublePosition);
   }
 
@@ -51,7 +61,7 @@ const getDirectionPossibleMoves = (
 
 export const calculatePlayerMovablePositions = (
   player: PlayerKey,
-  board: Board,
+  discs: Disc[],
   position: Position
 ): Position[] => {
   const {
@@ -63,38 +73,39 @@ export const calculatePlayerMovablePositions = (
     lowerRight,
     twoLowerLeft,
     twoLowerRight
-  } = getPositions(board, player, position);
+  } = getPositions(player, position);
 
-  const { disc } = board[position];
+  const disc = discs.find(disc => disc.position === position);
 
   const upperLeftPossibleMoves = getDirectionPossibleMoves(
     upperLeft,
     twoUpperLeft,
-    board,
+    discs,
     player
   );
 
   const upperRightPossibleMoves = getDirectionPossibleMoves(
     upperRight,
     twoUpperRight,
-    board,
+    discs,
     player
   );
 
   let lowerLeftPossibleMoves: Position[] = [];
   let lowerRightPossibleMoves: Position[] = [];
+  // king moves!
   if (disc?.isKing) {
     lowerLeftPossibleMoves = getDirectionPossibleMoves(
       lowerLeft,
       twoLowerLeft,
-      board,
+      discs,
       player
     );
 
     lowerRightPossibleMoves = getDirectionPossibleMoves(
       lowerRight,
       twoLowerRight,
-      board,
+      discs,
       player
     );
   }
@@ -108,7 +119,7 @@ export const calculatePlayerMovablePositions = (
 };
 
 export const getCapturedDiscPosition = (
-  board: Board,
+  discs: Disc[],
   currentPosition: Position,
   newPosition: Position
 ): Position | undefined => {
@@ -119,7 +130,10 @@ export const getCapturedDiscPosition = (
   // these numbers mean the disc has jump over
   // no need to check if the disc belongs to te opposite player here
   // because we already did that in possible moves fn
-  if (![-18, -14, 14, 18].includes(distance) || !board[middlePosition]?.disc)
+  if (
+    ![-18, -14, 14, 18].includes(distance) ||
+    !discs.find(disc => disc.position === middlePosition)
+  )
     return undefined;
 
   return middlePosition;
@@ -127,11 +141,11 @@ export const getCapturedDiscPosition = (
 
 export const calculatePlayerMovablePositionsWhenMultiCapturing = (
   player: PlayerKey,
-  board: Board,
+  discs: Disc[],
   position: Position
 ): Position[] => {
   const possibleMoves: Position[] = [];
-  const { disc } = board[position];
+  const disc = discs.find(disc => disc.position === position);
 
   const {
     upperLeft,
@@ -142,48 +156,65 @@ export const calculatePlayerMovablePositionsWhenMultiCapturing = (
     lowerRight,
     twoLowerLeft,
     twoLowerRight
-  } = getPositions(board, player, position);
+  } = getPositions(player, position);
 
-  const boardUpperLeft = board[upperLeft];
-  const boardUpperRight = board[upperRight];
-  const boardTwoUpperLeft = board[twoUpperLeft];
-  const boardTwoUpperRight = board[twoUpperRight];
+  const {
+    discUpperLeft,
+    discUpperRight,
+    discTwoUpperLeft,
+    discTwoUpperRight,
+    discLowerLeft,
+    discLowerRight,
+    discTwoLowerLeft,
+    discTwoLowerRight
+  } = discs.reduce((acc, disc) => {
+    if (disc.position === upperLeft) {
+      acc.discUpperLeft = disc;
+    } else if (disc.position === upperRight) {
+      acc.discUpperRight = disc;
+    } else if (disc.position === twoUpperLeft) {
+      acc.discTwoUpperLeft = disc;
+    } else if (disc.position === twoUpperRight) {
+      acc.discTwoUpperRight = disc;
+    } else if (disc.position === lowerLeft) {
+      acc.discLowerLeft = disc;
+    } else if (disc.position === twoLowerLeft) {
+      acc.discTwoLowerLeft = disc;
+    } else if (disc.position === lowerRight) {
+      acc.discLowerRight = disc;
+    } else if (disc.position === twoLowerRight) {
+      acc.discTwoLowerRight = disc;
+    }
 
-  const boardLowerLeft = board[lowerLeft];
-  const boardLowerRight = board[lowerRight];
-  const boardTwoLowerLeft = board[twoLowerLeft];
-  const boardTwoLowerRight = board[twoLowerRight];
+    return acc;
+  }, {} as { [k: string]: Disc });
 
-  if (
-    boardUpperLeft?.disc &&
-    boardUpperLeft.disc.player !== player &&
-    !boardTwoUpperLeft?.disc
-  ) {
+  if (discUpperLeft && discUpperLeft.player !== player && !discTwoUpperLeft) {
     possibleMoves.push(twoUpperLeft);
   }
 
   if (
-    boardUpperRight?.disc &&
-    boardUpperRight.disc?.player !== player &&
-    !boardTwoUpperRight?.disc
+    discUpperRight &&
+    discUpperRight.player !== player &&
+    !discTwoUpperRight
   ) {
     possibleMoves.push(twoUpperRight);
   }
 
   if (
     disc?.isKing &&
-    boardLowerLeft?.disc &&
-    boardLowerLeft.disc?.player !== player &&
-    !boardTwoLowerLeft?.disc
+    discLowerLeft &&
+    discLowerLeft.player !== player &&
+    !discTwoLowerLeft
   ) {
     possibleMoves.push(twoLowerLeft);
   }
 
   if (
     disc?.isKing &&
-    boardLowerRight.disc &&
-    boardLowerRight?.disc?.player !== player &&
-    !boardTwoLowerRight?.disc
+    discLowerRight &&
+    discLowerRight.player !== player &&
+    !discTwoLowerRight
   ) {
     possibleMoves.push(twoLowerRight);
   }

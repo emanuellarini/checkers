@@ -4,7 +4,6 @@ import { ArrowRightAlt } from '@mui/icons-material';
 import { Button, Slide } from '@mui/material';
 
 import { useGame } from '../../hooks';
-import text from '../../lib/text';
 
 export const Turn = () => {
   const { turn, movements, onEndTurn, winner } = useGame();
@@ -27,12 +26,16 @@ export const Turn = () => {
     };
   }, [winner, movements, onEndTurn]);
 
-  if (!movements) return null;
-
   const color = turn === 0 ? 'primary' : 'secondary';
 
   return (
-    <Slide key={`button-turn-player-${turn}`} direction="up" in>
+    <Slide
+      key={`button-turn-player-${turn}`}
+      direction="up"
+      in={movements > 0}
+      mountOnEnter
+      unmountOnExit
+    >
       <Button
         variant="contained"
         aria-label="Pass Turn"
@@ -45,7 +48,7 @@ export const Turn = () => {
           right: '2em'
         }}
       >
-        {text.button.pass_turn}
+        Pass Turn
         <ArrowRightAlt sx={{ ml: 1 }} />
       </Button>
     </Slide>

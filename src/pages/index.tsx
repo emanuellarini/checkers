@@ -78,9 +78,9 @@ const Index = () => {
           abortEarly: false
         });
         const gameId = await createNewGame(data);
-        setIsSubmitting(false);
 
         if (!gameId) {
+          setIsSubmitting(false);
           setHasError('Unable to create a new game. Try again later.');
           return;
         }

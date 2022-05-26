@@ -8,8 +8,8 @@ import { Debug } from './Debug';
 import { Square } from './Square';
 
 export type DroppableSquareProps = Square & {
-  position: Position;
   isDroppable: boolean;
+  disc?: Disc;
 };
 
 export const DroppableSquare: React.FC<DroppableSquareProps> = memo(

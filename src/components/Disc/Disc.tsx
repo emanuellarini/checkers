@@ -4,7 +4,7 @@ import { Paper } from '@mui/material';
 
 import { KingDiscIcon } from './KingDiscIcon';
 
-type DiscProps = Disc & { isDragging?: boolean };
+type DiscProps = Omit<Disc, 'id' | 'position'> & { isDragging?: boolean };
 
 export const Disc: React.FC<DiscProps> = memo(
   ({ isKing, isDragging, player }) => (

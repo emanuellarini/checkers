@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import {
   useDocumentData,
-  useCollectionData
+  useCollectionData,
+  useCollectionDataOnce
 } from 'react-firebase-hooks/firestore';
 
 import { Container, Paper, useMediaQuery, useTheme } from '@mui/material';
@@ -9,72 +10,67 @@ import { useRouter } from 'next/router';
 
 import { Board, Header, Turn, Win, Hint, Loading } from '../components';
 import { GameProvider, GameProviderProps } from '../context';
-import { getGameRef, getBoardRef, getPlayersRef } from '../services/firebase';
+import { getGameRef, getDiscsRef, getPlayersRef } from '../services/firebase';
 import NotFound from './404';
 
 const Play = () => {
   const { query } = useRouter();
-  const gameId = query.gameId as GameProviderProps['gameId'];
-
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down('md'));
   const maxWidth = matches ? '100%' : '80%';
+  const gameId = query.gameId as GameProviderProps['gameId'];
   const [gameStats, isLoadingGame, gameStatsError] = useDocumentData(
     getGameRef(gameId)
   );
-  const [board, isLoadingBoard, boardError] = useCollectionData(
-    getBoardRef(gameId)
+  const [discs, isLoadingDiscs, discsError] = useCollectionDataOnce(
+    getDiscsRef(gameId)
   );
   const [players, isLoadingPlayers, playersError] = useCollectionData(
     getPlayersRef(gameId)
   );
 
+  const isLoading = isLoadingGame || isLoadingPlayers || isLoadingDiscs;
+
   const game = useMemo(() => {
-    if (
-      isLoadingGame ||
-      isLoadingBoard ||
-      !gameStats ||
-      !board ||
-      isLoadingPlayers ||
-      !players
-    )
+    if (isLoading || !gameStats || !discs || !players)
       return {
         players: [],
-        board: [],
-        turn: 0,
-        movements: 0
+        discs: [],
+        gameStats: {
+          turn: 0,
+          movements: 0
+        }
       };
 
     return {
-      ...gameStats,
-      board,
+      gameStats,
+      discs,
       players
     };
-  }, [
-    isLoadingGame,
-    isLoadingBoard,
-    isLoadingPlayers,
-    board,
-    gameStats,
-    players
-  ]);
+  }, [isLoading, discs, gameStats, players]);
 
-  if (isLoadingGame || isLoadingPlayers || isLoadingBoard) {
-    return <Loading message="Searching your game..." />;
-  }
-
-  if (
+  const hasError =
     !gameId ||
     !game.players?.length ||
     gameStatsError ||
-    boardError ||
-    playersError
-  ) {
+    discsError ||
+    playersError;
+
+  if (isLoading) {
+    return <Loading message="Searching your game..." />;
+  }
+
+  if (hasError) {
     return <NotFound />;
   }
 
   return (
-    <GameProvider game={game as Game} gameId={gameId}>
+    <GameProvider
+      discs={discs as GameProviderProps['discs']}
+      gameStats={gameStats as GameProviderProps['gameStats']}
+      players={players as GameProviderProps['players']}
+      gameId={gameId}
+    >
       <Header />
       <Container sx={{ mt: 1, mb: 4 }}>
         <Hint />

@@ -1,5 +1,16 @@
-import React, { createContext, useCallback, useState, useMemo } from 'react';
+import React, {
+  useReducer,
+  createContext,
+  useCallback,
+  useState,
+  useMemo,
+  useEffect
+} from 'react';
 
+import { defaultDiscs } from 'src/lib/defaultDiscs';
+
+import { useRoom } from '../../hooks';
+import { defaultSquares } from '../../lib/defaultSquares';
 import { getIsKingDisc } from '../../lib/disc';
 import {
   calculatePlayerMovablePositions,
@@ -11,17 +22,19 @@ import {
   moveDisc,
   setMovements,
   setTurn,
-  resetBoard,
+  resetGame,
   removeDisc,
   setPlayerStat
 } from '../../services/firebase';
+import { discsReducer } from './discsReducer';
 
 type GameContext = {
   turn: Game['turn'];
   movements: Game['movements'];
   winner: Turn | null;
   players: Game['players'];
-  board: Game['board'];
+  discs: Game['discs'];
+  squares: Game['squares'];
   movablePositions: Position[];
   onStartMovement: (position: Position) => void;
   onEndMovement: (currentPosition: Position, newPosition: Position) => void;
@@ -32,7 +45,12 @@ type GameContext = {
 export type GameProviderProps = {
   children: React.ReactNode;
   gameId: string;
-  game: Game;
+  players: Game['players'];
+  discs: Game['discs'];
+  gameStats: {
+    turn: Game['turn'];
+    movements: Game['movements'];
+  };
 };
 
 const initialContext: GameContext = {
@@ -40,7 +58,8 @@ const initialContext: GameContext = {
   movements: 0,
   winner: null,
   players: [],
-  board: [],
+  squares: defaultSquares,
+  discs: defaultDiscs,
   movablePositions: [],
   onStartMovement: () => null,
   onEndMovement: () => null,
@@ -53,19 +72,31 @@ export const GameContext = createContext(initialContext);
 export const GameProvider: React.FC<GameProviderProps> = ({
   children,
   gameId,
-  game
+  discs: discsFromProps,
+  players,
+  gameStats
 }) => {
+  const { connectToRoom } = useRoom();
+
+  useEffect(() => {
+    connectToRoom({ gameId });
+  }, [gameId, connectToRoom]);
+
   const [winner, onSetWinner] = useState<GameContext['winner']>(
     initialContext.winner
   );
   const [movablePositions, setMovablePositions] = useState<
     GameContext['movablePositions']
   >(initialContext.movablePositions);
+  const [discs, discsDispatch] = useReducer(
+    discsReducer,
+    discsFromProps || initialContext.discs
+  );
 
-  const onEndTurn = useCallback(async () => {
-    await setTurn(gameId, game.turn === 0 ? 1 : 0);
-    await setMovements(gameId, 0);
-  }, [gameId, game]);
+  const onEndTurn = useCallback(() => {
+    setTurn(gameId, gameStats.turn === 0 ? 1 : 0);
+    setMovements(gameId, 0);
+  }, [gameId, gameStats]);
 
   const onStartMovement = useCallback<GameContext['onStartMovement']>(
     position => {
@@ -73,88 +104,107 @@ export const GameProvider: React.FC<GameProviderProps> = ({
 
       let movablePositions;
 
-      if (game.movements === 0) {
+      if (gameStats.movements === 0) {
         movablePositions = calculatePlayerMovablePositions(
-          game.turn,
-          game.board,
+          gameStats.turn,
+          discs,
           position
         );
       } else {
         movablePositions = calculatePlayerMovablePositionsWhenMultiCapturing(
-          game.turn,
-          game.board,
+          gameStats.turn,
+          discs,
           position
         );
       }
 
       setMovablePositions(movablePositions);
     },
-    [setMovablePositions, game]
+    [setMovablePositions, discs, gameStats]
   );
 
   const onEndMovement = useCallback<GameContext['onEndMovement']>(
-    async (currentPosition, newPosition) => {
+    (currentPosition, newPosition) => {
       const isKing = getIsKingDisc(
         newPosition,
-        game.board[currentPosition].disc
+        discs.find(disc => disc.position === currentPosition)
       );
 
-      await setMovements(gameId, game.movements + 1);
-      await moveDisc(gameId, currentPosition, newPosition, isKing);
+      setMovements(gameId, gameStats.movements + 1);
+
+      discsDispatch({
+        type: 'MOVE_DISC',
+        payload: {
+          currentPosition,
+          newPosition,
+          isKing
+        }
+      });
+      moveDisc(gameId, currentPosition, newPosition, isKing);
 
       const capturedPosition = getCapturedDiscPosition(
-        game.board,
+        discs,
         currentPosition,
         newPosition
       );
 
       if (capturedPosition) {
-        await removeDisc(gameId, capturedPosition);
-        if (game.board[capturedPosition]?.disc?.isKing) {
-          await setPlayerStat(gameId, game.turn, {
-            capturedKings: game.players[game.turn].gameStats.capturedKings + 1
+        discsDispatch({
+          type: 'REMOVE_DISC',
+          payload: capturedPosition
+        });
+
+        removeDisc(gameId, capturedPosition);
+        const capturedDisc = discs.find(
+          disc => disc.position === capturedPosition
+        );
+        if (capturedDisc?.isKing) {
+          setPlayerStat(gameId, gameStats.turn, {
+            capturedKings: players[gameStats.turn].gameStats.capturedKings + 1
           });
         } else {
-          await setPlayerStat(gameId, game.turn, {
-            capturedDiscs: game.players[game.turn].gameStats.capturedDiscs + 1
+          setPlayerStat(gameId, gameStats.turn, {
+            capturedDiscs: players[gameStats.turn].gameStats.capturedDiscs + 1
           });
         }
 
-        if (hasWonThisTurn(game.players, game.turn, game.board)) {
-          await setPlayerStat(gameId, game.turn, {
-            wins: game.players[game.turn].gameStats.wins + 1
+        if (hasWonThisTurn(players, gameStats.turn, discs)) {
+          setPlayerStat(gameId, gameStats.turn, {
+            wins: players[gameStats.turn].gameStats.wins + 1
           });
 
-          await setPlayerStat(gameId, game.turn === 1 ? 0 : 1, {
-            losses: game.players[game.turn].gameStats.losses + 1
+          setPlayerStat(gameId, gameStats.turn === 1 ? 0 : 1, {
+            losses: players[gameStats.turn].gameStats.losses + 1
           });
 
-          onSetWinner(game.turn);
+          onSetWinner(gameStats.turn);
         }
       }
     },
-    [gameId, game, onSetWinner]
+    [discs, gameId, players, gameStats, onSetWinner]
   );
 
-  const onResetGame = useCallback<GameContext['onResetGame']>(async () => {
-    await resetBoard(gameId);
-    await setMovements(gameId, 0);
+  const onResetGame = useCallback<GameContext['onResetGame']>(() => {
+    resetGame(gameId);
     onSetWinner(initialContext.winner);
   }, [gameId, onSetWinner]);
 
   const memoizedGame = useMemo(
     () => ({
-      ...game,
+      discs,
+      players,
       winner,
-      movablePositions
+      movablePositions,
+      ...gameStats
     }),
-    [game, winner, movablePositions]
+    [gameStats, discs, players, winner, movablePositions]
   );
 
   return (
     <GameContext.Provider
       value={{
         ...memoizedGame,
+        squares: initialContext.squares,
         onStartMovement,
         onEndMovement,
         onEndTurn,

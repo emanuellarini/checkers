@@ -2,15 +2,15 @@ import React, { memo, useMemo, forwardRef, ReactNode } from 'react';
 
 import { Box } from '@mui/material';
 
-export type SquareProps = Omit<Square, 'position'> & {
+export type SquareProps = Pick<Square, 'isDarkSquare'> & {
   children: ReactNode;
 };
 
-const getSquareStyle = (isDroppable = false) => ({
+const getSquareStyle = (isDarkSquare = false) => ({
   overflow: 'hidden',
   position: 'relative',
   aspectRatio: '1',
-  backgroundColor: isDroppable ? '#88665d' : '#bcaa99',
+  backgroundColor: isDarkSquare ? '#88665d' : '#bcaa99',
   width: '100%',
   height: '100%',
   // paddings and margins should be applied here instead of parent

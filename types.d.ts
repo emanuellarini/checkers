@@ -13,15 +13,20 @@ type Player = {
   gameStats: PlayerStats;
 };
 
-type Disc = { player: PlayerKey; isKing: boolean };
+type DiscId = `disc-${number}${number}`;
+
+type Disc = {
+  id: DiscId;
+  player: PlayerKey;
+  isKing: boolean;
+  position: Position;
+};
 
 type Square = {
   position: Position;
   isDarkSquare: boolean;
-  disc?: Disc;
+  isDroppable: boolean;
 };
-
-type Board = Square[];
 
 type Players = Player[];
 
@@ -33,5 +38,6 @@ type Game = {
   turn: Turn;
   movements: number;
   players: Players;
-  board: Board;
+  squares: Square[];
+  discs: Disc[];
 };
