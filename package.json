@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "nodemon",
+    "dev:ts": "yarn dev & yarn ts:watch",
+    "ts": "tsc --noEmit --incremental",
+    "ts:watch": "yarn ts --watch",
     "build": "next build && tsc --project tsconfig.server.json",
     "start": "cross-env NODE_ENV=production node .next/production-server/index.js",
     "lint": "eslint --fix",

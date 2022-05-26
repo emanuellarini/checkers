@@ -1,7 +1,7 @@
 export const hasWonThisTurn = (
   players: Players,
   turn: PlayerKey,
-  board: Board
+  discs: Disc[]
 ) => {
   const currentPlayerCaptured =
     players[turn].gameStats.capturedDiscs +
@@ -21,9 +21,7 @@ export const hasWonThisTurn = (
     discs: 12 - otherPlayerCaptured
   };
 
-  const hasKingDisc = Object.values(board).some(
-    square => square.disc && square.disc.player === turn && square.disc.isKing
-  );
+  const hasKingDisc = discs.some(disc => disc.player === turn && disc.isKing);
 
   return (
     // captured 11 plus another this turn

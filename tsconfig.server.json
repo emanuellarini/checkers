@@ -3,9 +3,10 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": ".next/production-server",
-    "target": "es2017",
+    "target": "esnext",
     "isolatedModules": false,
-    "noEmit": false
-  },
-  "include": ["src/server/**/*.ts"]
+    "esModuleInterop": true,
+    "noEmit": false,
+    "rootDir": "./src"
+  }
 }
