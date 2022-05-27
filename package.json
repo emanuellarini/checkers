@@ -3,8 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon",
-    "dev:ts": "yarn dev & yarn ts:watch",
+    "dev": "nodemon & yarn ts:watch",
     "ts": "tsc --noEmit --incremental",
     "ts:watch": "yarn ts --watch",
     "build": "next build && tsc --project tsconfig.server.json",
@@ -15,6 +14,7 @@
     "cy:run": "cypress run"
   },
   "dependencies": {
+    "@colyseus/monitor": "0.14.22",
     "@emotion/cache": "11.7.1",
     "@emotion/react": "11.9.0",
     "@emotion/server": "11.4.0",

@@ -1,3 +1,4 @@
+import { monitor } from '@colyseus/monitor';
 import { Server } from 'colyseus';
 import cors from 'cors';
 import express from 'express';
@@ -17,6 +18,8 @@ nextApp.prepare().then(() => {
   app.use(express.json());
   const server = createServer(app);
   const gameServer = new Server({ server });
+
+  app.use('/colyseus', monitor());
 
   app.all('*', (req, res) => {
     return handle(req, res);
