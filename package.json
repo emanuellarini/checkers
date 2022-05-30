@@ -3,9 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon & yarn ts:watch",
-    "ts": "tsc --noEmit --incremental",
-    "ts:watch": "yarn ts --watch",
+    "dev": "DEBUG=colyseus:* ts-node --files --project tsconfig.server.json src/server/index.ts",
     "build": "next build && tsc --project tsconfig.server.json",
     "start": "cross-env NODE_ENV=production node .next/production-server/index.js",
     "lint": "eslint --fix",
@@ -14,6 +12,7 @@
     "cy:run": "cypress run"
   },
   "dependencies": {
+    "@colyseus/command": "0.2.1",
     "@colyseus/monitor": "0.14.22",
     "@emotion/cache": "11.7.1",
     "@emotion/react": "11.9.0",
@@ -36,9 +35,12 @@
     "react-beautiful-dnd": "13.1.0",
     "react-dom": "17.0.2",
     "react-firebase-hooks": "5.0.3",
+    "usehooks-ts": "2.5.3",
     "yup": "0.32.11"
   },
   "devDependencies": {
+    "@swc/core": "^1.2.194",
+    "@swc/helpers": "^0.3.16",
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "13.2.0",
     "@testing-library/user-event": "13.5.0",
@@ -70,6 +72,7 @@
     "lint-staged": "12.4.1",
     "nodemon": "2.0.16",
     "prettier": "2.6.2",
+    "regenerator-runtime": "^0.13.9",
     "ts-jest": "28.0.3",
     "ts-node": "10.8.0",
     "typescript": "4.7.2"

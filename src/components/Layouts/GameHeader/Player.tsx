@@ -1,16 +1,20 @@
 import React, { memo } from 'react';
 
 import { Avatar, Box, Typography, Slide } from '@mui/material';
+import gravatar from 'gravatar';
 
+import { useRoom } from '../../../hooks';
 import { Stats } from './Stats';
 import { flexColumnStyle } from './styles';
 
-type PlayerProps = Player & {
-  turn: Turn;
-};
+export const Player = memo(() => {
+  const { turn, players } = useRoom();
 
-export const Player: React.FC<PlayerProps> = memo(
-  ({ name, gameStats, turn, avatarUrl }) => (
+  const player = players.find(p => p.id === turn);
+
+  if (!player) return null;
+
+  return (
     <Slide
       direction={turn === 0 ? 'right' : 'left'}
       in
@@ -27,17 +31,21 @@ export const Player: React.FC<PlayerProps> = memo(
       >
         <Box sx={flexColumnStyle}>
           <Avatar
-            alt={name}
-            src={avatarUrl}
+            alt={player.name}
+            src={gravatar.url(player.email, {
+              protocol: 'https',
+              size: '100px',
+              d: '404'
+            })}
             sx={{ width: '3.25em', height: '3.25em', mb: 1 }}
           />
           <Typography variant="overline" component="h2">{`Player ${
             turn + 1
           } Turn`}</Typography>
-          <Typography variant="h5">{name}</Typography>
-          <Stats gameStats={gameStats} />
+          <Typography variant="h5">{player.name}</Typography>
+          <Stats {...player} />
         </Box>
       </Box>
     </Slide>
-  )
-);
+  );
+});

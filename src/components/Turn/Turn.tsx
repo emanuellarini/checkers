@@ -1,16 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import { ArrowRightAlt } from '@mui/icons-material';
 import { Button, Slide } from '@mui/material';
 
-import { useGame } from '../../hooks';
+import { useRoom } from '../../hooks';
 
 export const Turn = () => {
-  const { turn, movements, onEndTurn, winner } = useGame();
+  const { turn, movements, onEndTurn, winner, players, sessionId } = useRoom();
+
+  const canPassTurn = useMemo(() => {
+    const currentSessionPlayer = players.find(p => p.sessionId === sessionId);
+
+    return turn === currentSessionPlayer?.id && movements > 0;
+  }, [players, sessionId, movements]);
 
   useEffect(() => {
     const handleSpaceBarPress = (e: KeyboardEvent) => {
-      if (!movements || winner) return;
+      if (!canPassTurn || winner) return;
 
       e.preventDefault();
       e.stopPropagation();
@@ -24,7 +30,7 @@ export const Turn = () => {
     return () => {
       window.removeEventListener('keydown', handleSpaceBarPress);
     };
-  }, [winner, movements, onEndTurn]);
+  }, [canPassTurn, winner, onEndTurn]);
 
   const color = turn === 0 ? 'primary' : 'secondary';
 
@@ -32,7 +38,7 @@ export const Turn = () => {
     <Slide
       key={`button-turn-player-${turn}`}
       direction="up"
-      in={movements > 0}
+      in={canPassTurn}
       mountOnEnter
       unmountOnExit
     >
@@ -40,6 +46,7 @@ export const Turn = () => {
         variant="contained"
         aria-label="Pass Turn"
         onClick={onEndTurn}
+        disabled={!canPassTurn}
         color={color}
         size="large"
         sx={{

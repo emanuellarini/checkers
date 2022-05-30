@@ -3,9 +3,7 @@ import React from 'react';
 import { Button, Box, Paper, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 
-import { Disc } from '../Disc';
-import { DefaultHeader } from '../Header';
-import { Square } from '../Square';
+import { Disc, Square, DefaultHeaderLayout } from '../';
 
 const missingDiscPositions = [1, 7, 13, 18, 19, 24, 25];
 const zeroPositions = [3, 4, 5, 12, 14, 21, 22, 23];
@@ -14,8 +12,7 @@ export const NotFound = () => {
   const router = useRouter();
 
   return (
-    <>
-      <DefaultHeader />
+    <DefaultHeaderLayout>
       <Box
         sx={{
           display: 'flex',
@@ -83,6 +80,6 @@ export const NotFound = () => {
           ))}
         </Paper>
       </Box>
-    </>
+    </DefaultHeaderLayout>
   );
 };

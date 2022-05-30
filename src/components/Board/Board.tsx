@@ -5,12 +5,12 @@ import {
   OnDragEndResponder
 } from 'react-beautiful-dnd';
 
-import { useGame } from '../../hooks';
+import { useRoom } from '../../hooks';
 import { DroppableSquare } from '../Square';
 
 export const Board = () => {
   const { squares, discs, onStartMovement, onEndMovement, movablePositions } =
-    useGame();
+    useRoom();
 
   const handleDragStart = useCallback<OnDragStartResponder>(
     ({ draggableId }) => onStartMovement(Number(draggableId)),

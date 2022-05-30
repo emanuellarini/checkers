@@ -3,13 +3,10 @@ import React, {
   createContext,
   useCallback,
   useState,
-  useMemo,
-  useEffect
+  useMemo
 } from 'react';
 
-import { defaultDiscs } from 'src/lib/defaultDiscs';
-
-import { useRoom } from '../../hooks';
+import { defaultDiscs } from '../../lib/defaultDiscs';
 import { defaultSquares } from '../../lib/defaultSquares';
 import { getIsKingDisc } from '../../lib/disc';
 import {
@@ -45,7 +42,7 @@ type GameContext = {
 
 export type GameProviderProps = {
   children: React.ReactNode;
-  gameId: string;
+  gameId: GameId;
   players: Game['players'];
   discs: Game['discs'];
   gameStats: {
@@ -58,7 +55,7 @@ export type GameProviderProps = {
 const initialContext: GameContext = {
   turn: 0,
   movements: 0,
-  winner: null,
+  winner: -1,
   players: [],
   squares: defaultSquares,
   discs: defaultDiscs,
@@ -78,12 +75,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({
   players,
   gameStats
 }) => {
-  const { connectToRoom } = useRoom();
-
-  useEffect(() => {
-    connectToRoom({ gameId });
-  }, [gameId, connectToRoom]);
-
   const [movablePositions, setMovablePositions] = useState<
     GameContext['movablePositions']
   >(initialContext.movablePositions);
@@ -158,21 +149,21 @@ export const GameProvider: React.FC<GameProviderProps> = ({
         );
         if (capturedDisc?.isKing) {
           setPlayerStat(gameId, gameStats.turn, {
-            capturedKings: players[gameStats.turn].gameStats.capturedKings + 1
+            capturedKings: players[gameStats.turn].capturedKings + 1
           });
         } else {
           setPlayerStat(gameId, gameStats.turn, {
-            capturedDiscs: players[gameStats.turn].gameStats.capturedDiscs + 1
+            capturedDiscs: players[gameStats.turn].capturedDiscs + 1
           });
         }
 
         if (hasWonThisTurn(players, gameStats.turn, discs)) {
           setPlayerStat(gameId, gameStats.turn, {
-            wins: players[gameStats.turn].gameStats.wins + 1
+            wins: players[gameStats.turn].wins + 1
           });
 
           setPlayerStat(gameId, gameStats.turn === 1 ? 0 : 1, {
-            losses: players[gameStats.turn].gameStats.losses + 1
+            losses: players[gameStats.turn].losses + 1
           });
 
           setWinner(gameId, gameStats.turn);

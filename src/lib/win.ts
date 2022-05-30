@@ -1,11 +1,10 @@
 export const hasWonThisTurn = (
-  players: Players,
+  players: Game['players'],
   turn: PlayerKey,
   discs: Disc[]
 ) => {
   const currentPlayerCaptured =
-    players[turn].gameStats.capturedDiscs +
-    players[turn].gameStats.capturedKings;
+    players[turn].capturedDiscs + players[turn].capturedKings;
   const currentPlayer = {
     captured: currentPlayerCaptured,
     discs: 12 - currentPlayerCaptured
@@ -13,8 +12,8 @@ export const hasWonThisTurn = (
 
   const otherPlayerKey = turn === 0 ? 1 : 0;
   const otherPlayerCaptured =
-    players[otherPlayerKey].gameStats.capturedDiscs +
-    players[otherPlayerKey].gameStats.capturedKings;
+    players[otherPlayerKey].capturedDiscs +
+    players[otherPlayerKey].capturedKings;
 
   const otherPlayer = {
     captured: otherPlayerCaptured,

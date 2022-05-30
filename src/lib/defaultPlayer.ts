@@ -1,16 +1,13 @@
-import gravatar from 'gravatar';
-
-const getAvatarUrl = (email: string) =>
-  gravatar.url(email, {
-    protocol: 'https',
-    size: '100px',
-    d: '404'
-  });
-
-export const getDefaultPlayer = ({ name = '', email = '' }) => ({
+export const getDefaultPlayer = ({
+  name = '',
+  email = '',
+  id = '',
+  isBlack = true
+}) => ({
+  id,
   name,
   email,
-  avatarUrl: getAvatarUrl(email),
+  discType: isBlack ? 'black' : 'red',
   gameStats: {
     wins: 0,
     losses: 0,

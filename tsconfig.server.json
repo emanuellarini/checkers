@@ -2,11 +2,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
-    "outDir": ".next/production-server",
     "target": "esnext",
-    "isolatedModules": false,
-    "esModuleInterop": true,
-    "noEmit": false,
-    "rootDir": "./src"
+    "experimentalDecorators": true
+  },
+  "ts-node": {
+    "transpileOnly": true,
+    "files": true
   }
 }

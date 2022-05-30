@@ -115,7 +115,7 @@ export const resetGame = async (gameId: string) => {
   });
 };
 
-export const setPlayerStat = async <TItem extends keyof PlayerStats>(
+export const setPlayerStat = async <TItem extends keyof Player>(
   gameId: string,
   player: PlayerKey,
   stat: Record<TItem, number>
@@ -135,12 +135,10 @@ export const setPlayerStat = async <TItem extends keyof PlayerStats>(
 
 export const createNewGame = async ({
   gameId,
-  player1,
-  player2
+  player
 }: {
-  gameId: string;
-  player1: Pick<Player, 'name' | 'email'>;
-  player2: Pick<Player, 'name' | 'email'>;
+  gameId: GameId;
+  player: Pick<Player, 'name' | 'email'>;
 }) => {
   try {
     await setDoc(doc(db, 'games/' + gameId), {
@@ -155,11 +153,12 @@ export const createNewGame = async ({
 
     await setDoc(
       doc(db, `games/${gameId}/players/0`),
-      getDefaultPlayer(player1)
+      getDefaultPlayer(player)
     );
+
     await setDoc(
       doc(db, `games/${gameId}/players/1`),
-      getDefaultPlayer(player2)
+      getDefaultPlayer(player)
     );
 
     return gameId;

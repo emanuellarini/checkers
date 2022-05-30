@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 
-import { useGame } from '../../hooks';
+import { useRoom } from '../../hooks';
 
 const SlideTransition = React.forwardRef(
   (
@@ -23,9 +23,9 @@ const SlideTransition = React.forwardRef(
 );
 
 export const Win = () => {
-  const { winner, players, onResetGame } = useGame();
+  const { winner, players, onResetGame } = useRoom();
 
-  if (winner === null) return null;
+  if (typeof winner !== 'number' || winner === -1) return null;
 
   return (
     <Dialog
@@ -37,7 +37,7 @@ export const Win = () => {
       <DialogTitle>We have a winner!</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-slide-description">
-          Player <b>{players[winner].name}</b> has won the game!
+          Player <b>{players[winner]?.name}</b> has won the game!
           Congratulations!
         </DialogContentText>
       </DialogContent>

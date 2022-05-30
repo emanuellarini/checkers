@@ -1,18 +1,24 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 
-import { useGame } from '../../hooks';
+import { useRoom } from '../../hooks';
 import { Disc } from './Disc';
 
 export const DraggableDisc: React.FC<Disc> = memo(
   ({ position, isKing = false, player }) => {
-    const { turn } = useGame();
+    const { turn, sessionId, players } = useRoom();
+
+    const isDraggableByCurrentPlayer = useMemo(() => {
+      const currentSessionPlayer = players.find(p => p.sessionId === sessionId);
+
+      return turn === player && turn === currentSessionPlayer?.id;
+    }, [player, turn, players, sessionId]);
 
     return (
       <Draggable
         draggableId={position.toString()}
         index={position}
-        isDragDisabled={turn !== player}
+        isDragDisabled={!isDraggableByCurrentPlayer}
       >
         {(provided, snapshot) => (
           <div
