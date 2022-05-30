@@ -4,7 +4,7 @@ import { Command } from '@colyseus/command';
 // import { hasWonThisTurn } from '../../lib/win';
 import { getIsKingDisc } from '../disc';
 import GameRoom from '../rooms/GameRoom';
-import { DiscSchema } from '../schemas';
+// import { DiscSchema } from '../schemas';
 
 export type OnEndMovementData = {
   currentPosition: Position;
@@ -20,14 +20,18 @@ export class OnEndMovement extends Command<GameRoom, OnEndMovementData> {
       disc => disc.position === currentPosition
     );
 
-    console.log('currentPositionDisc', currentPositionDisc);
+    console.log('currentPositionDisc', this.state.discs['$changes'].changes);
+    console.log('currentPositionDisc', this.state.discs.at(0).position);
 
     const isKing = getIsKingDisc(newPosition, currentPositionDisc);
-    const newPositionDisc = new DiscSchema({
-      ...currentPositionDisc,
-      position: newPosition,
-      isKing
-    });
+    // const newPositionDisc = new DiscSchema({
+    //   ...currentPositionDisc,
+    //   position: newPosition,
+    //   isKing
+    // });
+
+    this.state.discs.at(14).position = newPosition;
+    this.state.discs.at(14).isKing = isKing;
 
     // const capturedPosition = getCapturedDiscPosition(
     //   this.state.discs as Game['discs'],
@@ -67,6 +71,8 @@ export class OnEndMovement extends Command<GameRoom, OnEndMovementData> {
     //   this.state.discs.splice(capturedDiscIndex, 1);
     // }
 
+    console.log('currentPositionDisc', this.state.discs);
+
     this.state.movements = this.state.movements + 1;
 
     const data = {
@@ -74,7 +80,7 @@ export class OnEndMovement extends Command<GameRoom, OnEndMovementData> {
       movements: this.state.movements,
       capturedPosition: undefined,
       updateDisc: {
-        disc: newPositionDisc,
+        disc: this.state.discs.at(14),
         key: 112213
       },
       currentPlayer: this.state.players.at(currentPlayerKey),

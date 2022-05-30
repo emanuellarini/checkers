@@ -48,6 +48,8 @@ export const PlayerForm = ({ title = 'Create New Game' }) => {
       setProfile(data);
       await router.push('/rooms');
     } catch (err) {
+      console.error(err);
+      setIsSubmitting(false);
       if (err instanceof Yup.ValidationError) {
         const validationErrors = {};
         if (err instanceof Yup.ValidationError) {
@@ -84,6 +86,7 @@ export const PlayerForm = ({ title = 'Create New Game' }) => {
           await router.push(`/rooms/${createdId}`);
         } else {
           await onJoinRoom({ player: data, gameId });
+          setProfile({ name: data.name, email: data.email });
         }
       } catch (err) {
         setIsSubmitting(false);
