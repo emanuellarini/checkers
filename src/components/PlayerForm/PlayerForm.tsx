@@ -75,16 +75,20 @@ export const PlayerForm = ({ title = 'Create New Game' }) => {
         await formSchema.validate(data, {
           abortEarly: false
         });
-        if (isCreatingGame) {
-          const gameId = await onCreateRoom({ player: data });
 
-          if (!gameId) {
+        if (isCreatingGame) {
+          const newGameId = await onCreateRoom({ player: data });
+
+          if (!newGameId) {
             setIsSubmitting(false); // error is handled in Provider already
             return;
           }
-          await router.push(`/rooms/${gameId}`);
+          await router.push(`/rooms/${newGameId}`);
         } else {
-          await onJoinRoom({ player: data, gameId });
+          const hasJoined = await onJoinRoom({ player: data, gameId });
+          if (!hasJoined) {
+            setIsSubmitting(false);
+          }
         }
       } catch (err) {
         setIsSubmitting(false);
