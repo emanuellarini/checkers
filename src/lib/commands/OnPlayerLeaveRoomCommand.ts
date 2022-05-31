@@ -14,7 +14,7 @@ export class OnPlayerLeaveRoomCommand extends Command<GameRoom> {
       player => player.sessionId === client.sessionId
     );
 
-    this.room.unlock();
+    await this.room.unlock();
 
     try {
       if (consented) {
