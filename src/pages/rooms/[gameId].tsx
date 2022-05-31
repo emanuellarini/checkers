@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useRouter } from 'next/router';
 
@@ -16,31 +16,44 @@ const Play = () => {
   const router = useRouter();
   const { onReconnectRoom, onJoinRoom, players, sessionId } = useRoom();
   const gameId = router.query.gameId as string;
+  const [isJoining, setIsJoining] = useState(false);
 
   useEffect(() => {
     // already joined, not "auth", screen didn't load yet
-    if (sessionId || !profile || !gameId) return;
+    if (isJoining || sessionId || !profile || !gameId) return;
 
     const join = async () => {
       let hasJoined;
-      if (profile.sessionId) {
-        hasJoined = await onReconnectRoom({
-          sessionId: profile.sessionId,
-          gameId
-        });
-      } else {
+      setIsJoining(true);
+      hasJoined = await onReconnectRoom({
+        sessionId: profile.sessionId,
+        gameId
+      });
+      if (!hasJoined) {
         hasJoined = await onJoinRoom({ player: profile, gameId });
       }
+      setIsJoining(false);
       if (!hasJoined) return router.push('/');
     };
 
     join();
-  }, [onReconnectRoom, sessionId, router, onJoinRoom, gameId, profile]);
+  }, [
+    isJoining,
+    setIsJoining,
+    onReconnectRoom,
+    sessionId,
+    router,
+    onJoinRoom,
+    gameId,
+    profile
+  ]);
 
   const isPaused = players.length !== 2 || players.some(p => !p.isConnected);
 
   let content;
-  if (sessionId) {
+  if (isJoining) {
+    content = <Loading />;
+  } else if (sessionId) {
     content = (
       <>
         {isPaused && <Paused />}

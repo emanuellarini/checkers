@@ -14,6 +14,8 @@ export class OnPlayerLeaveRoomCommand extends Command<GameRoom> {
       player => player.sessionId === client.sessionId
     );
 
+    this.room.unlock();
+
     try {
       if (consented) {
         throw new Error();
@@ -28,12 +30,12 @@ export class OnPlayerLeaveRoomCommand extends Command<GameRoom> {
       await this.room.allowReconnection(client);
 
       this.state.players[index].isConnected = true;
+
+      this.room.broadcast('PLAYER_JOINED_ROOM', this.state);
     } catch (e) {
       this.state.players.splice(index);
 
       this.room.broadcast('PLAYER_LEFT_ROOM', index);
-
-      this.room.unlock();
     }
   }
 }

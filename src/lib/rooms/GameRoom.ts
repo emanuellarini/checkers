@@ -37,6 +37,13 @@ export default class GameRoom extends Room<GameSchema> {
     return id;
   }
 
+  onAuth(client: Client, data: OnJoinRoomData) {
+    if (this.state.players.some(p => p.email === data.player.email))
+      return true;
+
+    return this.clients.length <= this.maxClients;
+  }
+
   async onCreate() {
     this.roomId = await this.generateRoomId();
     this.setState(
