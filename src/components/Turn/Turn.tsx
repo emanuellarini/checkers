@@ -16,7 +16,7 @@ export const Turn = () => {
 
   useEffect(() => {
     const handleSpaceBarPress = (e: KeyboardEvent) => {
-      if (!canPassTurn || winner) return;
+      if (!canPassTurn || winner !== -1) return;
 
       e.preventDefault();
       e.stopPropagation();

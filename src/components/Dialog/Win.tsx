@@ -25,7 +25,7 @@ const SlideTransition = React.forwardRef(
 export const Win = () => {
   const { winner, players, onRematch } = useRoom();
 
-  if (typeof winner !== 'number' || winner === -1) return null;
+  if (winner === -1) return null;
 
   return (
     <Dialog
