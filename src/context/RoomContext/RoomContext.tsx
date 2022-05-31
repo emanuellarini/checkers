@@ -392,7 +392,11 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
         onReconnectRoom
       }}
     >
-      <Snackbar open={!!error} autoHideDuration={3000}>
+      <Snackbar
+        open={!!error}
+        autoHideDuration={3000}
+        onClose={() => setError(false)}
+      >
         <Alert severity="error" sx={{ width: '100%' }}>
           Unable to setup the game. Try again later.
         </Alert>
