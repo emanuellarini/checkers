@@ -3,6 +3,9 @@ export const hasWonThisTurn = (
   turn: PlayerKey,
   discs: Disc[]
 ) => {
+  const otherPlayerKey = turn === 0 ? 1 : 0;
+  if (!players[otherPlayerKey] || !players[turn]) return false;
+
   const currentPlayerCaptured =
     players[turn].capturedDiscs + players[turn].capturedKings;
   const currentPlayer = {
@@ -10,7 +13,6 @@ export const hasWonThisTurn = (
     discs: 12 - currentPlayerCaptured
   };
 
-  const otherPlayerKey = turn === 0 ? 1 : 0;
   const otherPlayerCaptured =
     players[otherPlayerKey].capturedDiscs +
     players[otherPlayerKey].capturedKings;
@@ -23,9 +25,7 @@ export const hasWonThisTurn = (
   const hasKingDisc = discs.some(disc => disc.player === turn && disc.isKing);
 
   return (
-    // captured 11 plus another this turn
-    currentPlayer.captured === 11 ||
-    // has a king versus a common disc
+    currentPlayer.captured === 12 ||
     (currentPlayer.discs === 1 && otherPlayer.discs === 1 && hasKingDisc)
   );
 };

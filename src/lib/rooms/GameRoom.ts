@@ -3,9 +3,11 @@ import { Room, Client, updateLobby } from 'colyseus';
 
 import {
   OnPlayerJoinRoomCommand,
-  OnPlayerLeaveRoomCommand,
   OnPlayerJoinRoomCommandData,
-  OnEndMovement
+  OnEndMovementCommand,
+  OnEndTurnCommand,
+  OnRematchCommand,
+  OnPlayerLeaveRoomCommand
 } from '../commands';
 import { createGameId } from '../gameId';
 import { GameSchema } from '../schemas';
@@ -45,8 +47,15 @@ export default class GameRoom extends Room<GameSchema> {
       })
     );
 
-    this.onMessage('MOVE_DISC', (client, data) => {
-      this.dispatcher.dispatch(new OnEndMovement(), data);
+    this.onMessage('END_MOVEMENT', (client, data) => {
+      this.dispatcher.dispatch(new OnEndMovementCommand(), data);
+    });
+
+    this.onMessage('END_TURN', () => {
+      this.dispatcher.dispatch(new OnEndTurnCommand());
+    });
+    this.onMessage('REMATCH', () => {
+      this.dispatcher.dispatch(new OnRematchCommand());
     });
 
     this.clock.setTimeout(() => {
@@ -71,10 +80,11 @@ export default class GameRoom extends Room<GameSchema> {
     }
   }
 
-  onLeave(client: Client) {
-    // update players
-    this.dispatcher.dispatch(new OnPlayerLeaveRoomCommand(), client.id);
-    this.unlock();
+  onLeave(client: Client, consented: boolean) {
+    this.dispatcher.dispatch(new OnPlayerLeaveRoomCommand(), {
+      client,
+      consented
+    });
   }
 
   onDispose() {

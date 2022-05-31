@@ -76,17 +76,15 @@ export const PlayerForm = ({ title = 'Create New Game' }) => {
           abortEarly: false
         });
         if (isCreatingGame) {
-          const createdId = await onCreateRoom({ player: data });
+          const gameId = await onCreateRoom({ player: data });
 
-          if (!createdId) {
+          if (!gameId) {
             setIsSubmitting(false); // error is handled in Provider already
             return;
           }
-          setProfile({ name: data.name, email: data.email });
-          await router.push(`/rooms/${createdId}`);
+          await router.push(`/rooms/${gameId}`);
         } else {
           await onJoinRoom({ player: data, gameId });
-          setProfile({ name: data.name, email: data.email });
         }
       } catch (err) {
         setIsSubmitting(false);
@@ -103,20 +101,12 @@ export const PlayerForm = ({ title = 'Create New Game' }) => {
         }
       }
     },
-    [
-      setIsSubmitting,
-      onJoinRoom,
-      onCreateRoom,
-      router,
-      isCreatingGame,
-      setProfile
-    ]
+    [setIsSubmitting, onJoinRoom, onCreateRoom, router, isCreatingGame]
   );
 
   return (
     <Dialog open aria-describedby="alert-dialog-slide-description">
       <DialogTitle id="alert-dialog-slide-description">{title}</DialogTitle>
-
       <DialogContent sx={{ minWidth: '30em' }}>
         <Form onSubmit={handleSubmit} ref={formRef}>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>

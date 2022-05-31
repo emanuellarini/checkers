@@ -1,7 +1,7 @@
-import { useLocalStorage } from 'usehooks-ts';
+import { useSessionStorage } from './useSessionStorage';
 
 export const useProfile = () => {
-  const [profile, setProfile] = useLocalStorage<Pick<
+  const [profile, setProfile] = useSessionStorage<Pick<
     Player,
     'name' | 'email'
   > | null>('profile', null);

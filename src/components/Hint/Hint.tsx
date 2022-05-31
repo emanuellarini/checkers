@@ -9,7 +9,9 @@ export const Hint = memo(() => (
     sx={{
       display: 'flex',
       justifyContent: 'center',
-      m: 'none',
+      mt: 1.5,
+      mb: 1,
+      mx: 'none',
       flexWrap: 'wrap'
     }}
   >

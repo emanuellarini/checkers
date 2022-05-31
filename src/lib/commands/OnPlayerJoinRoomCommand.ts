@@ -14,14 +14,20 @@ export class OnPlayerJoinRoomCommand extends Command<
   execute(data: OnPlayerJoinRoomCommandData) {
     const playerData = {
       ...data,
+      isConnected: true,
       wins: 0,
       losses: 0,
       capturedKings: 0,
       capturedDiscs: 0
     };
 
-    const player = new PlayerSchema(playerData);
-    this.room.state.players.push(player);
+    const player = new PlayerSchema().assign(playerData);
+
+    if (
+      !this.room.state.players.some(player => player.email === playerData.email)
+    ) {
+      this.room.state.players.push(player);
+    }
 
     this.room.broadcast('PLAYER_JOINED_ROOM', this.room.state);
   }

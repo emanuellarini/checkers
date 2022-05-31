@@ -23,7 +23,7 @@ const SlideTransition = React.forwardRef(
 );
 
 export const Win = () => {
-  const { winner, players, onResetGame } = useRoom();
+  const { winner, players, onRematch } = useRoom();
 
   if (typeof winner !== 'number' || winner === -1) return null;
 
@@ -42,7 +42,7 @@ export const Win = () => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onResetGame} aria-label="Restart Game">
+        <Button onClick={onRematch} aria-label="Restart Game">
           Start New Game
         </Button>
       </DialogActions>

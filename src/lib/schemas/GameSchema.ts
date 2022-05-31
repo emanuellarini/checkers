@@ -3,6 +3,9 @@ import { Schema, type, ArraySchema } from '@colyseus/schema';
 import { defaultDiscs } from '../defaultDiscs';
 
 export class PlayerSchema extends Schema implements Player {
+  @type('boolean')
+  isConnected = false;
+
   @type('number')
   id = 0;
 
@@ -52,11 +55,11 @@ export class GameSchema extends Schema {
   @type('number')
   turn = 0;
 
-  @type({ map: PlayerSchema })
+  @type([PlayerSchema])
   players: ArraySchema<PlayerSchema> = new ArraySchema<PlayerSchema>();
 
-  @type({ map: DiscSchema })
+  @type([DiscSchema])
   discs: ArraySchema<DiscSchema> = new ArraySchema(
-    ...defaultDiscs.map(disc => new DiscSchema(disc))
+    ...defaultDiscs.map(disc => new DiscSchema().assign(disc))
   );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect } from 'react';
 
 import { useRouter } from 'next/router';
 
@@ -6,44 +6,51 @@ import {
   Loading,
   PlayerForm,
   Game,
-  DefaultGameHeaderLayout
+  DefaultGameHeaderLayout,
+  Paused
 } from '../../components';
 import { useRoom, useProfile } from '../../hooks';
 
 const Play = () => {
   const { profile } = useProfile();
   const router = useRouter();
-  const { onJoinRoom, players, sessionId } = useRoom();
+  const { onReconnectRoom, onJoinRoom, players, sessionId } = useRoom();
   const gameId = router.query.gameId as string;
-  const isPlaying = useMemo(
-    () => players.some(p => p.sessionId === sessionId),
-    [players, sessionId]
-  );
-  const [isJoining, setIsJoining] = useState(!(isPlaying && gameId));
 
   useEffect(() => {
-    if (!gameId) return;
-    if (!profile?.name || isPlaying) {
-      setIsJoining(false);
-      return;
-    }
+    // already joined, not "auth", screen didn't load yet
+    if (sessionId || !profile || !gameId) return;
 
     const join = async () => {
-      setIsJoining(true);
-      await onJoinRoom({ player: profile, gameId });
-      setIsJoining(false);
+      let hasJoined;
+      if (profile.sessionId) {
+        hasJoined = await onReconnectRoom({
+          sessionId: profile.sessionId,
+          gameId
+        });
+      } else {
+        hasJoined = await onJoinRoom({ player: profile, gameId });
+      }
+      if (!hasJoined) return router.push('/');
     };
 
     join();
-  }, [isPlaying, setIsJoining, onJoinRoom, profile, gameId]);
+  }, [onReconnectRoom, sessionId, router, onJoinRoom, gameId, profile]);
+
+  const isPaused = players.length !== 2 || players.some(p => !p.isConnected);
 
   let content;
-  if (!gameId || isJoining) {
-    content = <Loading />;
-  } else if (!profile?.name) {
+  if (sessionId) {
+    content = (
+      <>
+        {isPaused && <Paused />}
+        <Game />
+      </>
+    );
+  } else if (!profile) {
     content = <PlayerForm title="Join This Game" />;
   } else {
-    content = <Game />;
+    content = <Loading />;
   }
 
   return <DefaultGameHeaderLayout>{content}</DefaultGameHeaderLayout>;

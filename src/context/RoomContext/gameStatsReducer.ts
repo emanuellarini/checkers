@@ -21,11 +21,12 @@ type SetWinner = {
   payload: PlayerKey;
 };
 
-type PassTurn = {
-  type: 'PASS_TURN';
+type SetTurn = {
+  type: 'SET_TURN';
+  payload: PlayerKey;
 };
 
-type GameStatsActionType = Initialize | SetWinner | SetMovements | PassTurn;
+type GameStatsActionType = Initialize | SetTurn | SetWinner | SetMovements;
 
 export const gameStatsReducer = (
   state: GameStatsStateType,
@@ -49,10 +50,10 @@ export const gameStatsReducer = (
     };
   }
 
-  if (action.type === 'PASS_TURN') {
+  if (action.type === 'SET_TURN') {
     return {
       ...state,
-      turn: state.turn === 0 ? 1 : 0
+      turn: action.payload
     };
   }
 

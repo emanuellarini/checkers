@@ -9,8 +9,9 @@ import React, {
 import { Alert, Snackbar } from '@mui/material';
 import { Room } from 'colyseus.js';
 
-import { useClient } from '../../hooks';
+import { useClient, useProfile } from '../../hooks';
 import { defaultSquares } from '../../lib/defaultSquares';
+import { getIsKingDisc } from '../../lib/disc';
 import {
   calculatePlayerMovablePositions,
   calculatePlayerMovablePositionsWhenMultiCapturing
@@ -38,12 +39,18 @@ type JoinRoom = CreateRoom & {
   gameId: GameId;
 };
 
+type ReconnectRoom = {
+  gameId: GameId;
+  sessionId: Player['sessionId'];
+};
+
 type RoomContextType = GameStatsStateType & {
   onCreateRoom: (data: CreateRoom) => Promise<string> | string;
-  onJoinRoom: (data: JoinRoom) => Promise<void> | void;
+  onJoinRoom: (data: JoinRoom) => Promise<boolean> | boolean;
+  onReconnectRoom: (data: ReconnectRoom) => Promise<boolean> | boolean;
   onStartMovement: (position: Position) => void;
   onEndMovement: (currentPosition: Position, newPosition: Position) => void;
-  onResetGame: () => void;
+  onRematch: () => void;
   onEndTurn: () => void;
   squares: Game['squares'];
   movablePositions: Position[];
@@ -55,10 +62,11 @@ type RoomContextType = GameStatsStateType & {
 
 const initialContext: RoomContextType = {
   onCreateRoom: () => '',
-  onJoinRoom: () => undefined,
+  onJoinRoom: () => false,
+  onReconnectRoom: () => false,
   onStartMovement: () => undefined,
   onEndMovement: () => undefined,
-  onResetGame: () => undefined,
+  onRematch: () => undefined,
   onEndTurn: () => undefined,
   movablePositions: [],
   gameId: null,
@@ -77,6 +85,7 @@ type RoomProviderProps = {
 
 export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
   const client = useClient();
+  const { setProfile } = useProfile();
   const [movablePositions, setMovablePositions] = useState<
     RoomContextType['movablePositions']
   >(initialContext.movablePositions);
@@ -95,10 +104,53 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
   );
 
   const [error, setError] = useState(false);
-  const [currentRoom, setCurrentRoom] = useState<Room<GameSchema>>();
+  const [currentRoom, setCurrentRoom] = useState<Room<GameSchema> | null>(null);
 
   useEffect(() => {
     if (!currentRoom) return;
+
+    currentRoom.onMessage('END_TURN', data => {
+      gameStatsDispatch({
+        type: 'SET_TURN',
+        payload: data.turn
+      });
+      gameStatsDispatch({
+        type: 'SET_MOVEMENTS',
+        payload: data.movements
+      });
+    });
+
+    currentRoom.onMessage('REMATCH', data => {
+      playersDispatch({
+        type: 'INITIALIZE',
+        payload: data.players
+      });
+
+      discsDispatch({
+        type: 'INITIALIZE',
+        payload: data.discs
+      });
+
+      gameStatsDispatch({
+        type: 'INITIALIZE',
+        payload: {
+          turn: data.turn,
+          movements: data.movements,
+          winner: data.winner
+        }
+      });
+    });
+
+    currentRoom.onMessage('END_TURN', data => {
+      gameStatsDispatch({
+        type: 'SET_TURN',
+        payload: data.turn
+      });
+      gameStatsDispatch({
+        type: 'SET_MOVEMENTS',
+        payload: data.movements
+      });
+    });
 
     currentRoom.onMessage('PLAYER_JOINED_ROOM', data => {
       playersDispatch({
@@ -128,6 +180,30 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
       });
     });
 
+    currentRoom.onMessage('PLAYER_DISCONNECTED_ROOM', index => {
+      playersDispatch({
+        type: 'UPDATE_PLAYER',
+        payload: {
+          key: index,
+          player: {
+            isConnected: false
+          }
+        }
+      });
+    });
+
+    currentRoom.onMessage('PLAYER_RECONNECTED_ROOM', index => {
+      playersDispatch({
+        type: 'UPDATE_PLAYER',
+        payload: {
+          key: index,
+          player: {
+            isConnected: true
+          }
+        }
+      });
+    });
+
     currentRoom.onMessage('END_MOVEMENT', data => {
       if (data.capturedPosition) {
         discsDispatch({
@@ -149,16 +225,16 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
       playersDispatch({
         type: 'UPDATE_PLAYER',
         payload: {
-          key: gameStats.turn,
-          player: data.currentPlayer
+          key: data.currentPlayer.key,
+          player: data.currentPlayer.data
         }
       });
 
       playersDispatch({
         type: 'UPDATE_PLAYER',
         payload: {
-          key: gameStats.turn,
-          player: data.otherPlayer
+          key: data.otherPlayer.key,
+          player: data.otherPlayer.data
         }
       });
 
@@ -171,35 +247,74 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
     return () => {
       currentRoom.removeAllListeners();
     };
-  }, [gameStats.turn, currentRoom]);
-
-  const onJoinRoom = useCallback<RoomContextType['onJoinRoom']>(
-    async data => {
-      try {
-        const joinedRoom = await client.joinById<GameSchema>(data.gameId, data);
-        setGameId(joinedRoom.id);
-        setCurrentRoom(joinedRoom);
-      } catch (e) {
-        setGameId(null);
-        console.error('ERROR!', e);
-        setError(true);
-      }
-    },
-    [setError, client]
-  );
+  }, [currentRoom]);
 
   const onCreateRoom = useCallback<RoomContextType['onCreateRoom']>(
     async data => {
       try {
         // this already executes onJoin in server room
         const createdRoom = await client.create<GameSchema>('game', data);
+        setProfile({
+          name: data.player.name,
+          email: data.player.email,
+          sessionId: createdRoom.sessionId
+        });
         setGameId(createdRoom.id);
         setCurrentRoom(createdRoom);
         return createdRoom.id;
       } catch (e) {
-        console.error('ERROR!', e);
+        console.error('onCreateRoom Error!', e);
         setError(true);
         return '';
+      }
+    },
+    [setError, client, setProfile]
+  );
+  const onJoinRoom = useCallback<RoomContextType['onJoinRoom']>(
+    async data => {
+      try {
+        const joinedRoom = await client.joinById<GameSchema>(data.gameId, data);
+        setProfile({
+          name: data.player.name,
+          email: data.player.email,
+          sessionId: joinedRoom.sessionId
+        });
+        setGameId(joinedRoom.id);
+        setCurrentRoom(joinedRoom);
+        return true;
+      } catch (e) {
+        setCurrentRoom(null);
+        setGameId(null);
+        console.error('onJoinRoom ERROR!', e);
+        setError(true);
+        return false;
+      }
+    },
+    [setError, client, setProfile]
+  );
+
+  const onReconnectRoom = useCallback<RoomContextType['onReconnectRoom']>(
+    async data => {
+      if (!data.sessionId || !data.gameId) {
+        setCurrentRoom(null);
+        setGameId(null);
+        return false;
+      }
+
+      try {
+        const reconnectedRoom = await client.reconnect<GameSchema>(
+          data.gameId,
+          data.sessionId
+        );
+        setGameId(reconnectedRoom.id);
+        setCurrentRoom(reconnectedRoom);
+        return true;
+      } catch (e) {
+        setCurrentRoom(null);
+        setGameId(null);
+        console.error('onReconnectRoom ERROR!', e);
+        setError(true);
+        return false;
       }
     },
     [setError, client]
@@ -232,17 +347,31 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
 
   const onEndMovement = useCallback<RoomContextType['onEndMovement']>(
     (currentPosition, newPosition) => {
-      currentRoom?.send('MOVE_DISC', { currentPosition, newPosition });
+      const key = discs.findIndex(disc => disc.position === currentPosition);
+      const isKing = getIsKingDisc(newPosition, discs[key]);
+      const updatedDisc = {
+        ...discs[key],
+        isKing,
+        position: newPosition
+      };
+
+      discsDispatch({
+        type: 'UPDATE_DISC',
+        payload: {
+          disc: updatedDisc,
+          key
+        }
+      });
+      currentRoom?.send('END_MOVEMENT', { currentPosition, newPosition });
     },
-    [currentRoom]
+    [currentRoom, discs]
   );
 
-  const onEndTurn = useCallback<RoomContextType['onEndTurn']>(() => null, []);
+  const onEndTurn = useCallback<RoomContextType['onEndTurn']>(() => {
+    currentRoom?.send('END_TURN');
+  }, [currentRoom]);
 
-  const onResetGame = useCallback<RoomContextType['onResetGame']>(
-    () => null,
-    []
-  );
+  const onRematch = useCallback<RoomContextType['onRematch']>(() => null, []);
 
   return (
     <RoomContext.Provider
@@ -258,8 +387,9 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
         onJoinRoom,
         onStartMovement,
         onEndMovement,
-        onResetGame,
-        onEndTurn
+        onRematch,
+        onEndTurn,
+        onReconnectRoom
       }}
     >
       <Snackbar open={!!error} autoHideDuration={3000}>

@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
-    "target": "es5",
+    "target": "es6",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -16,9 +15,15 @@
     "jsx": "preserve",
     "jsxImportSource": "@emotion/react",
     "incremental": true,
-    "baseUrl": "src",
-    "rootDir": "src"
+    "baseUrl": ".",
+    "rootDir": "src",
+    "outDir": ".next/production-server",
+    "experimentalDecorators": true,
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts", "**/**/*.ts", "**/**/*.tsx", "**/**/**/*.ts", "**/**/**/*.tsx"],
+  "ts-node": {
+    "typeCheck": true,
+    "files": true
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", ".next"]
 }

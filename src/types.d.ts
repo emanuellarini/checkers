@@ -3,6 +3,7 @@ type Position = number;
 type PlayerKey = number;
 
 type Player = {
+  isConnected: boolean;
   name: string;
   email: string;
   id: PlayerKey;
