@@ -6,7 +6,6 @@ import React, {
   useReducer
 } from 'react';
 
-import { Alert, Snackbar } from '@mui/material';
 import { Room } from 'colyseus.js';
 
 import { useClient, useProfile } from '../../hooks';
@@ -32,6 +31,7 @@ import {
   playersInitialState,
   PlayersStateType
 } from './playersReducer';
+import { RoomError } from './RoomError';
 
 type CreateRoom = { player: Pick<Player, 'name' | 'email'> };
 
@@ -103,7 +103,7 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
     initialContext.players
   );
 
-  const [error, setError] = useState(false);
+  const [errorCode, setErrorCode] = useState<number | null>(null);
   const [currentRoom, setCurrentRoom] = useState<Room<GameSchema> | null>(null);
 
   useEffect(() => {
@@ -262,13 +262,14 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
         setGameId(createdRoom.id);
         setCurrentRoom(createdRoom);
         return createdRoom.id;
-      } catch (e) {
-        console.error('onCreateRoom Error!', e);
-        setError(true);
+      } catch (e: any) {
+        setCurrentRoom(null);
+        setGameId(null);
+        setErrorCode(e?.code || 0);
         return '';
       }
     },
-    [setError, client, setProfile]
+    [setErrorCode, client, setProfile]
   );
   const onJoinRoom = useCallback<RoomContextType['onJoinRoom']>(
     async data => {
@@ -282,15 +283,14 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
         setGameId(joinedRoom.id);
         setCurrentRoom(joinedRoom);
         return true;
-      } catch (e) {
+      } catch (e: any) {
         setCurrentRoom(null);
         setGameId(null);
-        console.error('onJoinRoom ERROR!', e);
-        setError(true);
+        setErrorCode(e?.code || 0);
         return false;
       }
     },
-    [setError, client, setProfile]
+    [setErrorCode, client, setProfile]
   );
 
   const onReconnectRoom = useCallback<RoomContextType['onReconnectRoom']>(
@@ -309,15 +309,14 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
         setGameId(reconnectedRoom.id);
         setCurrentRoom(reconnectedRoom);
         return true;
-      } catch (e) {
+      } catch (e: any) {
         setCurrentRoom(null);
         setGameId(null);
-        console.error('onReconnectRoom ERROR!', e);
-        setError(true);
+        setErrorCode(e?.code || 0);
         return false;
       }
     },
-    [setError, client]
+    [setErrorCode, client]
   );
 
   const onStartMovement = useCallback<RoomContextType['onStartMovement']>(
@@ -392,16 +391,7 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
         onReconnectRoom
       }}
     >
-      <Snackbar
-        open={!!error}
-        autoHideDuration={3000}
-        onClose={() => setError(false)}
-      >
-        <Alert severity="error" sx={{ width: '100%' }}>
-          Unable to setup the game. Try again later.
-        </Alert>
-      </Snackbar>
-
+      <RoomError code={errorCode} onClose={() => setErrorCode(null)} />
       {children}
     </RoomContext.Provider>
   );
