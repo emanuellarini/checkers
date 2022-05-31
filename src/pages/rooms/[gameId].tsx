@@ -32,8 +32,8 @@ const Play = () => {
       if (!hasJoined) {
         hasJoined = await onJoinRoom({ player: profile, gameId });
       }
+      if (!hasJoined) return router.push('/rooms');
       setIsJoining(false);
-      if (!hasJoined) return router.push('/');
     };
 
     join();
