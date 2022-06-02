@@ -8,8 +8,8 @@
     "start": "cross-env NODE_ENV=production node .next/production-server/index.js",
     "lint": "eslint --fix",
     "test": "jest --watch",
-    "cy:open": "cypress open",
-    "cy:run": "cypress run"
+    "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@colyseus/command": "0.2.1",
@@ -36,6 +36,7 @@
     "yup": "0.32.11"
   },
   "devDependencies": {
+    "@playwright/test": "1.22.2",
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "13.2.0",
     "@testing-library/user-event": "13.5.0",
@@ -50,7 +51,6 @@
     "@types/yup": "0.29.14",
     "@typescript-eslint/eslint-plugin": "5.23.0",
     "@typescript-eslint/parser": "5.23.0",
-    "cypress": "9.6.1",
     "eslint": "8.15.0",
     "eslint-config-next": "12.1.6",
     "eslint-config-prettier": "8.5.0",
