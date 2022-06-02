@@ -50,7 +50,7 @@ type RoomContextType = GameStatsStateType & {
   onReconnectRoom: (data: ReconnectRoom) => Promise<boolean> | boolean;
   onStartMovement: (position: Position) => void;
   onEndMovement: (currentPosition: Position, newPosition: Position) => void;
-  onRematch: () => void;
+  onConfirmRematch: () => void;
   onEndTurn: () => void;
   squares: Game['squares'];
   movablePositions: Position[];
@@ -66,7 +66,7 @@ const initialContext: RoomContextType = {
   onReconnectRoom: () => false,
   onStartMovement: () => undefined,
   onEndMovement: () => undefined,
-  onRematch: () => undefined,
+  onConfirmRematch: () => undefined,
   onEndTurn: () => undefined,
   movablePositions: [],
   gameId: null,
@@ -133,11 +133,7 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
 
       gameStatsDispatch({
         type: 'INITIALIZE',
-        payload: {
-          turn: data.turn,
-          movements: data.movements,
-          winner: data.winner
-        }
+        payload: data
       });
     });
 
@@ -165,11 +161,7 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
 
       gameStatsDispatch({
         type: 'INITIALIZE',
-        payload: {
-          turn: data.turn,
-          movements: data.movements,
-          winner: data.winner
-        }
+        payload: data
       });
     });
 
@@ -219,7 +211,7 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
 
       discsDispatch({
         type: 'UPDATE_DISC',
-        payload: data.updateDisc
+        payload: data.updatedDisc
       });
 
       playersDispatch({
@@ -321,10 +313,7 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
 
   const onStartMovement = useCallback<RoomContextType['onStartMovement']>(
     position => {
-      setMovablePositions([]);
-
       let movablePositions;
-
       if (gameStats.movements === 0) {
         movablePositions = calculatePlayerMovablePositions(
           gameStats.turn,
@@ -346,8 +335,12 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
 
   const onEndMovement = useCallback<RoomContextType['onEndMovement']>(
     (currentPosition, newPosition) => {
+      currentRoom?.send('END_MOVEMENT', { currentPosition, newPosition });
+
       const key = discs.findIndex(disc => disc.position === currentPosition);
+
       const isKing = getIsKingDisc(newPosition, discs[key]);
+
       const updatedDisc = {
         ...discs[key],
         isKing,
@@ -356,21 +349,23 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
 
       discsDispatch({
         type: 'UPDATE_DISC',
-        payload: {
-          disc: updatedDisc,
-          key
-        }
+        payload: updatedDisc
       });
-      currentRoom?.send('END_MOVEMENT', { currentPosition, newPosition });
+
+      setMovablePositions([]);
     },
-    [currentRoom, discs]
+    [currentRoom, discs, setMovablePositions]
   );
 
   const onEndTurn = useCallback<RoomContextType['onEndTurn']>(() => {
     currentRoom?.send('END_TURN');
   }, [currentRoom]);
 
-  const onRematch = useCallback<RoomContextType['onRematch']>(() => null, []);
+  const onConfirmRematch = useCallback<
+    RoomContextType['onConfirmRematch']
+  >(() => {
+    currentRoom?.send('CONFIRM_REMATCH');
+  }, [currentRoom]);
 
   return (
     <RoomContext.Provider
@@ -386,7 +381,7 @@ export const RoomProvider: React.FC<RoomProviderProps> = ({ children }) => {
         onJoinRoom,
         onStartMovement,
         onEndMovement,
-        onRematch,
+        onConfirmRematch,
         onEndTurn,
         onReconnectRoom
       }}

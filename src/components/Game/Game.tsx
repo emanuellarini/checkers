@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Paper, useMediaQuery, useTheme } from '@mui/material';
 
-import { Board, Win, Hint, Turn } from '../';
+import { Board, Win, Hint, Turn, Paused } from '../';
 
 export const Game = () => {
   const theme = useTheme();
@@ -13,6 +13,8 @@ export const Game = () => {
     <>
       <Hint />
       <Win />
+      <Paused />
+      <Turn />
       <Paper
         elevation={4}
         sx={{
@@ -25,7 +27,6 @@ export const Game = () => {
         }}
       >
         <Board />
-        <Turn />
       </Paper>
     </>
   );

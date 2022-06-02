@@ -2,6 +2,7 @@ import React from 'react';
 
 import createEmotionServer from '@emotion/server/create-instance';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
+import Script from 'next/script';
 
 import { createEmotionCache } from '../lib/createEmotionCache';
 import { theme } from '../lib/theme';
@@ -14,9 +15,13 @@ export default class MyDocument extends Document {
           {/* PWA primary color */}
           <meta name="theme-color" content={theme.palette.primary.main} />
           <link rel="shortcut icon" href="/favicon.ico" />
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+          <Script
+            async
+            src="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+          />
+          <Script
+            strategy="beforeInteractive"
+            src="https://polyfill.io/v3/polyfill.min.js?features=Array.prototype.includes%2CString.prototype.includes"
           />
           {/* Inject MUI styles first to match with the prepend: true configuration. */}
           {(this.props as any).emotionStyleTags}

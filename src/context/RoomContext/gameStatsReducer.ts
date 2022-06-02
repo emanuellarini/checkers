@@ -33,7 +33,11 @@ export const gameStatsReducer = (
   action: GameStatsActionType
 ): GameStatsStateType => {
   if (action.type === 'INITIALIZE') {
-    return action.payload;
+    return {
+      turn: action.payload.turn,
+      movements: action.payload.movements,
+      winner: action.payload.winner
+    };
   }
 
   if (action.type === 'SET_MOVEMENTS') {

@@ -20,7 +20,7 @@ export const Turn = () => {
 
       e.preventDefault();
       e.stopPropagation();
-      if (e.code === 'Space') {
+      if (e.code === 'Enter') {
         onEndTurn();
       }
     };

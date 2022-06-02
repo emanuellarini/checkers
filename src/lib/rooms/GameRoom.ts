@@ -1,12 +1,12 @@
 import { Dispatcher } from '@colyseus/command';
-import { Room, Client, updateLobby } from 'colyseus';
+import { Room, Client } from 'colyseus';
 
 import {
   OnPlayerJoinRoomCommand,
   OnPlayerJoinRoomCommandData,
   OnEndMovementCommand,
   OnEndTurnCommand,
-  OnRematchCommand,
+  OnConfirmRematchCommand,
   OnPlayerLeaveRoomCommand
 } from '../commands';
 import { createGameId } from '../gameId';
@@ -15,8 +15,6 @@ import { GameSchema } from '../schemas';
 export type OnJoinRoomData = { player: OnPlayerJoinRoomCommandData };
 
 export default class GameRoom extends Room<GameSchema> {
-  LOBBY_CHANNEL = 'lobby';
-
   dispatcher = new Dispatcher(this);
 
   // number of clients per room
@@ -25,18 +23,6 @@ export default class GameRoom extends Room<GameSchema> {
   // do not delete the room once created!
   autoDispose = false;
 
-  async generateRoomId(): Promise<string> {
-    const currentIds = await this.presence.smembers(this.LOBBY_CHANNEL);
-    let id;
-    do {
-      id = createGameId();
-    } while (currentIds.includes(id));
-
-    await this.presence.sadd(this.LOBBY_CHANNEL, id);
-
-    return id;
-  }
-
   onAuth(client: Client, data: OnJoinRoomData) {
     if (this.state.players.some(p => p.email === data.player.email))
       return true;
@@ -44,10 +30,11 @@ export default class GameRoom extends Room<GameSchema> {
     return this.clients.length <= this.maxClients;
   }
 
-  async onCreate() {
-    this.roomId = await this.generateRoomId();
+  onCreate() {
+    this.roomId = createGameId();
     this.setState(
       new GameSchema({
+        confirmedRematch: 0,
         turn: 0,
         movements: 0,
         winner: -1
@@ -61,17 +48,16 @@ export default class GameRoom extends Room<GameSchema> {
     this.onMessage('END_TURN', () => {
       this.dispatcher.dispatch(new OnEndTurnCommand());
     });
-    this.onMessage('REMATCH', () => {
-      this.dispatcher.dispatch(new OnRematchCommand());
-    });
 
-    this.clock.setTimeout(() => {
-      updateLobby(this);
-    }, 5000);
+    this.onMessage('CONFIRM_REMATCH', () => {
+      this.dispatcher.dispatch(new OnConfirmRematchCommand());
+    });
   }
 
-  onJoin(client: Client, data: OnJoinRoomData) {
-    if (!data?.player) return;
+  async onJoin(client: Client, data: OnJoinRoomData) {
+    if (!data?.player) {
+      throw new Error('Invalid player data');
+    }
 
     const player = {
       name: data.player.name,
@@ -83,7 +69,7 @@ export default class GameRoom extends Room<GameSchema> {
     this.dispatcher.dispatch(new OnPlayerJoinRoomCommand(), player);
 
     if (this.clients.length === this.maxClients) {
-      this.lock();
+      await this.lock();
     }
   }
 
@@ -96,6 +82,5 @@ export default class GameRoom extends Room<GameSchema> {
 
   onDispose() {
     this.dispatcher.stop();
-    this.clock.clear();
   }
 }

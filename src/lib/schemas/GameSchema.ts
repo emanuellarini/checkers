@@ -47,6 +47,9 @@ export class DiscSchema extends Schema implements Disc {
 
 export class GameSchema extends Schema {
   @type('number')
+  confirmedRematch = 0;
+
+  @type('number')
   winner = -1;
 
   @type('number')

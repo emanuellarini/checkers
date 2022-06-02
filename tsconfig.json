@@ -16,7 +16,7 @@
     "jsxImportSource": "@emotion/react",
     "incremental": true,
     "baseUrl": ".",
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": ".next/production-server",
     "experimentalDecorators": true,
   },

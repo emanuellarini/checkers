@@ -4,7 +4,7 @@ import { DefaultHeaderLayout, PlayerForm } from '../components';
 
 const Index = () => (
   <DefaultHeaderLayout>
-    <PlayerForm title="Create New Game" />
+    <PlayerForm />
   </DefaultHeaderLayout>
 );
 

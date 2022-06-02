@@ -9,10 +9,7 @@ type Initialize = {
 
 type UpdateDisc = {
   type: 'UPDATE_DISC';
-  payload: {
-    key: keyof DiscsStateType;
-    disc: Disc;
-  };
+  payload: Disc;
 };
 
 type RemoveDisc = {
@@ -39,9 +36,9 @@ export const discsReducer = (
   }
 
   if (action.type === 'UPDATE_DISC') {
-    return state.map((disc, key) => {
-      if (key === action.payload.key) {
-        return action.payload.disc;
+    return state.map(disc => {
+      if (disc.id === action.payload.id) {
+        return action.payload;
       }
 
       return disc;

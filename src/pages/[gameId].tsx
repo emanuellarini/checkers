@@ -6,15 +6,14 @@ import {
   Loading,
   PlayerForm,
   Game,
-  DefaultGameHeaderLayout,
-  Paused
-} from '../../components';
-import { useRoom, useProfile } from '../../hooks';
+  DefaultGameHeaderLayout
+} from '../components';
+import { useRoom, useProfile } from '../hooks';
 
 const Play = () => {
   const { profile } = useProfile();
   const router = useRouter();
-  const { onReconnectRoom, onJoinRoom, players, sessionId } = useRoom();
+  const { onReconnectRoom, onJoinRoom, sessionId } = useRoom();
   const gameId = router.query.gameId as string;
   const [isJoining, setIsJoining] = useState(false);
 
@@ -32,7 +31,7 @@ const Play = () => {
       if (!hasJoined) {
         hasJoined = await onJoinRoom({ player: profile, gameId });
       }
-      if (!hasJoined) return router.push('/rooms');
+      if (!hasJoined) return router.push('/');
       setIsJoining(false);
     };
 
@@ -48,20 +47,13 @@ const Play = () => {
     profile
   ]);
 
-  const isPaused = players.length !== 2 || players.some(p => !p.isConnected);
-
   let content;
   if (isJoining) {
     content = <Loading />;
   } else if (sessionId) {
-    content = (
-      <>
-        {isPaused && <Paused />}
-        <Game />
-      </>
-    );
+    content = <Game />;
   } else if (!profile) {
-    content = <PlayerForm title="Join This Game" />;
+    content = <PlayerForm />;
   } else {
     content = <Loading />;
   }

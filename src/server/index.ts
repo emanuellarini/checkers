@@ -1,5 +1,5 @@
 import { monitor } from '@colyseus/monitor';
-import { Server, LobbyRoom } from 'colyseus';
+import { Server } from 'colyseus';
 import cors from 'cors';
 import express from 'express';
 import { createServer } from 'http';
@@ -26,7 +26,6 @@ nextApp.prepare().then(() => {
   });
 
   gameServer.define('game', GameRoom).enableRealtimeListing();
-  gameServer.define('lobby', LobbyRoom);
 
   gameServer.listen(Number(port));
   console.log(`Listening on ws://localhost:${port}`);

@@ -1,9 +1,9 @@
 import { Command } from '@colyseus/command';
 
-import { getCapturedDiscPosition } from '../../lib/movement';
-import { hasWonThisTurn } from '../../lib/win';
 import { getIsKingDisc } from '../disc';
+import { getCapturedDiscPosition } from '../movement';
 import GameRoom from '../rooms/GameRoom';
+import { hasWonThisTurn } from '../win';
 
 export type OnEndMovementCommandData = {
   currentPosition: Position;
@@ -15,26 +15,27 @@ export class OnEndMovementCommand extends Command<
   OnEndMovementCommandData
 > {
   execute({ currentPosition, newPosition }: OnEndMovementCommandData) {
-    const currentPlayerKey = this.state.turn;
-    const otherPlayerKey = currentPlayerKey === 0 ? 1 : 0;
-
-    const currentPositionDiscIndex = this.state.discs.findIndex(
+    const currentPositionDisc = this.state.discs.find(
       disc => disc.position === currentPosition
     );
 
-    const isKing = getIsKingDisc(
-      newPosition,
-      this.state.discs[currentPositionDiscIndex]
-    );
+    if (!currentPositionDisc) return;
 
-    this.state.discs[currentPositionDiscIndex].position = newPosition;
-    this.state.discs[currentPositionDiscIndex].isKing = isKing;
+    const isKing = getIsKingDisc(newPosition, currentPositionDisc);
+
+    const currentPlayerKey = currentPositionDisc?.player;
+    const otherPlayerKey = currentPlayerKey === 0 ? 1 : 0;
 
     const capturedPosition = getCapturedDiscPosition(
       this.state.discs as Game['discs'],
       currentPosition,
       newPosition
     );
+
+    currentPositionDisc.position = newPosition;
+    currentPositionDisc.isKing = isKing;
+    const updatedDisc = { ...currentPositionDisc };
+
     if (capturedPosition) {
       const capturedDiscIndex = this.state.discs.findIndex(
         disc => disc.position === capturedPosition
@@ -74,10 +75,7 @@ export class OnEndMovementCommand extends Command<
       winner: this.state.winner,
       movements: this.state.movements,
       capturedPosition,
-      updateDisc: {
-        disc: this.state.discs[currentPositionDiscIndex],
-        key: currentPositionDiscIndex
-      },
+      updatedDisc,
       currentPlayer: {
         key: currentPlayerKey,
         data: this.state.players[currentPlayerKey]

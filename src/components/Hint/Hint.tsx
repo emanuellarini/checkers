@@ -21,7 +21,7 @@ export const Hint = memo(() => (
       component="span"
       sx={{ fontWeight: 'bold', fontSize: 'inherit', mx: 0.5 }}
     >
-      PRESSING SPACEBAR
+      PRESSING ENTER
     </Typography>
     AFTER YOUR MOVE
   </Typography>
