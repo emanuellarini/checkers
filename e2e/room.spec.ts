@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 import { PlayerActions, PlayerActionsType } from './PlayerActions';
 
@@ -46,5 +46,35 @@ test.describe('Room', () => {
     });
     await playersActions.pages[0].goBack();
     await playersActions.getDisc(1, 37);
+  });
+
+  test('a third player can not join the room', async () => {
+    await playersActions.addPlayer();
+    const roomId = playersActions.getRoomIdFromUrl(playersActions.pages[0]);
+    await playersActions.joinRoom(playersActions.pages[2], roomId, {
+      name: 'Another 3',
+      email: 'test3@test.com'
+    });
+    const alertElement = await playersActions.pages[2].locator(
+      'div[role="alert"]'
+    );
+    await expect(alertElement).toBeVisible();
+    await expect.soft(alertElement).toHaveText('This room is already full');
+  });
+
+  test('an outsider can not join a game after two players are registered and one of them disconnects', async () => {
+    await playersActions.pages[1].goto('https://www.google.com', {
+      waitUntil: 'networkidle'
+    });
+    const roomId = playersActions.getRoomIdFromUrl(playersActions.pages[0]);
+    await playersActions.joinRoom(playersActions.pages[2], roomId, {
+      name: 'Another 3',
+      email: 'test3@test.com'
+    });
+    const alertElement = await playersActions.pages[2].locator(
+      'div[role="alert"]'
+    );
+    await expect(alertElement).toBeVisible();
+    await expect.soft(alertElement).toHaveText('This room is already full');
   });
 });

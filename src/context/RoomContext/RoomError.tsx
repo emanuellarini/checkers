@@ -26,6 +26,9 @@ const errorMap: { [k: Code]: ErrorType } = {
   [ErrorCode.MATCHMAKE_INVALID_ROOM_ID]: {
     message: 'This room is not available to join'
   },
+  [ErrorCode.MATCHMAKE_UNHANDLED]: {
+    message: 'This room is already full'
+  },
   [ErrorCode.MATCHMAKE_EXPIRED]: {
     message: 'Your access to this game have expired'
   }
@@ -48,8 +51,8 @@ export const RoomError: React.FC<RoomErrorProps> = memo(({ code, onClose }) => {
     <Snackbar open autoHideDuration={3000} onClose={onClose}>
       <Alert
         variant="filled"
-        onClose={onClose}
         severity="error"
+        aria-label="Error"
         action={
           error.action && (
             <Button

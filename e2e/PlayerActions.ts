@@ -9,6 +9,11 @@ type MoveDisc = {
   passTurn?: boolean;
 };
 
+type PlayerFormData = {
+  name: string;
+  email: string;
+};
+
 export type PlayerActionsType = {
   browser: Browser | undefined;
   context: BrowserContext | undefined;
@@ -20,7 +25,11 @@ export type PlayerActionsType = {
   addPlayers: () => Promise<void>;
   goToHome: (players?: PlayerKey[]) => Promise<void>;
   createAndJoinRoom: () => Promise<void>;
-  joinRoom: (page: Page, roomId: string) => Promise<void>;
+  joinRoom: (
+    page: Page,
+    roomId: string,
+    playerData?: PlayerFormData
+  ) => Promise<void>;
   getRoomIdFromUrl: (page: Page) => string;
   createAndJoinPlayers: () => Promise<void>;
   moveDisc: (data: MoveDisc) => Promise<void>;
@@ -76,12 +85,13 @@ export class PlayerActions implements PlayerActionsType {
     await this.pages[0].waitForNavigation();
   }
 
-  async joinRoom(page: Page, roomId: string) {
+  async joinRoom(page: Page, roomId: string, playerData?: PlayerFormData) {
+    const { name = 'Test 2', email = 'test2@test.com' } = playerData || {};
+
     await page.goto(`${this.homeUrl}/${roomId}`);
-    await page.fill('input[name="name"]', 'Test 2');
-    await page.fill('input[name="email"]', 'test2@test.com');
+    await page.fill('input[name="name"]', name);
+    await page.fill('input[name="email"]', email);
     await page.click('button[type="submit"]');
-    await page.waitForLoadState();
   }
 
   getRoomIdFromUrl(page: Page) {
@@ -92,6 +102,7 @@ export class PlayerActions implements PlayerActionsType {
     await this.createAndJoinRoom();
     const roomId = this.getRoomIdFromUrl(this.pages[0]);
     await this.joinRoom(this.pages[1], roomId);
+    await this.pages[1].waitForLoadState();
   }
 
   async getDisc(player: PlayerKey, position: Position) {
