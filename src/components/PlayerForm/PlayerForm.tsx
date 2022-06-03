@@ -79,14 +79,19 @@ export const PlayerForm = () => {
   );
 
   return (
-    <Dialog open aria-describedby="alert-dialog-slide-description">
+    <Dialog
+      open
+      aria-describedby="alert-dialog-slide-description"
+      BackdropComponent={() => <div />}
+      PaperProps={{ elevation: 4 }}
+    >
       <DialogTitle id="alert-dialog-slide-description">
         {isCreatingGame ? 'Create A New Game' : 'Join Current Game'}
       </DialogTitle>
       <DialogContent sx={{ minWidth: '30em' }}>
         <Form onSubmit={handleSubmit} ref={formRef}>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Input id="name" name="name" label="Name" />
+            <Input id="name" name="name" label="Name" autoFocus />
             <Input id="email" name="email" label="E-mail" />
             <DialogActions>
               <LoadingButton

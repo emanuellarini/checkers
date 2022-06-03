@@ -1,10 +1,10 @@
-import { useSessionStorage } from './useSessionStorage';
+import { useStorage } from './useStorage';
 
 export const useProfile = () => {
-  const [profile, setProfile] = useSessionStorage<Pick<
+  const [profile, setProfile] = useStorage<Pick<
     Player,
     'name' | 'email'
-  > | null>('profile', null);
+  > | null>('sessionStorage', 'profile', null);
 
   return {
     profile,

@@ -35,6 +35,7 @@ export const DraggableDisc: React.FC<Disc> = memo(
             aria-label="Disc"
           >
             <Disc
+              isDraggableByCurrentPlayer={isDraggableByCurrentPlayer}
               isKing={isKing}
               isDragging={snapshot.isDragging}
               player={player}

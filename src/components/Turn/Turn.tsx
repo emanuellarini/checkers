@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 
 import { ArrowRightAlt } from '@mui/icons-material';
-import { Button, Slide } from '@mui/material';
+import { Fab, Slide } from '@mui/material';
 
 import { useRoom } from '../../hooks';
 
@@ -32,8 +32,6 @@ export const Turn = () => {
     };
   }, [canPassTurn, winner, onEndTurn]);
 
-  const color = turn === 0 ? 'primary' : 'secondary';
-
   return (
     <Slide
       key={`button-turn-player-${turn}`}
@@ -42,12 +40,12 @@ export const Turn = () => {
       mountOnEnter
       unmountOnExit
     >
-      <Button
-        variant="contained"
+      <Fab
+        variant="extended"
         aria-label="Pass Turn"
         onClick={onEndTurn}
         disabled={!canPassTurn}
-        color={color}
+        color={turn === 0 ? 'primary' : 'secondary'}
         size="large"
         sx={{
           position: 'fixed',
@@ -57,7 +55,7 @@ export const Turn = () => {
       >
         Pass Turn
         <ArrowRightAlt sx={{ ml: 1 }} />
-      </Button>
+      </Fab>
     </Slide>
   );
 };

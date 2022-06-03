@@ -1,6 +1,6 @@
 import React, { memo, useRef, useEffect, useState } from 'react';
 
-import { TextField as BaseTextField, TextFieldProps } from '@mui/material';
+import { TextField, TextFieldProps } from '@mui/material';
 import { useField } from '@unform/core';
 
 export type InputProps = TextFieldProps & {
@@ -8,7 +8,14 @@ export type InputProps = TextFieldProps & {
 };
 
 export const Input: React.FC<InputProps> = memo(
-  ({ name, helperText, defaultValue, InputLabelProps, ...restProps }) => {
+  ({
+    name,
+    helperText,
+    defaultValue,
+    InputLabelProps,
+    autoFocus,
+    ...restProps
+  }) => {
     if (!name) {
       console.error(
         'TextField component must have a `name` property for correctly working.'
@@ -45,7 +52,13 @@ export const Input: React.FC<InputProps> = memo(
           }
         });
       }
-    }, [fieldName, registerField, defaultInputValue, setShrink]);
+    }, [fieldName, registerField, defaultInputValue, setShrink, autoFocus]);
+
+    useEffect(() => {
+      if (autoFocus) {
+        setShrink(true);
+      }
+    }, [autoFocus]);
 
     useEffect(() => {
       const input = inputRef.current;
@@ -74,8 +87,9 @@ export const Input: React.FC<InputProps> = memo(
     }, [inputRef]);
 
     return (
-      <BaseTextField
+      <TextField
         {...restProps}
+        autoFocus={autoFocus}
         name={fieldName}
         error={!!error}
         helperText={error || helperText}

@@ -26,7 +26,8 @@ export const Player = memo(() => {
       <Box
         sx={{
           ...flexColumnStyle,
-          pb: 1
+          pb: 1,
+          pt: 2.5
         }}
       >
         <Box sx={flexColumnStyle}>

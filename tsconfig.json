@@ -24,6 +24,6 @@
     "typeCheck": true,
     "files": true
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "src/lib//theme.types.d.ts"],
   "exclude": ["node_modules", ".next"]
 }

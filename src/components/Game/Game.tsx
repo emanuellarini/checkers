@@ -22,7 +22,7 @@ export const Game = () => {
           display: 'grid',
           gridTemplateColumns: 'repeat(8, 1fr)',
           justifyContent: 'center',
-          border: '1.25em ridge #492510',
+          border: '0.755em ridge #313131',
           m: '0 auto'
         }}
       >

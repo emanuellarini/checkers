@@ -1,14 +1,16 @@
 import { createTheme } from '@mui/material';
-import type {} from '@mui/lab/themeAugmentation';
+import { red, grey } from '@mui/material/colors';
 
 export const theme = createTheme({
   palette: {
-    player0: {
-      main: 'black',
+    primary: {
+      light: grey['900'],
+      main: grey['900'],
       contrastText: 'white'
     },
-    player1: {
-      main: 'red',
+    secondary: {
+      light: red['900'],
+      main: red['900'],
       contrastText: 'white'
     }
   },
@@ -18,6 +20,15 @@ export const theme = createTheme({
         root: {
           backgroundColor: '#313131 !important',
           color: '#fff !important'
+        }
+      }
+    },
+    MuiStepLabel: {
+      styleOverrides: {
+        root: {
+          '& .MuiStepLabel-label': {
+            fontWeight: 'inherit !important'
+          }
         }
       }
     }
