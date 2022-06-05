@@ -1,24 +1,11 @@
 import React from 'react';
 
-import { Tutorial, DefaultHeaderLayout, PlayerForm } from '../components';
-import { useStorage } from '../hooks';
+import { DefaultHeaderLayout, PlayerForm } from '../components';
 
-const Index = () => {
-  const [tutorialDone, setTutorialDone] = useStorage<boolean>(
-    'localStorage',
-    'checkersTutorial',
-    false
-  );
-
-  return (
-    <DefaultHeaderLayout>
-      {tutorialDone ? (
-        <PlayerForm />
-      ) : (
-        <Tutorial setTutorialDone={setTutorialDone} />
-      )}
-    </DefaultHeaderLayout>
-  );
-};
+const Index = () => (
+  <DefaultHeaderLayout>
+    <PlayerForm />
+  </DefaultHeaderLayout>
+);
 
 export default Index;

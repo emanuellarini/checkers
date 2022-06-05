@@ -7,7 +7,9 @@ import type { NextPage } from 'next';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 
+import { Tutorial } from '../components';
 import { RoomProvider } from '../context';
+import { useStorage } from '../hooks';
 import { createEmotionCache } from '../lib/createEmotionCache';
 import { theme } from '../lib/theme';
 
@@ -21,6 +23,11 @@ type AppPropsWithLayout = AppProps & {
 
 const App = (props: AppPropsWithLayout) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+  const [tutorialDone, setTutorialDone] = useStorage<boolean>(
+    'localStorage',
+    'checkersTutorial',
+    false
+  );
 
   return (
     <CacheProvider value={emotionCache}>
@@ -28,11 +35,14 @@ const App = (props: AppPropsWithLayout) => {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <ThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <RoomProvider>
-          {/* @ts-ignore */}
-          <Component {...pageProps} />
+          {!tutorialDone ? (
+            <Tutorial setTutorialDone={setTutorialDone} />
+          ) : (
+            //@ts-ignore
+            <Component {...pageProps} />
+          )}
         </RoomProvider>
       </ThemeProvider>
     </CacheProvider>
