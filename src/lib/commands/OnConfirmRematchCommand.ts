@@ -13,7 +13,7 @@ export class OnConfirmRematchCommand extends Command<GameRoom> {
       this.state.discs = new ArraySchema(
         ...defaultDiscs.map(disc => new DiscSchema().assign(disc))
       );
-      this.state.turn = 0;
+      this.state.turn = this.state.winner === 1 ? 0 : 1;
       this.state.movements = 0;
       this.state.winner = -1;
       this.state.confirmedRematch = 0;
