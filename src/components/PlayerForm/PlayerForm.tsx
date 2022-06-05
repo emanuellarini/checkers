@@ -6,7 +6,8 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle
+  DialogTitle,
+  Typography
 } from '@mui/material';
 import { FormHandles, SubmitHandler } from '@unform/core';
 import { Form } from '@unform/web';
@@ -86,9 +87,15 @@ export const PlayerForm = () => {
       PaperProps={{ elevation: 4 }}
     >
       <DialogTitle id="alert-dialog-slide-description">
-        {isCreatingGame ? 'Create A New Game' : 'Join Current Game'}
+        {isCreatingGame ? 'New Game' : 'Current Game'}
       </DialogTitle>
       <DialogContent sx={{ minWidth: '30em' }}>
+        {isCreatingGame && (
+          <Typography variant="subtitle2" sx={{ mb: 3 }}>
+            After creating, copy its Link and send to a friend to start playing
+            with him/her
+          </Typography>
+        )}
         <Form onSubmit={handleSubmit} ref={formRef}>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Input id="name" name="name" label="Name" autoFocus />
@@ -102,7 +109,7 @@ export const PlayerForm = () => {
                 loading={submitting}
                 sx={{ mt: 2, alignSelf: 'flex-end' }}
               >
-                {isCreatingGame ? 'Create' : 'Start'}
+                {isCreatingGame ? 'Create' : 'Join'}
               </LoadingButton>
             </DialogActions>
           </Box>

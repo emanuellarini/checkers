@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material';
-import { red, grey } from '@mui/material/colors';
+import { red, grey, green } from '@mui/material/colors';
 
 export const theme = createTheme({
   palette: {
@@ -28,6 +28,9 @@ export const theme = createTheme({
         root: {
           '& .MuiStepLabel-label': {
             fontWeight: 'inherit !important'
+          },
+          '& .MuiStepLabel-iconContainer .Mui-completed': {
+            color: green['300']
           }
         }
       }

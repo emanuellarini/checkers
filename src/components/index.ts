@@ -10,3 +10,4 @@ export * from './NotFound';
 export * from './PlayerForm';
 export * from './Square';
 export * from './Turn';
+export * from './Tutorial';
