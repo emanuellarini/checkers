@@ -1,24 +1,13 @@
 {
-  "parserOptions": {
-    "ecmaVersion": "latest",
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
-    }
-  },
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
-  },
+  "root": true,
+  "ignorePatterns": ["**/*"],
+  "plugins": ["@nrwl/nx" ,"eslint-plugin-import-helpers", "eslint-plugin-prettier"],
   "extends": [
-    "next/core-web-vitals",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
     "prettier"
   ],
-  "plugins": ["eslint-plugin-import-helpers", "eslint-plugin-prettier"],
   "rules": {
     "react/prop-types": "off",
     "react/display-name": "off",
@@ -26,6 +15,7 @@
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/no-var-requires": "warn",
     "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/ban-ts-ignore": "off",
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/ban-types": "off",
@@ -34,7 +24,7 @@
       "error",
       {
         "newlinesBetween": "always",
-        "groups": ["/^react/", "module", ["parent", "sibling", "index"]],
+        "groups": ["/^react/", "/^@checkers/" ,"module", ["parent", "sibling", "index"]],
         "alphabetize": {
           "order": "asc",
           "ignoreCase": true
@@ -55,5 +45,35 @@
     "require-await": "error",
     "react-hooks/rules-of-hooks": "warn",
     "react-hooks/exhaustive-deps": "warn"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "@nrwl/nx/enforce-module-boundaries": [
+          "error",
+          {
+            "enforceBuildableLibDependency": true,
+            "allow": [],
+            "depConstraints": [
+              {
+                "sourceTag": "*",
+                "onlyDependOnLibsWithTags": ["*"]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "extends": ["plugin:@nrwl/nx/typescript"],
+      "rules": {}
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "extends": ["plugin:@nrwl/nx/javascript"],
+      "rules": {}
+    }
+  ]
 }
