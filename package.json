@@ -87,7 +87,7 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
-      "nx lint --verbose"
+      "nx affected:lint --fix"
     ]
   },
   "husky": {
