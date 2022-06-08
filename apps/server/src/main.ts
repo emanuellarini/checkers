@@ -7,7 +7,7 @@ import http from 'http';
 import GameRoom from './rooms/GameRoom';
 
 const app = express();
-const port = process.env.port || 3333;
+const port = process.env.PORT || 3333;
 
 app.use(cors());
 app.use(express.json());
