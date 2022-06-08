@@ -1,0 +1,23 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.0.2
+  heroku: circleci/heroku@0.0.10
+
+jobs:
+  build-test-and-deploy:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/with-cache:
+        steps:
+          - run: yarn install --frozen-lockfile
+          - run: yarn affected:deploy --base=<< pipeline.git.base_revision >> --head=HEAD
+      - heroku/deploy-via-git
+
+workflows:
+  build-test-and-deploy:
+    jobs:
+      - build-test-and-deploy
+
