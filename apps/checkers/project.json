@@ -75,6 +75,13 @@
         "jestConfig": "apps/checkers/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "deploy": {
+      "executor": "@netlify-builder/deploy:deploy",
+      "options": {
+        "outputPath": "dist/apps/checkers",
+        "siteId": "8a5f7fae-594f-4421-a02b-0db3f09154ae"
+      }
     }
   },
   "tags": []

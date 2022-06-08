@@ -7,7 +7,8 @@
     "build": "nx build",
     "test": "nx test",
     "lint": "nx lint",
-    "start:dev": "nx run-many --parallel --target=serve --projects=checkers,server"
+    "start:dev": "nx run-many --parallel --target=serve --projects=checkers,server",
+    "deploy:checkers": "env-cmd nx deploy checkers"
   },
   "private": true,
   "dependencies": {
@@ -27,6 +28,7 @@
     "core-js": "^3.6.5",
     "cors": "2.8.5",
     "express": "4.17.2",
+    "env-cmd": "10.1.0",
     "gravatar": "1.8.2",
     "react": "18.1.0",
     "react-dom": "18.1.0",
@@ -38,6 +40,7 @@
   },
   "devDependencies": {
     "@emotion/babel-plugin": "11.9.2",
+    "@netlify-builder/deploy": "5.0.0",
     "@nrwl/cli": "14.1.9",
     "@nrwl/eslint-plugin-nx": "14.1.9",
     "@nrwl/express": "14.1.9",

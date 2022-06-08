@@ -6,7 +6,7 @@
     "e2e": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "APP=apps/checkers-e2e playwright test --headed"
+        "command": "APP=apps/checkers-e2e playwright test"
       },
       "configurations": {
         "no-serve": {
@@ -23,5 +23,5 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["checkers"]
+  "implicitDependencies": ["checkers", "server"]
 }
