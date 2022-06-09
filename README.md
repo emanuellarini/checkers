@@ -29,7 +29,7 @@ $ yarn test
 
 Run the below command to run E2E tests:
 ```sh
-$ yarn cy:run
+$ yarn test:e2e
 ```
 
 __ps: _don't forget to start the app in order to run E2E tests!___
@@ -37,3 +37,4 @@ __ps: _don't forget to start the app in order to run E2E tests!___
 ### The Game
 
 - [Rules](/docs/Rules.md)
+

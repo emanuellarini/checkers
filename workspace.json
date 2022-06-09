@@ -2,10 +2,10 @@
   "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
-    "game-common": "libs/game-common",
-    "game-interfaces": "libs/game-interfaces",
     "checkers": "apps/checkers",
     "checkers-e2e": "apps/checkers-e2e",
+    "game-common": "libs/game-common",
+    "game-interfaces": "libs/game-interfaces",
     "server": "apps/server"
   }
 }

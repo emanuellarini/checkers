@@ -15,7 +15,7 @@
         "main": "apps/checkers/src/main.tsx",
         "polyfills": "apps/checkers/src/polyfills.ts",
         "tsConfig": "apps/checkers/tsconfig.app.json",
-        "assets": ["apps/checkers/src/favicon.ico", "apps/checkers/src/assets"],
+        "assets": ["apps/checkers/src/favicon.ico", "apps/checkers/src/assets", "apps/checkers/src/_redirects"],
         "styles": [],
         "scripts": [],
         "webpackConfig": "@nrwl/react/plugins/webpack"
