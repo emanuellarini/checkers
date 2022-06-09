@@ -16,9 +16,9 @@ app.use('/colyseus', monitor());
 // Create HTTP & WebSocket servers
 const server = http.createServer(app);
 const gameServer = new Server({
-  server: server
+  server
 });
 gameServer.define('game', GameRoom).enableRealtimeListing();
 
 server.listen(port);
-console.log(`Listening on ${port}`);
+console.log(`Server started on port ${port}`);

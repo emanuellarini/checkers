@@ -4,13 +4,17 @@
   "license": "MIT",
   "scripts": {
     "start": "nx serve",
-    "build": "nx build",
     "test": "nx test",
-    "lint": "nx affected:lint --all",
     "start:dev": "nx run-many --parallel --target=serve --projects=checkers,server",
-    "start:server:production": "env-cmd node dist/apps/server/main.js",
-    "deploy:checkers": "env-cmd nx deploy checkers",
-    "affected:deploy": "nx affected --target=deploy"
+    "start:server:production": "node dist/apps/server/main.js",
+    "test:e2e": "nx e2e --project=checkers-e2e",
+    "deploy:checkers": "nx deploy checkers",
+    "local:deploy:checkers": "env-cmd nx deploy checkers",
+    "affected:build": "nx affected --target=build --with-deps",
+    "affected:lint": "nx affected --target=lint --with-deps",
+    "affected:deploy": "nx affected --target=deploy --with-deps",
+    "build": "nx build server",
+    "lint": "nx affected:lint"
   },
   "private": true,
   "dependencies": {
@@ -27,7 +31,7 @@
     "@unform/web": "2.1.6",
     "colyseus": "0.14.23",
     "colyseus.js": "0.14.13",
-    "core-js": "^3.6.5",
+    "core-js": "3.6.5",
     "cors": "2.8.5",
     "express": "4.17.2",
     "env-cmd": "10.1.0",
@@ -37,7 +41,7 @@
     "react-beautiful-dnd": "13.1.0",
     "react-router-dom": "6.3.0",
     "regenerator-runtime": "0.13.7",
-    "tslib": "^2.3.0",
+    "tslib": "2.3.0",
     "yup": "0.32.11"
   },
   "devDependencies": {
@@ -83,8 +87,9 @@
     "husky": "8.0.1",
     "jest": "27.5.1",
     "jest-environment-jsdom": "28.1.0",
+    "lint-staged": "13.0.0",
     "nx": "14.1.9",
-    "prettier": "^2.5.1",
+    "prettier": "2.5.1",
     "react-test-renderer": "18.1.0",
     "ts-jest": "27.1.4",
     "ts-node": "9.1.1",
@@ -92,12 +97,13 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
-      "yarn lint"
+      "nx affected:lint --uncommitted",
+      "git add"
     ]
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "node_modules/.bin/lint-staged"
     }
   }
 }

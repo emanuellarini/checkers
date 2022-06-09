@@ -9,7 +9,7 @@ export const TheBoard = () => (
     <Typography component="p" sx={{ mb: 1 }}>
       This is how it looks once the game starts:
     </Typography>
-    <img src={boardPic} alt="Board" />
+    <img src={boardPic} alt="Board" style={{ width: '100%' }} />
     <Typography component="p" sx={{ mb: 1, mt: 1 }}>
       Consists of 64 (8x8) squares: <b>32 Dark and 32 Light</b>.
     </Typography>

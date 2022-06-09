@@ -1,0 +1,37 @@
+name: 'CI'
+
+on: ['pull_request']
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: microsoft/playwright-github-action@v1
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.15.0"
+
+      - name: Install
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn affected:lint --base=origin/main
+
+      - name: Unit Tests
+        run: yarn test
+
+      - name: Install Playwright stuff
+        run: npx playwright install --with-deps
+
+      - name: Start dev, confirm is up and execute E2E tests
+        run: |
+          yarn start:dev &
+          bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:4200)" != "200" ]]; do sleep 5; done' &&
+          bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:3333/colyseus)" != "301" ]]; do sleep 5; done' &&
+          yarn test:e2e

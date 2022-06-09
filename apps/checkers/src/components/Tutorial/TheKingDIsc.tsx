@@ -6,7 +6,7 @@ import kingDiscSrc from '../../assets/img/king_disc.png';
 
 export const TheKingDIsc = () => (
   <>
-    <img src={kingDiscSrc} alt="King Disc" />
+    <img src={kingDiscSrc} alt="King Disc" style={{ width: 80, height: 80 }} />
 
     <Typography component="p" sx={{ mt: 1, mb: 1 }}>
       The King Disc is a special type of Disc.
