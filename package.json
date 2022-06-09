@@ -10,9 +10,9 @@
     "test:e2e": "nx e2e --project=checkers-e2e",
     "deploy:checkers": "nx deploy checkers",
     "local:deploy:checkers": "env-cmd nx deploy checkers",
-    "affected:build": "nx affected --target=build --with-deps",
-    "affected:lint": "nx affected --target=lint --with-deps",
-    "affected:deploy": "nx affected --target=deploy --with-deps",
+    "affected:build": "nx affected --target=build",
+    "affected:lint": "nx affected --target=lint",
+    "affected:deploy": "nx affected --target=deploy",
     "build": "nx build server",
     "lint": "nx affected:lint"
   },

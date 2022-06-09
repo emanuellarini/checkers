@@ -24,7 +24,7 @@ jobs:
       - name: Build affected
         run: yarn affected:build --base=origin/main~1
 
-      - name: Deploy affected
+      - name: Deploy Client if affected
         run: yarn affected:deploy --base=origin/main~1
         env:
           NETLIFY_TOKEN: ${{secrets.NETLIFY_TOKEN}}
@@ -35,7 +35,7 @@ jobs:
         with:
           files: "dist/apps/server/main.js"
 
-      - name: Deploy
+      - name: Deploy Server to Heroku if affected
         if: steps.check_files.outputs.files_exists == 'true'
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
