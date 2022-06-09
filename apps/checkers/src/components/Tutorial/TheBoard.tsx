@@ -2,14 +2,17 @@ import React from 'react';
 
 import { Typography } from '@mui/material';
 
-import boardPic from '../../assets/img/board.png';
-
 export const TheBoard = () => (
   <>
     <Typography component="p" sx={{ mb: 1 }}>
       This is how it looks once the game starts:
     </Typography>
-    <img src={boardPic} alt="Board" style={{ width: '100%' }} />
+    <img
+      src="https://ik.imagekit.io/a26m6rvtk/img/board_K3CCFShpDF.png/tr:h-300"
+      alt="Board"
+      height={300}
+    />
+
     <Typography component="p" sx={{ mb: 1, mt: 1 }}>
       Consists of 64 (8x8) squares: <b>32 Dark and 32 Light</b>.
     </Typography>

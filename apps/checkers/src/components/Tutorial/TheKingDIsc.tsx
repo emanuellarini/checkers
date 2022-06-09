@@ -2,11 +2,13 @@ import React from 'react';
 
 import { Typography } from '@mui/material';
 
-import kingDiscSrc from '../../assets/img/king_disc.png';
-
 export const TheKingDIsc = () => (
   <>
-    <img src={kingDiscSrc} alt="King Disc" style={{ width: 80, height: 80 }} />
+    <img
+      src="https://ik.imagekit.io/a26m6rvtk/img/king_disc_W4hYnv_ma.png/tr:h-120"
+      alt="King Disc"
+      height={120}
+    />
 
     <Typography component="p" sx={{ mt: 1, mb: 1 }}>
       The King Disc is a special type of Disc.
