@@ -2,9 +2,6 @@ import React from 'react';
 
 import { Box, Typography } from '@mui/material';
 
-import move1 from '../../assets/img/move_1.png';
-import move2 from '../../assets/img/move_2.png';
-
 export const RegularMovements = () => (
   <>
     <Box
@@ -14,8 +11,16 @@ export const RegularMovements = () => (
         justifyContent: 'space-around'
       }}
     >
-      <img src={move1} alt="Red Disc Movement" />
-      <img src={move2} alt="Black Disc Movement" />
+      <img
+        src="https://ik.imagekit.io/a26m6rvtk/img/move_1_EXLQK4E8RY.png/tr:h-250"
+        alt="Black Disc Movement"
+        height={250}
+      />
+      <img
+        src="https://ik.imagekit.io/a26m6rvtk/img/move_2_6mRLTIMXI.png/tr:h-250"
+        alt="Red Disc Movement"
+        height={250}
+      />
     </Box>
     <Typography component="p" sx={{ mb: 1, mt: 1 }}>
       A player turn consists in making movement(s). These are the rules for a
