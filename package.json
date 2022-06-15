@@ -8,7 +8,6 @@
     "start:dev": "nx run-many --parallel --target=serve --projects=checkers,server",
     "start:server:production": "node dist/apps/server/main.js",
     "test:e2e": "nx e2e --project=checkers-e2e",
-    "deploy:checkers": "nx deploy checkers",
     "affected:build": "nx affected --target=build",
     "affected:lint": "nx affected --target=lint",
     "affected:deploy": "nx affected --target=deploy",
