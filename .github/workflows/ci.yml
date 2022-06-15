@@ -20,8 +20,11 @@ jobs:
       - name: Install
         run: yarn install --frozen-lockfile
 
-      - name: Lint
+      - name: Lint Affected
         run: yarn affected:lint --base=origin/main
+
+      - name: Build Affected
+        run: yarn affected:build --base=origin/main
 
       - name: Unit Tests
         run: yarn test
