@@ -61,7 +61,7 @@ reach the furthest row from the Player who controls it.
 
 They can do same movements as Common Discs but also move backwards.
 
-## Win Conditions
+### Win Conditions
 
 Win the game who matches one of these statements:
 
@@ -257,12 +257,13 @@ Alright, so let's speak about Nx since it's a part of the core:
 * Easy to find information on Google
 
 Going further, I also used:
-* React - This was decided 4 years ago and it's the core of the challenge
-* Express - Backend framework
-* Typescript/Eslint - They are part of my test stuff and IMO a no brainer choices for new projects
-* Prettier/Husky/LintStaged - Readable code matters a lot
+* [React](https://reactjs.org/) - This was decided 4 years ago and it's the core of the challenge
+* [Express](https://expressjs.com/) - Backend Server framework
+* [Typescript](https://www.typescriptlang.org/) and [Eslint](https://eslint.org/) - They are part of my test stuff and IMO a no brainer choices for new projects
+* [Prettier](https://prettier.io/), [Husky](https://github.com/typicode/husky) and [Lint Staged](https://github.com/okonet/lint-staged) - Readable code matters a lot
 * [React Testing Library](https://testing-library.com/) - Unit/Integration tests
 * [Playwright](https://playwright.dev/) - E2E tests - cypress has no support for multi tabs
+* [Colyseus](https://www.colyseus.io/) - The solution for multi play
 * [Material UI](https://mui.com/) - A totally personal choice, could be replaced to any other component lib
 * [Imagekit](https://imagekit.io/) - CDN for images in tutorial
 * [React Beautiful dnd](https://github.com/atlassian/react-beautiful-dnd) - giving life to the board and discs
