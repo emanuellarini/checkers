@@ -44,9 +44,14 @@ export const RegularMovements = () => (
       <b>5. </b>Once you move a Disc you can not go back in that action.
     </Typography>
 
-    <Typography component="p">
+    <Typography component="p" sx={{ mb: 1 }}>
       Every time a Jump happens it means it is also a Capture movement. In that
       case we should remove the opponent's Disc from the game.
+    </Typography>
+
+    <Typography component="p">
+      Capturing is totally optional. It's up to you to decide if you want or not
+      to capture an enemy disc in your turn.
     </Typography>
   </>
 );
