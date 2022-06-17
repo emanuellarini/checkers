@@ -18,7 +18,7 @@ It was a two-player game but only playable within the same device and browser ta
 
 But it was nice. I felt comfortable with the result at the time. Also, it helped to show my skills as a Frontend Developer.
 
-And here are some of things I've used on that project:
+And here are some of the things I've used on that project:
 * React (CRA)
 * Material-UI, Styled Components, React Beautiful Dnd
 * Redux and Recompose
@@ -98,9 +98,9 @@ Well, I won't be telling personal stuff here, but I've been through a lot in the
 
 If there is one thing I can guarantee you: it is impossible to work great if outside of it you're going through a lot.
 
-So instead of stopping doing code, I became too obsessed and the result was really bad. Lots of overengineering and multiple reworks which resulted in bad code.
+So instead of stopping doing code, I became too obsessed and the result was really bad. Overengineering and multiple reworks ended up in bad code and architecture.
 
-If you are in that kind of situation, get some PTO... go to the gym... speak with a therapist.. but be smarter than me: don't destroy your psychological even more!
+If you are in that kind of situation, take days off... go to the gym... see a therapist.. be smarter than me: don't destroy your psychological even more!
 
 Well, after a good rest I came to look at what I was doing and I had bad news for myself: I needed to start over from the beginning.
 
@@ -122,40 +122,38 @@ As you can see I wasted so much time being wrong and not knowing my limits. I ho
 
 The sad part of the story told, now I can show you the winnings :)
 
-So, now that I knew the `WHY`... I had to figure the `WHAT`... or in a clearer way: the **Product**!
+So, now that I knew the `WHY`... I had to figure out the `WHAT`... or in a clearer way: the **Product**!
 
 ### Product - WHAT
 
-We devs tend to think too much about the architecture, code, patterns,libraries...
-**but there is no architecture if there is no product, right? :)**
+We devs tend to think too much about the architecture, code, patterns, libraries... **but there is no architecture if there is no product, right? :)**
 
-So let's talk about features! Forgetting the tech stuff and thinking more as a Product Owner.
+So let's talk about features! Forget the tech stuff and think more like a Product Owner.
 
-In short, I wanted:
-* Two players being able to play a checkers game in separate devices
+In short, I expect this project to have:
+* Two players being able to play a checkers game on separate devices
 * Show them the Rules
-* Possibility of reconnect
+* Possibility of reconnecting
 * Drag and drop, no click bullshit!
 * Provide constant feedback:
   * What happens if one of the players disconnects?
-  * What happens if someone closes the tab and reopens?
+  * What happens if someone closes the tab and reopens it?
   * What happens after someone creates the game? Will it wait until 2nd player arrives?
-  * Can someone make a movement while offiline?
+  * Can someone move a disc while offline?
   * How to handle the turns? And much more...
 
 So how I was going to do that?
 
 First, someone would provide his information and then create a game.
 The UI must show him the rules right after the creation but only once.
-Then, he must grab the link and send to friend to connect and start playing.
-In the meantime he should not be able to play, he must wait his friend.
+Then, he must grab the link and send it to a friend to connect and start playing.
+In the meantime he should not be able to play, he must wait for his friend.
 After the game starts they will be able to drag and drop in the correct positions and follow the rules.
 Only one wins and after the game finishes they should be able to rematch any times they want.
 
-Ok. Now we have something to start working on :applause:
+Ok. Now we have something to start working :clap:
 
 With that we can go to the part we like the most... the `HOW`.
-
 
 ### Architecture - HOW
 
@@ -163,24 +161,24 @@ First, let me add a disclaimer:
 
 ```
 This is a hobby project. 
-Choosing A over B depends mostly on what I wanted to learn/try instead of what's better. 
-When doing for fun I will do what's best for me; when working, what's best for the company.
+In this project, choosing A over B depends mostly on what I wanted to learn/try. Still, choosing poor solutions is not acceptable.
 ``` 
 
-That being said, let's start talking about the architecture I chose...
+That being said, let's start talking about architecture.
 
-I knew I was needing both Frontend and Backend, I started to think about the conflict between Two Repos vs Mono Repo.
+I knew I was going to need both Frontend and Backend, I started to think about the conflict between Two Repos vs Mono Repo.
 
 So, I chose Monorepo and the reasons were:
-* Deploy are usually harder in monorepos but I wanted to try [Nx](https://nx.dev/)
-* One project inside one repo is easier to show and demonstrate
+* Mono repo has trade-offs that I am willing to pay
+* Mono repos usually are harder to deploy but I wanted to try [Nx](https://nx.dev/)
+* A project inside a single repository is easier to show and demonstrate
 * I don't have plans to go further than what was described earlier for this product
-* If I chose 2 repos which one of them I would need to put E2E in a third repo
+* If I use a repo for the backend and another for the frontend I would need to put E2E in a third repo. It would need more tweaks in CI.
 
-Alright, so let's speak about Nx since it's the base of the project:
+Alright, so let's speak about Nx since it's a part of the core:
 * Has a way to lint/build/deploy only affected code
 * Not that hard to configure, if you start with their boilerplate you're fine
-* Easy to find information in google
+* Easy to find information on Google
 
 Going further, I also used:
 * React - This was decided 4 years ago and it's the core of the challenge
@@ -196,21 +194,19 @@ Going further, I also used:
 * [Heroku](heroku.com)
 * [GitHub Actions](https://github.com/features/actions)
 
-Now you know the tools, let's see the interaction between them to form BE and FE
+Let's see the interaction between them to form both BE and FE.
 
 #### Frontend
 
-Ths project relies on Client Side Rendering.
-Which means it is considered as SPA.
+Ths project relies on Client-Side Rendering which means it is considered a SPA.
 
 You might also remember that I was using NextJs.
 This was one of the things that didn't make any sense.
-I was not taking any advantage to use Server Side Rendering, so Next wasn't really a good choice.
+I was not taking any advantage to use Server Side Rendering, so Next was a poor choice.
 
 Since my Frontend is a SPA, it contains HTML, CSS and JS files.
-They are being deployed in Netlify though a deploy command set in Nx.
-Nx has a library that can trigger the deploy in Netlify out of the box.
-
+They are being deployed in Netlify through a deploy command set in Nx.
+Nx has a library that can trigger the deployment in Netlify out of the box.
 You will see more details in the CI/CD section below.
 
 #### Backend
@@ -219,7 +215,7 @@ Handles the Colyseus game room to provide all the logic of the communication bet
 
 Since I was not able to use Netlify the choice was Heroku.
 
-Heroku is easy to configure and get things going, but then Nx had no solution for it like it does for Netlify.
+Heroku is easy to configure and get things going, but then Nx had no solution for it as it does for Netlify.
 
 I had to make a workaround in Github Actions, so let's see how the CI/CD works.
 
@@ -234,26 +230,26 @@ The pipeline for CI is `exclusive for PRs`. And it consists in:
 6. Run E2E tests in dev mode
 
 If it passes and the work is done it's free to get merged.
-Once in master we start the CD process.
+After merging to the main branch, we start the CD process.
 
 ### CD
 
-Different than CI, it only happens in `main` branch.
+Different than CI, it only happens in the`main` branch.
 Since we already know everything is passing it's safe (though it's not 100%) to skip some steps like linting and testing.
-In a perfect scenario I would create artifacts for both BE and FE while in CI and use the same artifacts.
+In a perfect scenario, I would create artifacts for both BE and FE while in CI and use the same artifacts.
 But it would need a lot of work and this for sure can be done in the future.
-So the pipeline for main consists in:
+So the pipeline consists in:
 1. Checkout the branch code
-2. Deploy Client - only if it has changes in code
-3. Deploy Server - only if it has changes in code
+2. Deploy Client - if it has contained changes in code
+3. Deploy Server - if it has contained changes in code
 
-In an ideal world all I need to execute was `yarn affected:deploy --base=origin/main~1`
-This command would deploy both FE and BE if any changed.
-But Nx has no builtin way to deploy to Heroku our backend which made use a workaround.
-I am manually checking if the build affected command generate server files (which means it has new server code).
+In an ideal world, all I need to execute is `yarn affected:deploy --base=origin/main~1`
+This command would deploy both FE and BE if any of them has changed.
+But Nx has no built-in way to deploy on Heroku our backend which made me use a workaround.
+I am manually checking if the build-affected command generates server files (which means it has new server code).
 Then, it deploys that new code.
 
-Better than describing is showing it in action. Here are all the possible events while in CD:
+Better than describing is showing it in action. Here are all the possible events while on CD:
 * [Deployed both](https://github.com/emanuellarini/checkers/runs/6893354407?check_suite_focus=true)
 * [Deployed only Frontend](https://github.com/emanuellarini/checkers/runs/6930618004?check_suite_focus=true)
 * [Deployed only Backend](https://github.com/emanuellarini/checkers/runs/6930808735?check_suite_focus=true)
@@ -262,6 +258,23 @@ Better than describing is showing it in action. Here are all the possible events
 ### Work Coordination
 
 It is really hard to manage ourselves and also do the code, but none management is far worse because it affects the delivered code.
-I knew since the beginning this was not a 1-day project and there was also lots things to remember.
+I knew since the beginning this was not a 1-day project and there were also lots of things to remember.
 So I decided to make this [Trello board](https://trello.com/b/TJqoFT2R/checkers-20).
 The board centralizes all the efforts I was going to work on and still I probably have missed a few.
+
+### Tests
+
+SOON
+
+### Future
+
+The product won't have new features besides what was described in the product section.
+
+So for the future, we can focus on code and architecture. Here are a few things I would like to do:
+* Add a report for test coverage and also a document on what was tested (this is what I'll do now, so it might be removed from this list once I reach the goal)
+* Since I am using Nx, it would be nice if I use Domain-Driven Design in the libraries folder. This way I would separate better my components and have the apps folder thin.
+* Netlify has branch previews and I could use it when testing PRs but then I would need the same feature in the backend.
+* Adding more tests - there are some cool ways to test Colyseus
+* Check for extra re-renders, I have spread some memos but I am sure there I have missed a few places
+* Add cool sound
+* Ask help from a Designer to improve the UI/UX
