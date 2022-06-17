@@ -74,7 +74,7 @@ Once it happens, a new game will start and the player who lost the last game wil
 
 <br/>
 
-## Introduction - a cool story to break the ice
+## Introduction
 
 I always enjoyed playing games since I was a kid but creating one is something that I never considered.
 
