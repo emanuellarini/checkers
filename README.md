@@ -4,8 +4,6 @@ This is an updated version of [old checkers game](https://github.com/emanuellari
 
 Checkout the [new Trello board](https://trello.com/b/TJqoFT2R/checkers-20).
 
-Let's see if I improved my Frontend skills over the years :)
-
 ### Up & Running
 
 Install dependencies:
