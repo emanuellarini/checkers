@@ -32,6 +32,9 @@ $ yarn test:e2e
 
 __ps: _don't forget to start the app in order to run E2E tests!___
 
+<br/>
+<br/>
+
 ## Game Rules
 
 ### Turns
@@ -71,6 +74,9 @@ Win the game who matches one of these statements:
 ### Rematch
 
 Once it happens, a new game will start and the player who lost the last game will start in the new.
+
+<br/>
+<br/>
 
 ## Introduction - a cool story to break the ice
 
@@ -197,6 +203,8 @@ As you can see I wasted so much time being wrong and not knowing my limits. I ho
 The sad part of the story told, now I can show you the winnings :)
 
 So, now that I knew the `WHY`... I had to figure out the `WHAT`... or in a clearer way: the **Product**!
+
+<br/>
 
 ### Product - WHAT
 
@@ -338,7 +346,7 @@ The board centralizes all the efforts I was going to work on and still I probabl
 
 ### Tests
 
-SOON
+UNDER DEVELOPMENT SECTION
 
 ### Future
 
