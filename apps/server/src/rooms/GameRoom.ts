@@ -1,6 +1,6 @@
 import { Dispatcher } from '@colyseus/command';
 import { Room, Client } from 'colyseus';
-import * as crypto from 'crypto';
+import crypto from 'crypto';
 
 import {
   OnPlayerJoinRoomCommand,
